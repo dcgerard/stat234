@@ -1,26 +1,33 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Datasets for Stat 234
-=====================
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# Datasets for Stat 234
 
 Here are some datasets that I have either curated or stolen that I intend to use in Stat 234.
 
-trek.csv
-========
+# trek.csv
 
 The data in trek.csv consist of word counts and proportion of words spoken by the main characters from the excellent television series [Star Trek: The Next Generation](https://en.wikipedia.org/wiki/Star_Trek:_The_Next_Generation). I obtained the original dataset [here](https://github.com/RMHogervorst/TNG).
 
-movie.csv
-=========
+# movie.csv
 
 The data in movie.csv consist of various ratings of the movies that were in theaters in 2015 and had at least 30 user ratings on Fandango. The data is entirely taken from [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/fandango). See [here](https://fivethirtyeight.com/features/fandango-movies-ratings/) for their original article.
 
-bob.csv
-=======
+# bob.csv
 
 [Bob Ross](https://en.wikipedia.org/wiki/Bob_Ross) was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of counts for the number of paintings that had such chacteristics. This dataset was also taken from the excellent crew at [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/bob-ross). See [here](https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/) for their article.
 
-trump.csv
-=========
+# trump.csv
 
 Donald trum loves Twitter. This data consist of some characteristics of his tweets. I obtained the data from [this](http://varianceexplained.org/r/trump-tweets/) blog.
