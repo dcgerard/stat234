@@ -5,4 +5,4 @@ output:
     toc: false
 ---
 
-Describe your project.
+This website consists of my specific slides, notes, code, and examples for Stat 234.

@@ -5,15 +5,4 @@ output:
     toc: false
 ---
 
-What license are you using for your code? See [choosealicense.com][choose] for
-help deciding. And don't forget to update the file `LICENSE` in the root of your
-Git repo.
-
-What license are you using for the written content on your site? It is
-traditional to choose a [Creative Commons][cc] license for this type of content.
-
-[choose]: http://choosealicense.com/
-[cc]: https://creativecommons.org/choose/
-
-How should others cite your work? Don't forget to update the file `CITATION` in
-the root of your Git repo.
+Currently, the aspects of the teaching website that I am legally entitled to place under license is licensed under [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/). The software that I am legally allowed to place under license, is licensed under [GNU General Public License, version 3.0 (GBLv3)](https://www.gnu.org/licenses/gpl-3.0.txt).
