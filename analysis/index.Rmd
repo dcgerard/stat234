@@ -7,4 +7,5 @@ output:
 
 # Lectures
 
-* Introduction to statistics.
+* [Syllabus](00_administrative.html)
+* [Data Basics](01_introduction.html)

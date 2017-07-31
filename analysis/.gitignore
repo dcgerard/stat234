@@ -1,2 +1,5 @@
 *.csv
 *.xls
+*.md
+!README.md
+*.html

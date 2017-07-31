@@ -1,0 +1,15 @@
+01 Data Basics
+========================================================
+author: David Gerard
+date: `r Sys.Date()`
+autosize: true
+
+Outline
+========================================================
+
+- Observations
+- Variables
+- Data Matrices
+
+
+========================================================
