@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## <a href="https://github.com/dcgerard/stat234/raw/master/data/big_mac.csv" download>big_mac.csv</a>
 
-Since 1986, The Economist invented the "Big Mac Index" as a light-hearted way to compare the price of goods between countries (there is a more complex economic theory behind this goal that you can read about [here](https://en.wikipedia.org/wiki/Purchasing_power_parity)). The `big_mac` dataset contains the price of [Big Macs](https://en.wikipedia.org/wiki/Big_Mac) across 58 countries from 2000 to 2017. The Economist sometimes collected data bianually, but I thinned it down to include only data from the summer. I obtained the data [here](http://www.economist.com/content/big-mac-index). The data consists of a data-frame of three columns:
+Since 1986, The Economist has been publishing the "Big Mac Index" as a light-hearted way to compare the price of goods between countries (there is a more complex economic theory behind this goal that you can read about [here](https://en.wikipedia.org/wiki/Purchasing_power_parity)). The `big_mac` dataset contains the price of [Big Macs](https://en.wikipedia.org/wiki/Big_Mac) across 58 countries from 2000 to 2017. The Economist sometimes collected data bianually, but I thinned it down to include only data from the summer. I obtained the data [here](http://www.economist.com/content/big-mac-index). The data consists of a data-frame of three columns:
 
 * `country`: A character-vector where each element is one of 58 possible countries.
 * `dollar`: The price of a Big Mac in U.S. dollars. I did not adjust for inflation.
@@ -32,7 +32,7 @@ Since 1986, The Economist invented the "Big Mac Index" as a light-hearted way to
 
 ## <a href="https://github.com/dcgerard/stat234/raw/master/data/bob.csv" download>bob.csv</a>
 
-[Bob Ross](https://en.wikipedia.org/wiki/Bob_Ross) was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of indicators for what elements are in each episode. This dataset was also taken from the excellent crew at [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/bob-ross). See [here](https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/) for their article. The data were obtained using [this](https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/bob_ross/get_bob.R) code. The varaibles are:
+[Bob Ross](https://en.wikipedia.org/wiki/Bob_Ross) was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of indicators for what elements are in each episode. This dataset was taken from the excellent crew at [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/bob-ross). See [here](https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/) for their article. The data were obtained using [this](https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/bob_ross/get_bob.R) code. The varaibles are:
 
 * `Episode`: The season and episode number of the episode.
 * `Title`: The title of the painting.
@@ -68,7 +68,7 @@ The data in movie.csv consist of various ratings of the movies that were in thea
 
 ## <a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>trump.csv</a>
 
-Donald trum loves Twitter. These data consist of some characteristics of his tweets during the election from 2015-12-14 to 2016-08-08. These include whether a tweet has a word that is associated with one of two sentiments (positive/negative) or one of eight emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust). The annotations for the sentiments were obtained from the [NRC Emotion Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). I obtained the data from [this](http://varianceexplained.org/r/trump-tweets/) blog and cleaned the data [here](https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/trump_tweets/trump_tweets.R). The variables in this dataset are:
+Donald Trump loves Twitter. These data consist of some characteristics of his tweets during the election from 2015-12-14 to 2016-08-08. These include whether a tweet has a word that is associated with one of two sentiments (positive/negative) or one of eight emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust). The annotations for the sentiments were obtained from the [NRC Emotion Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). I obtained the data from [this](http://varianceexplained.org/r/trump-tweets/) blog and cleaned the data [here](https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/trump_tweets/trump_tweets.R). The variables in this dataset are:
 
 * `id`: A unique label for each tweet.
 * `source`: Whether the tweet came from an Android or an iPhone.
