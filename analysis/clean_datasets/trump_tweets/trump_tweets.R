@@ -63,5 +63,5 @@ prop.table(table(tweets3$source, tweets3$disgust), margin = 1)
 prop.table(table(tweets3$source, tweets3$quote), margin = 1)
 prop.table(table(tweets3$source, tweets3$picture), margin = 1)
 
-write.csv(tweets2, file = "../../data/trump.csv", row.names = FALSE)
+write.csv(tweets2, file = "../../../data/trump.csv", row.names = FALSE)
 

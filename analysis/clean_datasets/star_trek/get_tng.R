@@ -52,7 +52,7 @@ trek <- trek %>% mutate(picard_prop = picard / tot_words,
   mutate(released = Released, episode_number = Episode, season = Season) %>%
   select(-Released, -Episode, -Season)
 
-write.csv(trek, file = "../../data/trek.csv", row.names = FALSE)
+write.csv(trek, file = "../../../data/trek.csv", row.names = FALSE)
 
 ggplot(data = trek, mapping = aes(x = index, y = picard_prop)) +
   geom_point() +

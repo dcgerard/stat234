@@ -7,7 +7,7 @@ library(tidyverse)
 library(stringr)
 movie <- read.csv(url("https://raw.githubusercontent.com/fivethirtyeight/data/master/fandango/fandango_score_comparison.csv"))
 
-write.csv(movie, "../../data/movie.csv", row.names = FALSE)
+write.csv(movie, "../../../data/movie.csv", row.names = FALSE)
 
 names(movie)
 plot(movie$RottenTomatoes, movie$RottenTomatoes_User)

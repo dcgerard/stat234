@@ -21,4 +21,4 @@ for (index in 1:length(year_vec)) {
 bm <- bm %>% transmute(country = Country, dollar = dollar_price, year = year) %>%
   filter(!is.na(dollar))
 
-write.csv(bm, "../../data/big_mac.csv", row.names = FALSE)
+write.csv(bm, "../../../data/big_mac.csv", row.names = FALSE)

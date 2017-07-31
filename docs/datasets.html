@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="David Gerard" />
+
+<meta name="date" content="2017-07-31" />
+
+<title>Datasets for Stat 234</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">stat_234</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="datasets.html">Datasets</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/dcgerard/Stat_234">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Datasets for Stat 234</h1>
+<h4 class="author"><em>David Gerard</em></h4>
+<h4 class="date"><em>2017-07-31</em></h4>
+
+</div>
+
+
+<p><a href="https://github.com/dcgerard/stat234/tree/master/data">Here</a> are some datasets that I have either curated or <s>stolen</s> borrowed for <a href="https://en.wikipedia.org/wiki/Fair_use">educational purposes</a> that I intend to use in Stat 234.</p>
+<div id="download" class="section level1">
+<h1>Download</h1>
+<ul>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/big_mac.csv" download>Big Mac Index</a></li>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/bob.csv" download>Bob Ross Paintings</a></li>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/movie.csv" download>Movie Ratings</a></li>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/trek.csv" download>Star Trek Word Counts</a></li>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>Trump’s Twitter</a></li>
+</ul>
+</div>
+<div id="descriptions" class="section level1">
+<h1>Descriptions</h1>
+<div id="big_mac.csv" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/big_mac.csv" download>big_mac.csv</a></h2>
+<p>Since 1986, The Economist invented the “Big Mac Index” as a light-hearted way to compare the price of goods between countries (there is a more complex economic theory behind this goal that you can read about <a href="https://en.wikipedia.org/wiki/Purchasing_power_parity">here</a>). The <code>big_mac</code> dataset contains the price of <a href="https://en.wikipedia.org/wiki/Big_Mac">Big Macs</a> across 58 countries from 2000 to 2017. The Economist sometimes collected data bianually, but I thinned it down to include only data from the summer. I obtained the data <a href="http://www.economist.com/content/big-mac-index">here</a>. The data consists of a data-frame of three columns:</p>
+<ul>
+<li><code>country</code>: A character-vector where each element is one of 58 possible countries.</li>
+<li><code>dollar</code>: The price of a Big Mac in U.S. dollars. I did not adjust for inflation.</li>
+<li><code>year</code>: The year the data were collected.</li>
+</ul>
+</div>
+<div id="bob.csv" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/bob.csv" download>bob.csv</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Bob_Ross">Bob Ross</a> was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of indicators for what elements are in each episode. This dataset was also taken from the excellent crew at <a href="https://github.com/fivethirtyeight/data/tree/master/bob-ross">fivethirtyeight</a>. See <a href="https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/">here</a> for their article. The data were obtained using <a href="https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/bob_ross/get_bob.R">this</a> code. The varaibles are:</p>
+<ul>
+<li><code>Episode</code>: The season and episode number of the episode.</li>
+<li><code>Title</code>: The title of the painting.</li>
+<li>Every other variable is an indicator for whether the episode contains the element described by the variable name. For example, <code>BARN</code> is 0 if the episode does not have a barn in the painting and 1 if the episode does have a barn in the painting.</li>
+</ul>
+</div>
+<div id="movie.csv" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/movie.csv" download>movie.csv</a></h2>
+<p>The data in movie.csv consist of various ratings of the movies that were in theaters in 2015 and had at least 30 user ratings on Fandango. The data is entirely taken from <a href="https://github.com/fivethirtyeight/data/tree/master/fandango">fivethirtyeight</a>. See <a href="https://fivethirtyeight.com/features/fandango-movies-ratings/">here</a> for their original article. I cleaned the data <a href="https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/movie/movie.R">here</a>. The variables in this dataset are:</p>
+<ul>
+<li><code>FILM</code>: The name of the film.</li>
+<li><code>RottenTomatoes</code>: The raw <a href="https://www.rottentomatoes.com/">Rotten Tomatoes</a> score of the film (an aggregate of critics ratings). On a scale from 0 to 100.</li>
+<li><code>RottenTomatoes_User</code>: The raw <a href="https://www.rottentomatoes.com/">Rotten Tomatoes</a> user score of the film (an aggregate of website-user ratings). On a scale from 0 to 100.</li>
+<li><code>Metacritic</code>: The raw <a href="http://www.metacritic.com/">Metacritic</a> score (an aggregate of critics ratings). On a scale from 0 to 100.</li>
+<li><code>Metacritic_User</code>: The raw <a href="http://www.metacritic.com/">Metacritic</a> user score (an aggregate of website-user ratings). On a scale from 0 to 10.</li>
+<li><code>IMDB</code>: The raw <a href="http://www.imdb.com/">IMDB</a> score of the film.</li>
+<li><code>Fandango_Star</code>: The raw <a href="https://www.fandango.com/">Fandango</a> score. On a scale from 1 to 5 but only takes values every half point.</li>
+<li><code>Fandango_Ratingvalue</code>: The less-rounded (to every tenth instead of to every half) ratings on <a href="https://www.fandango.com/">Fandango</a>. On a scale from 1 to 5.</li>
+<li><code>RT_norm</code>: The Rotten Tomatoes score normalized to a 5-point scale.</li>
+<li><code>RT_user_norm</code>: The Rotten Tomatoes user score normalized to a 5-point scale.</li>
+<li><code>Metacritic_norm</code>: The Metacritic score normalized to a 5-point scale.</li>
+<li><code>Metacritic_user_norm</code>: The Metacritic user score normalized to a 5-point scale.</li>
+<li><code>IMDB_norm</code>: The IMDB score normalized to a 5-point scale.</li>
+<li><code>RT_norm_round</code>: Same as <code>RT_norm</code> but rounded to every half point.</li>
+<li><code>RT_user_norm_round</code>: Same as <code>RT_user_norm</code> but rounded to every half point.</li>
+<li><code>Metacritic_norm_round</code>: Same as <code>Metacritic_norm</code> but rounded to every half point.</li>
+<li><code>Metacritic_user_norm_round</code>: Same as <code>Metacritic_user_norm</code> but rounded to every half point.</li>
+<li><code>IMDB_norm_round</code>: Same as <code>IMDB_norm</code> but rounded to every half point.</li>
+<li><code>Metacritic_user_vote_count</code>: The number of Metacritic users who voted for the film.</li>
+<li><code>IMDB_user_vote_count</code>: The number of IMDB users who voted for the film.</li>
+<li><code>Fandango_votes</code>: The numuber of Fandango reviews a film obtained.</li>
+<li><code>Fandango_Difference</code>: <code>Fandango_Stars - Fandango_Ratingvalue</code>.</li>
+</ul>
+</div>
+<div id="trump.csv" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>trump.csv</a></h2>
+<p>Donald trum loves Twitter. These data consist of some characteristics of his tweets during the election from 2015-12-14 to 2016-08-08. These include whether a tweet has a word that is associated with one of two sentiments (positive/negative) or one of eight emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust). The annotations for the sentiments were obtained from the <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Emotion Lexicon</a>. I obtained the data from <a href="http://varianceexplained.org/r/trump-tweets/">this</a> blog and cleaned the data <a href="https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/trump_tweets/trump_tweets.R">here</a>. The variables in this dataset are:</p>
+<ul>
+<li><code>id</code>: A unique label for each tweet.</li>
+<li><code>source</code>: Whether the tweet came from an Android or an iPhone.</li>
+<li><code>text</code>: The text of the tweet.</li>
+<li><code>created</code>: The date the tweet was created in “year-month-day” format.</li>
+<li><code>hour</code>: The hour of the day the tweet was created, from 0 to 23.</li>
+<li><code>quote</code>: Whether the tweet starts with a quotation mark.</li>
+<li><code>picture</code>: Whether the tweet contains a picture.</li>
+<li><code>very</code>: Whether the tweet has the word “very” in it.</li>
+<li><code>length</code>: The length of the tweet.</li>
+<li><code>anger</code>: Whether the tweet has a word in it that evokes anger.</li>
+<li><code>anticipation</code>: Whether the tweet has a word in it that evokes anticipation.</li>
+<li><code>disgust</code>: Whether the tweet has a word in it that evokes disgust.</li>
+<li><code>fear</code>: Whether the tweet has a word in it that evokes fear.</li>
+<li><code>joy</code>: Whether the tweet has a word in it that evokes joy.</li>
+<li><code>negative</code>: Whether the tweet has a word in it that evokes negative sentiment.</li>
+<li><code>positive</code>: Whether the tweet has a word in it that evokes positive sentiment.</li>
+<li><code>sadness</code>: Whether the tweet has a word in it that evokes sadness.</li>
+<li><code>surprise</code>: Whether the tweet has a word in it that evokes surprise.</li>
+<li><code>trust</code>: Whether the tweet has a word in it that evokes trust.</li>
+</ul>
+</div>
+<div id="trek.csv" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/trek.csv" download>trek.csv</a></h2>
+<p>The data in trek.csv consist of word counts and proportion of words spoken by the main characters from the excellent television series <a href="https://en.wikipedia.org/wiki/Star_Trek:_The_Next_Generation">Star Trek: The Next Generation</a>. I obtained the original dataset <a href="https://github.com/RMHogervorst/TNG">here</a> and cleaned it <a href="https://github.com/dcgerard/stat234/blob/master/analysis/clean_datasets/star_trek/get_tng.R">here</a>. The variables in this dataset are</p>
+<ul>
+<li><code>episode</code>: The name of the episode.</li>
+<li><code>index</code>: The index of the episode. “1” for the first episode, “2” for the second, etc…</li>
+<li><code>released</code>: The date the episode was released in “year-month-day” format.</li>
+<li><code>episode_number</code>: The index of the episode within each season. “1” for the first episode of a season, “2” for the second episode of a season, etc…</li>
+<li><code>season</code>: The season number of the episode.</li>
+<li><code>picard</code>, <code>riker</code>, <code>geordi</code>, <code>tasha</code>, <code>worf</code>, <code>beverly</code>, <code>pulaski</code>, <code>troi</code>, <code>data</code>, <code>wesley</code>: The raw counts of words spoken by each main character in each episode.</li>
+<li><code>tot_words</code>: The total number of words spoken by the main characters in each episode.</li>
+<li><code>picard_prop</code>, <code>riker_prop</code>, <code>geordi_prop</code>, <code>tasha_prop</code>, <code>worf_prop</code>, <code>beverly_prop</code>, <code>pulaski_prop</code>, <code>troi_prop</code>, <code>data_prop</code>, <code>wesley_prop</code>: The proportion of words spoken by each main character in each episode.</li>
+</ul>
+</div>
+</div>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
