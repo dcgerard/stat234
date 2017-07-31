@@ -14,20 +14,95 @@ knitr::opts_chunk$set(
 
 # Datasets for Stat 234
 
-Here are some datasets that I have either curated or stolen that I intend to use in Stat 234.
+Here are some datasets that I have either curated or <s>stolen</s> borrowed for [educational purposes](https://en.wikipedia.org/wiki/Fair_use) that I intend to use in Stat 234.
 
-# trek.csv
+# Download
 
-The data in trek.csv consist of word counts and proportion of words spoken by the main characters from the excellent television series [Star Trek: The Next Generation](https://en.wikipedia.org/wiki/Star_Trek:_The_Next_Generation). I obtained the original dataset [here](https://github.com/RMHogervorst/TNG).
+* <a href="https://github.com/dcgerard/stat234/blob/master/data/bob.csv" download>Bob Ross Paintings</a>
+* <a href="https://github.com/dcgerard/stat234/blob/master/data/movie.csv" download>Movie Ratings</a>
+* <a href="https://github.com/dcgerard/stat234/blob/master/data/trek.csv" download>Star Trek Word Counts</a>
+* <a href="https://github.com/dcgerard/stat234/blob/master/data/trump.csv" download>Trump's Twitter</a>
+* <a href="https://github.com/dcgerard/stat234/blob/master/data/big_mac.csv" download>Big Mac Index</a>
 
-# movie.csv
+# Descriptions
 
-The data in movie.csv consist of various ratings of the movies that were in theaters in 2015 and had at least 30 user ratings on Fandango. The data is entirely taken from [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/fandango). See [here](https://fivethirtyeight.com/features/fandango-movies-ratings/) for their original article.
+## trek.csv
 
-# bob.csv
+The data in trek.csv consist of word counts and proportion of words spoken by the main characters from the excellent television series [Star Trek: The Next Generation](https://en.wikipedia.org/wiki/Star_Trek:_The_Next_Generation). I obtained the original dataset [here](https://github.com/RMHogervorst/TNG) and cleaned it [here](https://github.com/dcgerard/stat234/blob/master/analysis/star_trek/get_tng.R). The variables in this dataset are
 
-[Bob Ross](https://en.wikipedia.org/wiki/Bob_Ross) was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of counts for the number of paintings that had such chacteristics. This dataset was also taken from the excellent crew at [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/bob-ross). See [here](https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/) for their article.
+* `episode`: The name of the episode.
+* `index`: The index of the episode. "1" for the first episode, "2" for the second, etc...
+* `released`: The date the episode was released in "year-month-day" format.
+* `episode_number`: The index of the episode within each season. "1" for the first episode of a season, "2" for the second episode of a season, etc...
+* `season`: The season number of the episode.
+* `picard`, `riker`, `geordi`, `tasha`, `worf`, `beverly`, `pulaski`, `troi`, `data`, `wesley`: The raw counts of words spoken by each main character in each episode.
+* `tot_words`: The total number of words spoken by the main characters in each episode.
+* `picard_prop`, `riker_prop`, `geordi_prop`, `tasha_prop`, `worf_prop`, `beverly_prop`, `pulaski_prop`, `troi_prop`, `data_prop`, `wesley_prop`: The proportion of words spoken by each main character in each episode.
 
-# trump.csv
 
-Donald trum loves Twitter. This data consist of some characteristics of his tweets. I obtained the data from [this](http://varianceexplained.org/r/trump-tweets/) blog.
+## movie.csv
+
+The data in movie.csv consist of various ratings of the movies that were in theaters in 2015 and had at least 30 user ratings on Fandango. The data is entirely taken from [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/fandango). See [here](https://fivethirtyeight.com/features/fandango-movies-ratings/) for their original article. I cleaned the data [here](https://github.com/dcgerard/stat234/blob/master/analysis/movie/movie.R). The variables in this dataset are:
+
+* `FILM`: The name of the film.
+* `RottenTomatoes`: The raw [Rotten Tomatoes](https://www.rottentomatoes.com/) score of the film (an aggregate of critics ratings). On a scale from 0 to 100.
+* `RottenTomatoes_User`: The raw [Rotten Tomatoes](https://www.rottentomatoes.com/) user score of the film (an aggregate of website-user ratings). On a scale from 0 to 100.
+* `Metacritic`: The raw [Metacritic](http://www.metacritic.com/) score (an aggregate of critics ratings). On a scale from 0 to 100.
+* `Metacritic_User`: The raw [Metacritic](http://www.metacritic.com/) user score (an aggregate of website-user ratings). On a scale from 0 to 10.
+* `IMDB`: The raw [IMDB](http://www.imdb.com/) score of the film.
+* `Fandango_Star`: The raw [Fandango](https://www.fandango.com/) score. On a scale from 1 to 5 but only takes values every half point.
+* `Fandango_Ratingvalue`: The less-rounded (to every tenth instead of to every half) ratings on [Fandango](https://www.fandango.com/). On a scale from 1 to 5.
+* `RT_norm`: The Rotten Tomatoes score normalized to a 5-point scale.
+* `RT_user_norm`: The Rotten Tomatoes user score normalized to a 5-point scale.
+* `Metacritic_norm`: The Metacritic score normalized to a 5-point scale.
+* `Metacritic_user_norm`: The Metacritic user score normalized to a 5-point scale.
+* `IMDB_norm`: The IMDB score normalized to a 5-point scale.
+* `RT_norm_round`: Same as `RT_norm` but rounded to every half point.
+* `RT_user_norm_round`: Same as `RT_user_norm` but rounded to every half point.
+* `Metacritic_norm_round`: Same as `Metacritic_norm` but rounded to every half point.
+* `Metacritic_user_norm_round`: Same as `Metacritic_user_norm` but rounded to every half point.
+* `IMDB_norm_round`: Same as `IMDB_norm` but rounded to every half point.
+* `Metacritic_user_vote_count`: The number of Metacritic users who voted for the film.
+* `IMDB_user_vote_count`: The number of IMDB users who voted for the film.
+* `Fandango_votes`: The numuber of Fandango reviews a film obtained.
+* `Fandango_Difference`: `Fandango_Stars - Fandango_Ratingvalue`.
+
+## bob.csv
+
+[Bob Ross](https://en.wikipedia.org/wiki/Bob_Ross) was a painter who hosted a popular television series on PBS. Each episode would consist of him completing an entire painting. His paintings almost always consisted heavily of elements from nature: trees, clouds, mountains, lakes, etc. These data consist of indicators for what elements are in each episode. This dataset was also taken from the excellent crew at [fivethirtyeight](https://github.com/fivethirtyeight/data/tree/master/bob-ross). See [here](https://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross/) for their article. The data were obtained using [this](https://github.com/dcgerard/stat234/blob/master/analysis/bob_ross/get_bob.R) code. The varaibles are:
+
+* `Episode`: The season and episode number of the episode.
+* `Title`: The title of the painting.
+* Every other variable is an indicator for whether the episode contains the element described by the variable name. For example, `BARN` is 0 if the episode does not have a barn in the painting and 1 if the episode does have a barn in the painting.
+
+## trump.csv
+
+Donald trum loves Twitter. These data consist of some characteristics of his tweets during the election from 2015-12-14 to 2016-08-08. These include whether a tweet has a word that is associated with one of two sentiments (positive/negative) or one of eight emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust). The annotations for the sentiments were obtained from the [NRC Emotion Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). I obtained the data from [this](http://varianceexplained.org/r/trump-tweets/) blog and cleaned the data [here](https://github.com/dcgerard/stat234/blob/master/analysis/trump_tweets/trump_tweets.R). The variables in this dataset are:
+
+* `id`: A unique label for each tweet.
+* `source`: Whether the tweet came from an Android or an iPhone.
+* `text`: The text of the tweet.
+* `created`: The date the tweet was created in "year-month-day" format.
+* `hour`: The hour of the day the tweet was created, from 0 to 23.
+* `quote`: Whether the tweet starts with a quotation mark.
+* `picture`: Whether the tweet contains a picture.
+* `very`: Whether the tweet has the word "very" in it.
+* `length`: The length of the tweet.
+* `anger`: Whether the tweet has a word in it that evokes anger.
+* `anticipation`: Whether the tweet has a word in it that evokes anticipation.
+* `disgust`: Whether the tweet has a word in it that evokes disgust.
+* `fear`: Whether the tweet has a word in it that evokes fear.
+* `joy`: Whether the tweet has a word in it that evokes joy.
+* `negative`: Whether the tweet has a word in it that evokes negative sentiment.
+* `positive`: Whether the tweet has a word in it that evokes positive sentiment.
+* `sadness`: Whether the tweet has a word in it that evokes sadness.
+* `surprise`: Whether the tweet has a word in it that evokes surprise.
+* `trust`: Whether the tweet has a word in it that evokes trust.
+
+## big_mac.csv
+
+Since 1986, The Economist invented the "Big Mac Index" as a light-hearted way to compare the price of goods between countries (there is a more complex economic theory behind this goal that you can read about [here](https://en.wikipedia.org/wiki/Purchasing_power_parity)). The `big_mac` dataset contains the price of [Big Macs](https://en.wikipedia.org/wiki/Big_Mac) across 58 countries from 2000 to 2017. The Economist sometimes collected data bianually, but I thinned it down to include only data from the summer. I obtained the data [here](http://www.economist.com/content/big-mac-index). The data consists of a data-frame of three columns:
+
+* `country`: A character-vector where each element is one of 58 possible countries.
+* `dollar`: The price of a Big Mac in U.S. dollars. I did not adjust for inflation.
+* `year`: The year the data were collected.

@@ -48,7 +48,9 @@ trek <- trek %>% mutate(picard_prop = picard / tot_words,
                 pulaski_prop = pulaski / tot_words,
                 troi_prop = troi / tot_words,
                 data_prop = data / tot_words,
-                wesley_prop = wesley / tot_words)
+                wesley_prop = wesley / tot_words) %>%
+  mutate(released = Released, episode_number = Episode, season = Season) %>%
+  select(-Released, -Episode, -Season)
 
 write.csv(trek, file = "../../data/trek.csv", row.names = FALSE)
 

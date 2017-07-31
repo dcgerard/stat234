@@ -29,9 +29,39 @@ tweets$length <- str_length(tweets$text)
 
 table(tweets$quote, tweets$source)
 table(tweets$picture, tweets$source)
-very_table
 very_table <- table(tweets$very, tweets$source)
 prop.table(very_table, margin = 2)
 
-write.csv(tweets, file = "../../data/trump.csv", row.names = FALSE)
+
+
+library(tidytext)
+twords <- tweets %>% unnest_tokens(word, text) %>%
+  select(id, word)
+
+temp <- twords %>% right_join(get_sentiments("nrc")) %>%
+  filter(!is.na(sentiment)) %>%
+  group_by(id) %>%
+  count(sentiment, sort = TRUE) %>%
+  spread(key = sentiment, value = n)
+
+temp[, 2:11] <- !is.na(temp[, 2:11])
+
+tweets2 <- inner_join(tweets, temp, by = "id")
+
+tweets3 <- filter(tweets2, quote == "no_quote")
+
+prop.table(table(tweets3$source, tweets3$negative), margin = 1)
+prop.table(table(tweets3$source, tweets3$positive), margin = 1)
+prop.table(table(tweets3$source, tweets3$anger), margin = 1)
+prop.table(table(tweets3$source, tweets3$fear), margin = 1)
+prop.table(table(tweets3$source, tweets3$anticipation), margin = 1)
+prop.table(table(tweets3$source, tweets3$joy), margin = 1)
+prop.table(table(tweets3$source, tweets3$sadness), margin = 1)
+prop.table(table(tweets3$source, tweets3$surprise), margin = 1)
+prop.table(table(tweets3$source, tweets3$trust), margin = 1)
+prop.table(table(tweets3$source, tweets3$disgust), margin = 1)
+prop.table(table(tweets3$source, tweets3$quote), margin = 1)
+prop.table(table(tweets3$source, tweets3$picture), margin = 1)
+
+write.csv(tweets2, file = "../../data/trump.csv", row.names = FALSE)
 
