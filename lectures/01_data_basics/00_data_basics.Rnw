@@ -1,0 +1,152 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Data Basics}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Cases/observational units
+\item Variables (categorical/quantitative)
+\item Data frames
+\item Section 1.2 of DBC
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Cases and Variables}
+  \begin{itemize}
+  \item At its most basic level, data consist of two things: cases and variables.
+    \begin{block}{case}
+    \alert{Cases} (or \alert{observational units}) are the objects described by a set of data. Cases may be customers, companies, subjects in a study, units in an experiment, or other objects.
+    \end{block}
+    \begin{block}{variable}
+    For each case, the data give values for one or more \alert{variables}. A variable describes some characteristic of a case, such as a person's height, gender, or salary. Variables can have different \alert{values} for different cases.
+    \end{block}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Trump's Twitter}
+A data frame giving characteristics of President Trump's tweets from 2015-12-14 to 2016-08-08.
+
+Subset of variables:
+\begin{itemize}
+\item \code{source} Whether the tweet came from an Android or an iPhone.
+\item \code{text} The text of the tweet.
+\item \code{hour} The hour of the day the tweet was created, from 0 to 23.
+\item \code{length} The length of the tweet.
+\item \code{anger} Whether the tweet has a word in it that evokes anger.
+\item \code{negative} Whether the tweet has a word in it that evokes a negative sentiment.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Cases? Variables?}
+\vspace{-2mm}
+<<echo=FALSE>>=
+options(width = 50)
+@
+
+<<message=FALSE>>=
+library(tidyverse) ## for %>%, select, and glimpse
+read_csv("../../data/trump.csv") %>%
+  select(source, text, hour,
+         length, anger, negative) ->
+  trump
+glimpse(trump)
+@
+\end{frame}
+
+
+\begin{frame}{fumbles dataset}
+This data frame gives the number of fumbles by each NCAA FBS team for the first three weeks in November, 2010.
+
+A data frame with 120 observations on the following 7 variables.
+
+\begin{itemize}
+\item \code{team} NCAA football team
+\item \code{rank} rank based on fumbles per game through games on November 26, 2010
+\item \code{W} number of wins through games on November 26, 2010
+\item \code{L} number of losses through games on November 26, 2010
+\item \code{week1} number of fumbles on November 6, 2010
+\item \code{week2} number of fumbles on November 13, 2010
+\item \code{week3} number of fumbles on November 20, 2010
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Cases? Variables?}
+<<message=FALSE>>=
+data(fumbles, package = "fastR") ## Load data from a pkg
+head(fumbles) ## only shows first few obs
+@
+\end{frame}
+
+\begin{frame}{Data Frames}
+\begin{itemize}
+\item The way I organized the fumbles dataset is called a \alert{data frame}.
+\item Each row corresponds to a unique case.
+\item Each column corresponds to a variable.
+\item Most datasets in R are \code{data.frame} objects.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Types of Variables}
+Variables can be categorical or quantitative.
+\begin{block}{categorical variable}
+A \alert{categorical variable} places each individual into a group or category, such as male or female.
+\end{block}
+\begin{block}{quantitative variable}
+A \alert{quantitative variable} has numerical values for which arithmetic operations such as adding and averaging make sense. They measure some characteristic of each case, such as height in centimeters or annual salary in dollars.
+\end{block}
+\begin{block}{label}
+A \alert{label} is a special categorical variable used in some datasets to uniquely distinguish the different cases. (e.g. id number, social security number, name)
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Categorical or Quantitative?}
+<<>>=
+glimpse(trump)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Categorical or Quantitative?}
+<<>>=
+head(fumbles)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Categorical or Quantitative?}
+What if I restructure \code{fumbles} like this:
+<<>>=
+fumb2 <- gather(fumbles, key = "week",
+                value = "fumbles", week1:week3)
+head(fumb2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Categorical or Quantitative?}
+\begin{itemize}
+\item Social security numbers?
+\item Phone numbers?
+\item I place the class into 10 different groups, labeled 1 through 10. Is group number quantitative or categorical?
+\item Grade point average (GPA)?
+\end{itemize}
+\end{frame}
+
+
+\end{document}

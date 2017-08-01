@@ -1,0 +1,111 @@
+---
+title: "List of Definitions"
+author: "David Gerard"
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+The following definitions are taken from:
+
+> Moore, David S., George P. McCabe, and Bruce A. Craig. _Introduction to the Practice of Statistics, Ninth Edition_. WH Freeman & Co, 2017.
+
+# Chapter 1
+
+- **Cases** (or **observational units**) are the objects described by a set of data. Cases may be customers, companies, subjects in a study, units in an experiment, or other objects.
+- For each case, the data give values for one or more **variables**. A variable describes some characteristic of a case, such as a person's height, gender, or salary. Variables can have different **values** for different cases.
+- A **label** is a special variable used in some datasets to distinguish the different cases.
+- Some variables are **categorical** and others are **quantitative**. A categorical variable places each individual into a category, such as male or female. A quantitative variable has numerical values that measure some characteristic of each case, such as height in centimeters or annual salary in dollars.
+- **Exploratory data analysis** uses graphs and numerical summaries to describe the variables in a dataset and the relations among them.
+- The **distribution** of a variable tells us what values it takes and how often it takes these values.
+- **Bar graphs** and **pie charts** display the distributions of categorical variables. These graphs use the counts or percents of the categories.
+- **Stemplots** and **histograms** display the distributions of quantitative variables. Stemplots separate each observation into a **stem** and a one-digit **leaf**. Histograms plot the **frequencies** (counts) or the percents of equal-width classes of values.
+- When examining a distribution, look for **shape**, **center**, and **spread** and for clear **deviations** from the overall shape.
+- Some distributions have simple shapes, such as **symmetric** or **skewed**. The number of **modes** (major peaks) is another aspect of overall shape. Not all distributions have a simple overall shape, especially when there are few observations.
+- **Outliers** are observations that lie outside the overall pattern of a distribution. Always look for outliers and try to explain them.
+- To find the **mean $\bar{x}$** of a set of observations, add their values and divide by the number of observations. If the $n$ observations are $x_1,x_2,\ldots,x_n$, their mean is
+$$
+\bar{x} = \frac{x_1 + x_2 + \cdots + x_n}{n} = \frac{1}{n}\sum_{i = 1}^{n}x_i,
+$$
+and is a measure of *center*
+- The **median** is the midpoint of a distribution. It is a measure of *center* Half of the observations are smaller than the median and the other half are larger than the median. Here is the rule for finding the median:
+    1. Arrange all of the observations in order of size, from smallest to largest.
+    2. If the number of observations $n$ is odd, the median $M$ is the center observation in the ordered list. Find the location of the median by counting $(n + 1) / 2$ observations up from the bottom of the list.
+    3. If the number of observations $n$ is even, the median $M$ is the mean of the two center observations in the ordered list. The location of the median is again $(n + 1) / 2$ from the bottom of the list.
+- The **first quartile $Q_1$** is the median of the upper half of the data.
+- The **third quartile $Q_3$** is the median of the lower half of the data.
+- The **$p$th percentile** of a distribution is the value that has $p$ percent of the observations fall at or below it.
+- The **five-number summary** of a set of observations consists of the smallest observation, the first quartile, the median, the third quartile, and the largest observation.
+- The **interquartile range IQR** is the distance between the first and third quartiles,
+$$
+IQR = Q_3 - Q_1,
+$$
+and is a measure of *spread*.
+- The $1.5 \times IQR$ rule for outliers: Call an observation a suspected outlier if it falls more than $1.5 \times IQR$ above the third quartile or below the first quartile.
+- A **boxplot** is a graph of the five number summary. A central box spans the quartiles $Q_1$ and $Q_3$. A line in the box marks the median $M$. Lines (the "whiskers") extend from the box out to the smallest and largest observations. In many boxplots the whiskers extend out a maximum of $1.5 * IQR$ from the first and third quartiles and any points beyond this range are plotted individually as "suspected outliers." The mean is also sometimes also plotted individually.
+- Plotting boxplots *side-by-side* is useful for comparing the distributions of multiple quantitative variables.
+- The **variance $s^2$** of a set of observations is the average of the squares of the deviations of the observations from their mean. In symbols, the variance of $n$ observations $x_1,x_2,\ldots,x_n$ is
+$$
+s^2 = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + \cdots (x_n - \bar{x})^2}{n - 1} = \frac{1}{n - 1}\sum_{i = 1}^{n}(x_i - \bar{x})^2.
+$$
+The **standard deviation $s$** is the square root of the variance $s^2$:
+$$
+s^2 = \sqrt{\frac{1}{n - 1}\sum_{i = 1}^{n}(x_i - \bar{x})^2},
+$$
+and is a measure of *spread*.
+- Properties of standard deviation:
+    - $s$ measures the spread about the mean andshould be used only when the mean is chosen as the measure of spread.
+    - $s = 0$ only when there is *no spread*. This happens only when all observations have the same value. Otherwise, $s > 0$, As the observations become more spread out about their mean, $s$ gets larger.
+    - $s$, like the mean $\bar{x}$, is not resistent. A few outliers can make $s$ very large.
+- Use $\bar{x}$ and $s$ for relatively symmetric distributions free from outliers. Otherwise, the five number summary is usually a better numerical summary of a distribution.
+- A **linear transformation** changes the original variable $x$ into a new variable $x_{new}$ given by an equation of the form
+$$
+x_{new} = a + bx
+$$
+- Multiplying each observation by a positive number $b$ multiplies both measures of center (median and mean) and measures of spread (IQR and standard deviation) by $b$.
+- Adding the same number $a$ (positive or negative) to each observation adds $a$ to the measures of center and to the quartiles but does *not* change measures of spread (IQR and standard deviation).
+- A **density curve** describes the overall pattern of a distribution. The area under the curve and above any range of values is the proportion of all observations that fall in that range. A density cuve is a curve that
+    - Is always on or above the horizontal axis.
+    - Has area exactly 1 underneat it.
+- The **median** of a density curve is the equal-areas point, the point that divides the area under the curve in half.
+- The **mean** of a density curve is the balance point, at which the curve would balance if made of solid material.
+- The **normal curve** describes the **normal distribution**. It is bell-shaped and is defined by the equation:
+$$
+f(x|\mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{1}{2\sigma^2}(x - \mu)^2},
+$$
+where $mu$ is the mean of the normal distribution and $\sigma$ is the standard deviation of the normal distribution.
+- In a normal distribution, about 68\% of the observations fall within $\sigma$ of the mean, about 95\% of observations fall within $2\sigma$ of the mean, and about 99.7\% of observations fall within $3\sigma$ of the mean.
+- The **standard normal distribution** is the normal distribution with mean 0 and standard deviation 1. If a normal random variable $X$ has mean $\mu$ and standard deviation $\sigma$, then the standardized variable \
+$$
+Z = \frac{X - \mu}{\sigma}
+$$
+has the standard normal distribution.
+
+# Chapter 2
+
+- Two variables measured on the same cases are **associated** if knowing the values of one of the variables tells you something about the values of the other variable.
+- A **response variable** measures an outcome of a study. An **explanatory variable** explains or causes changes in the response variable.
+- A **scatterplot** shows the relationship between two quantitative variables measured on the same cases. The values of one variable appear on the horizontal axis, and the values of the other variable appear on the vertical axis. Each case in the data appears as the point in the plot determined by the values of both variables for that case.
+- To add a categorical variable to a scatterplot, use a different plot color or symbol for each category.
+- The **direction** of two linearly related variables can be either positive or negative:
+    - Two variables are **positively associated** when above-average values of one tend to accompany above-average values of the other and below-average values also tend to occur together.
+    - Two variable are **negatively associated** when above-average values of one tend to accompany below-average values of the other, and vice-versa.
+- The **strength** of a relationship is determined by how close the points in the scatterplot lie to a simple form such as a line or a curve.
+- The **correlation** measures the direction and strength of the *linear* relationship between two quantitative variables. Correlation is usually written as $r$. Suppose that we have data on variables $x$ and $y$ for $n$ individuals. The means and standard deviations of the two variables are $\bar{x}$ and $s_x$ for the $x$-values and $\bar{y}$ and $s_y$ for the $y$-values. The correlation $r$ between $x$ and $y$ is
+$$
+r = \frac{1}{n - 1}\sum_{i = 1}^{n} \left(\frac{x_i - \bar{x}}{s_z}\right)\left(\frac{y_i - \bar{y}}{s_y}\right).
+$$
+- Correlation has the following properties:
+    - It makes no distinction between which variable is $x$ (the explanatory) and which variables is $y$ (the response). Switching $x$ and $y$ will not change $r$.
+    - Correlation requires both variables be quantitative.
+    - $r$ does not change when we apply a linear transformation to $x$ or to $y$ or to both $x$ and $y$. This also means that $r$ does not change when we change the units of $x$ or of $y$ (e.g. from feet to inches).
+    - Positive $r$ indicates a positive association between the variables and negative $r$ indicates a negative association between the variables.
+    - $r$ is always betwen -1 and 1. Values of $r$ near 0 indicate a very weak linear relationship. Values of $r$ close to -1 or 1 indicate the points lie close to a straight line. The extreme values of $r = 1$ and $r = -1$ occur only when the ponits in a scatterplot lie exactly along a straight line.
+    - Correlation measures the strenght only of the linear relationship between variables. Not the curved relationship.
+    - Correlation is sensative to outliers. It is not resistant.
+    
+
+
