@@ -1,0 +1,234 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Numerical Summaries of center and spread of quantitative variables}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Mean/median.
+\item Standard deviation/inter-quartile range/median absolute deviation.
+\item Five number summary/boxplots.
+\item Sections 1.6.2, 1.6.4, 1.6.5, and 1.6.6 in DBC.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Numerical Summaries}
+\begin{itemize}
+\item Sometimes it is inconvenient to provide a graphical summary of your data.
+\item An alternative is to provide \emph{numerical} summaries of data.
+\item Summarizing the data numerically can also provide insights into distributions.
+\end{itemize}
+\end{frame}
+
+\section{Measures of Center}
+
+\begin{frame}[fragile]{Where is the distribution's ``center''?}
+<<message=FALSE>>=
+library(tidyverse)
+data(satGPA, package = "openintro")
+qplot(satGPA$SATV, bins = 15, xlab = "SATV")
+@
+\end{frame}
+
+\begin{frame}[fragile]{The mean}
+One measure of center is the mean.
+\begin{block}{mean}
+To find the \alert{mean} (or average) $\bar{x}$ of a set of observations, add their values and divide by the number of observations. If the $n$ observations are $x_1,x_2,\ldots,x_n$, their mean is
+$$
+\bar{x} = \frac{x_1 + x_2 + \cdots + x_n}{n} = \frac{1}{n}\sum_{i = 1}^{n}x_i,
+$$
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Mean makes sense here}
+<<>>=
+xbar <- mean(satGPA$SATV)
+qplot(satGPA$SATV, bins = 15, xlab = "SATV") +
+  geom_vline(xintercept = xbar, color = "red")
+@
+\end{frame}
+
+\begin{frame}[fragile]{But what about here?}
+<<message=FALSE, fig.height=3.5>>=
+trump <- read_csv("../../data/trump.csv")
+xbar <- mean(trump$length)
+qplot(trump$length, bins = 30, xlab = "length") +
+  geom_vline(xintercept = xbar, color = "red")
+@
+\end{frame}
+
+\begin{frame}{Why does this happen?}
+\begin{itemize}
+\item The skew is pulling the mean to the right.
+\item This is because the mean can be interpreted as the ``center of mass'' of the distribution.
+\item The mean is not a ``typical'' value of of the length of a tweet.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The mean is not robust to extreme observations.}
+\footnotesize
+<<>>=
+mean(c(1, 2, 2, 3, 3))
+mean(c(1, 2, 2, 3, 10))
+mean(c(1, 2, 2, 3, 20))
+mean(c(1, 2, 2, 3, 100))
+@
+\normalsize
+\end{frame}
+
+\begin{frame}{Another measure of center: The Median}
+\begin{block}{Median}
+The \alert{median} is the midpoint of a distribution. Half of the observations are smaller than the median and the other half are larger than the median. Here is the rule for finding the median:
+\begin{enumerate}
+\item Arrange all of the observations in order of size, from smallest to largest.
+\item If the number of observations $n$ is odd, the median $M$ is the center observation in the ordered list. Find the location of the median by counting $(n + 1) / 2$ observations up from the bottom of the list.
+\item If the number of observations $n$ is even, the median $M$ is the mean of the two center observations in the ordered list.
+\end{enumerate}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Trump's Tweets}
+<<fig.height=3.5>>=
+M <- median(trump$length)
+qplot(trump$length, bins = 30, xlab = "length") +
+  geom_vline(xintercept = xbar, color = "red") +
+  geom_vline(xintercept = M, color = "blue")
+@
+\end{frame}
+
+\begin{frame}[fragile]{The median is robust to extreme observations.}
+\footnotesize
+<<>>=
+median(c(1, 2, 2, 3, 3))
+median(c(1, 2, 2, 3, 10))
+median(c(1, 2, 2, 3, 20))
+median(c(1, 2, 2, 3, 100))
+@
+\normalsize
+\end{frame}
+
+\begin{frame}{Exercise}
+Find the mean and median of the following numbers:
+\begin{align*}
+\text{6, 3, 2, 3, 3, 7}
+\end{align*}
+\end{frame}
+
+\begin{frame}{deviations}
+\begin{itemize}
+\item A measure of center is nice, but how do we describe variability of the points from the center?
+\item Idea: Use the deviations from the mean $(x_i - \bar{x})$.
+\item Can we use the average of the deviations?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{First proof}
+\begin{itemize}
+\item \textbf{prove:} $\sum_{i = 1}^{n}(x_i - \bar{x}) = 0$ for \textbf{any} sample.
+\item A proof is a ``paragraph'' of mathematical ``sentences''
+\item Write ``sentences'' in order to make logical sense to the reader,\\
+\item Your proof is your personal argument as to why a claim must be true.
+\item \textbf{Requirement} (for completeness and clarity for the reader):\\
+Justify each step (``sentence'') requiring statistics knowledge.\\
+Tell the reader what statistical concept you are using.\\
+...like requiring you cite prior work you rely on in your writing
+\item Make liberal use of results already proven in the course.\\
+Just tell the reader what result you are using.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{First proof: with a little too much detail}
+\begin{itemize}
+\item \textbf{prove:} $\sum_{i = 1}^{n}(x_i - \bar{x}) = 0$ for \textbf{any} sample.
+\end{itemize}
+\begin{proof}
+\begin{align*}
+\sum (x_i - \bar{x}) &= \sum x_i - \sum \bar{x} \text{ (associative property)}\\
+&= \sum x_i - n\bar{x} \text{ (summing up $n$ identical things)}\\
+&= \sum x_i - n \frac{1}{n}\sum x_i \text{ (definition of $\bar{x}$)}\\
+&= \sum x_i - \sum x_i \text{ ($n$'s cancel)}\\
+&= 0.
+\end{align*}
+\end{proof}
+\end{frame}
+
+\begin{frame}{Squared deviations}
+\begin{itemize}
+\item Cool! We just made our first proof.
+\item But this means that the average deviation is not a good measure of spread:
+\begin{align*}
+\frac{1}{n}\sum (x_i - \bar{x}) = 0 \text{ for \textbf{any} sample!}
+\end{align*}
+\item What about the average of the squared deviations?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What about the average of the squared deviations?}
+\begin{block}{variance}
+The \alert{variance} $s^2$ of a set of observations is the average of the squares of the deviations of the observations from their mean. In symbols, the variance of $n$ observations $x_1,x_2,\ldots,x_n$ is
+$$
+s^2 = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + \cdots (x_n - \bar{x})^2}{n - 1} = \frac{1}{n - 1}\sum_{i = 1}^{n}(x_i - \bar{x})^2.
+$$
+The \alert{standard deviation} $s$ is the square root of the variance $s^2$:
+$$
+s = \sqrt{\frac{1}{n - 1}\sum_{i = 1}^{n}(x_i - \bar{x})^2},
+$$
+\end{block}
+\end{frame}
+
+\begin{frame}{What about the average of the absolute deviations?}
+\begin{block}{MAD}
+The median absolute deviation, or \alert{MAD}, of a set of observations is the average of the absolute value of the deviations of the observations from their median. In symbols, the MAD of $n$ observations $x_1,x_2,\ldots,x_n$ is
+$$
+MAD = \frac{1}{n}\sum_{i = 1}^{n}|x_i - M|,
+$$
+where $M$ is the median of $x_1,\ldots,x_n$.
+\end{block}
+\end{frame}
+
+\begin{frame}{Why does standard deviation use the mean and MAD use the median?}
+
+\end{frame}
+
+
+
+\end{document}

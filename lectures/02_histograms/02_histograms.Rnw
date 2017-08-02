@@ -1,0 +1,266 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Describing Shapes of Quantitative Variables with Histograms}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Distributions
+\item Describe center/shape/spread of quantitive variables.
+\item Understand and use histograms.
+\item Section 1.6.3 of DBC.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A new dataset}
+A data frame with 1000 observations on the following 6 variables.
+\begin{itemize}
+\item \code{sex} Gender of the student.
+\item \code{SATV} Verbal SAT percentile.
+\item \code{SATM} Math SAT percentile.
+\item \code{SATSum} Total of verbal and math SAT percentiles.
+\item \code{HSGPA} High school grade point average.
+\item \code{FYGPA} First year (college) grade point average.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{satGPA}
+<<message=FALSE>>=
+library(tidyverse)
+data(satGPA, package = "openintro")
+glimpse(satGPA)
+@
+\end{frame}
+
+\begin{frame}[fragile]{email}
+These data represent incoming emails for the first three months of 2012 for an email account.
+
+Some variables:
+\begin{itemize}
+\item \code{spam} Indicator for whether the email was spam.
+\item \code{to\_multiple} Indicator for whether the email was addressed to more than one recipient.
+\item \code{viagra} The number of times "viagra" appeared in the email.
+\item \code{num\_car} The number of characters in the email, in thousands.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{email}
+<<>>=
+data("email", package = "openintro")
+glimpse(select(email, spam, to_multiple,
+               viagra, num_char))
+@
+\end{frame}
+
+\begin{frame}{Distribution}
+\begin{itemize}
+\item How do we describe variables?
+\item How do we summarize their characteristics?
+\item What we are interested in is a variable's \emph{distribution}.
+\end{itemize}
+\begin{block}{distribution}
+The \alert{distribution} of a variable tells us what values it takes and how often it takes these values.
+\end{block}
+There are two main ways we describe the distribution of a variable: \emph{graphically} or \emph{numerically}.
+
+This lecture, we introduce one graphical way to describe the distribution of quantitative variables.
+\end{frame}
+
+\begin{frame}[fragile]{Histogram}
+\begin{block}{histogram}
+\alert{Histograms} plot the frequencies (counts), percents, or proportions of equal-width classes of values.
+\end{block}
+E.g.
+<<>>=
+x <- c(1, 1.2, 2, 3, 3.5, 3.9)
+@
+Bin the observations into one of three groups:
+\begin{itemize}
+\item group1 $= x: x \leq 2$
+\item group2 $= x: 2 < x \leq 3$
+\item group3 $= x: 3 < x \leq 4$
+\end{itemize}
+Then make a plot with bars where the height of each bar is proportional to the counts within each group.
+\end{frame}
+
+\begin{frame}[fragile]{histogram continued}
+<<>>=
+hist(x, main = "histogram of x")
+@
+\end{frame}
+
+\begin{frame}[fragile]{histogram using ggplot2}
+<<>>=
+qplot(x, geom = "histogram", main = "histogram of x",
+      breaks = c(1, 2, 3, 4))
+@
+\end{frame}
+
+\begin{frame}{Describing Distributions}
+\begin{itemize}
+\item Histograms help us describe the \alert{shape} of a distribution.
+\item Symmetric vs skewed left vs skewed right.
+\item Unimodal, biomodal, multimodal.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Symmetric --- SAT scores}
+<<message=FALSE>>=
+qplot(satGPA$SATV, xlab="SAT Verbal", bins = 15)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed Right: Email Length}
+<<message=FALSE>>=
+data("email", package = "openintro")
+qplot(email$num_char)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed Left: Trump's Tweet Length}
+<<echo = FALSE, message = FALSE>>=
+trump <- read_csv("../../data/trump.csv")
+qplot(trump$length, bins = 20)
+@
+\end{frame}
+
+\begin{frame}{On Skew and Symmetry}
+\begin{itemize}
+\item Many physical measurements follow symmetric distributions: e.g. height or weight.
+\item Many variables are specifically designed to follow symmetric distributions: IQ test scores, SAT scores.
+\item Variables with boundaries tend to be skewed: e.g. income cannot be below zero so tends to be skewed right. Tweets have a max length of 140 characters, so tends to be skewed left.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Mode}
+\begin{block}{Mode}
+A \alert{mode} is a prominent peak in a distribution. A distribution with one mode is \alert{unimodal}. A distribution with two modes is \alert{bimodal}. A distribution with more than one mode is \alert{multimodal}.
+\end{block}
+\begin{itemize}
+\item Multimodality often occurs when (and is usually interesting because) there are subgroups within the sample.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Unimodal}
+<<echo=FALSE, message=FALSE>>=
+x <- rnorm(1000)
+qplot(x)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Unimodal}
+<<echo=FALSE, message=FALSE>>=
+x <- rgamma(1000, shape = 1, rate = 1)
+qplot(x)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Bimodal}
+<<echo=FALSE, message=FALSE>>=
+x <- c(rnorm(500, mean = -1.5), rnorm(500, mean = 1.5))
+qplot(x)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Multimodal}
+<<echo=FALSE, message=FALSE>>=
+x <- c(rnorm(300, mean = -2), rnorm(300, mean = 2), rnorm(300, mean = 6))
+qplot(x)
+@
+\end{frame}
+
+\begin{frame}{bin width}
+\begin{itemize}
+\item Bin width can drastically change how you see the shape of the distribution.
+\item Always make multiple plots with multiple bin widths to get different views of a distribution.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{A new dataset}
+Observational units: Movies that sold tickets in 2015.
+
+Variables:
+\begin{itemize}
+\item \code{rt} Rotten tomatoes score normalized to a 5 point scale.
+\item \code{meta} Metacritic score normalized to a 5 point scale.
+\item \code{imdb} IMDB score normalized to a 5 point scale.
+\item \code{fan} Fandango score.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Movie Scores}
+\footnotesize
+<<echo=FALSE>>=
+options(width = 100)
+@
+
+<<message=FALSE>>=
+library(tidyverse)
+read_csv("../../data/movie.csv") %>%
+  select(FILM, RT_norm, Metacritic_norm,
+         IMDB_norm, Fandango_Stars) %>%
+  transmute(film = FILM, rt = RT_norm, meta = Metacritic_norm,
+            imdb = IMDB_norm, fan = Fandango_Stars) ->
+  movie
+head(movie)
+@
+
+<<echo=FALSE>>=
+options(width = 60)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{Metacritic Score: Mostly Symmetric?}
+<<>>=
+qplot(movie$meta, bins = 11)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Metacritic Score: Maybe some Modality?}
+<<>>=
+qplot(movie$meta, bins = 21)
+@
+\end{frame}
+
+
+\end{document}
