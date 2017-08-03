@@ -45,9 +45,8 @@ opts_chunk$set(
 \begin{frame}{Learning Objectives}
 \begin{itemize}
 \item Mean/median.
-\item Standard deviation/inter-quartile range/median absolute deviation.
-\item Five number summary/boxplots.
-\item Sections 1.6.2, 1.6.4, 1.6.5, and 1.6.6 in DBC.
+\item Standard deviation/median absolute deviation.
+\item Sections 1.6.2, 1.6.4, in DBC.
 \end{itemize}
 \end{frame}
 
@@ -153,7 +152,9 @@ Find the mean and median of the following numbers:
 \end{align*}
 \end{frame}
 
-\begin{frame}{deviations}
+\section{Measures of Spread}
+
+\begin{frame}{Deviations}
 \begin{itemize}
 \item A measure of center is nice, but how do we describe variability of the points from the center?
 \item Idea: Use the deviations from the mean $(x_i - \bar{x})$.
@@ -225,10 +226,173 @@ where $M$ is the median of $x_1,\ldots,x_n$.
 \end{block}
 \end{frame}
 
-\begin{frame}{Why does standard deviation use the mean and MAD use the median?}
+\begin{frame}[allowframebreaks, fragile]{What is so special about the median?\;\;}
+Let
+$$
+SAD(w) = \sum_{i = 1}^{n}|x_i - w|
+$$
+<<echo=FALSE>>=
+x <- c(9,3,15,1)
+@
+Consider the data $x_1=\Sexpr{x[1]},\;\; x_2=\Sexpr{x[2]},\;\; x_3=\Sexpr{x[3]},\;\; x_4=\Sexpr{x[4]}$
 
+What does the $SAD(w)$ function look like for these data?
+<<>>=
+SAD <- function(w) { sum( abs(x-w) ) }
+@
+
+<<xyplot-MAD-4values, echo=FALSE, fig.height=3.5>>=
+pv <- seq(min(x)-1, max(x), length = 100)
+sadvec <- rep(NA, length = length(pv))
+for (index in 1:length(pv)) {
+  sadvec[index] <- SAD(pv[index])
+}
+qplot(pv, sadvec, geom = "line", xlab = "x", ylab = "SAD(x)") +
+  scale_x_continuous(breaks = x)
+@
+
+Where is the function $SAD(w)$ smallest (minimized)?
 \end{frame}
 
+\begin{frame} {Trump's Twitter}
+OK back to looking at the data: Twitter length data from \code{trump}.
+
+What does the $SAD(w)$ function look like for these data?
+
+<<xyplot-MAD-bike-speed, echo=FALSE, fig.height=3.5>>=
+m <- median(trump$length)
+SAD <- function(w) { sum( abs(trump$length-w) ) }
+potential_length <- seq(126, 131, length = 100)
+sad_vec <- rep(NA, length(potential_length))
+for (index in 1:length(potential_length)) {
+  sad_vec[index] <- SAD(potential_length[index])
+}
+qplot(potential_length, sad_vec, geom = "line", ylab = "SAD(w)", xlab = "w") +
+  geom_vline(xintercept = m, color = "red") +
+  annotate("text", label = "median", x = 127.5, y = 23980)
+@
+\vskip-0.25cm
+Where is the function $SAD(w)$ smallest (minimized)?
+\end{frame}
+
+\begin{frame}[fragile]{What's so special about the average?}
+Let $SSD(w) = \sum (x_i - w)^2$.
+
+<<echo=FALSE>>=
+a <- 4
+b <- 2 * (x[1] + x[2] + x[3] + x[4])
+c <- x[1]^2 + x[2]^2 + x[3]^2 + x[4]^2
+@
+Consider again the data $x_1=\Sexpr{x[1]},\;\; x_2=\Sexpr{x[2]},\;\; x_3=\Sexpr{x[3]},\;\; x_4=\Sexpr{x[4]}$
+What is the $SSD(w)$ function for these data?
+\begin{align*}
+  \sum_{i=1}^4 (x_i - w)^2
+  &= (\Sexpr{x[1]} - w)^2
+  + (\Sexpr{x[2]} - w)^2
+  + (\Sexpr{x[3]} - w)^2
+  + (\Sexpr{x[4]} - w)^2\\
+  &= (\Sexpr{x[1]^2} - 2\Sexpr{x[1]}w + w^2)
+  + \Sexpr{x[2]^2} - 2\Sexpr{x[2]}w + w^2)\\
+  &\quad + (\Sexpr{x[3]^2} - 2\Sexpr{x[3]}w + w^2)
+  + (\Sexpr{x[4]^2} - 2\Sexpr{x[4]}w + w^2)\\
+&= \Sexpr{a}w^2  - \Sexpr{b} w + \Sexpr{c}
+\end{align*}
+So, as ugly as $\displaystyle{\sum_{i=1}^n (x_i - w)^2}$ originally looks
+
+it's just a smooth quadratic function (convex).
+\end{frame}
+
+\begin{frame}[fragile]{What does the $SSD(w)$ function look like?}
+<<echo=FALSE>>=
+SSD <- function(w) { sum(x - w)^2 }
+pv <- seq(min(x), max(x), length = 100)
+sdvec <- rep(NA, length = length(pv))
+for (index in 1:length(pv)) {
+  sdvec[index] <- SSD(pv[index])
+}
+qplot(pv, sdvec, geom = "line", xlab = "w", ylab = "SSD(w)") +
+  scale_x_continuous(breaks = x)
+@
+In this case $SSD(w) = \Sexpr{a}w^2  - \Sexpr{b} w + \Sexpr{c}$
+\end{frame}
+
+\begin{frame}[fragile]{What value of $w$ minimizes $SSD(w)$?}
+What value $w$ minimizes $SSD(w) = \Sexpr{a}w^2 - \Sexpr{b} w + \Sexpr{c}$?
+
+\begin{align*}
+\frac{d}{dw} SSD(w)
+&= \frac{d}{dw} \left[\Sexpr{a}w^2 - \Sexpr{b} w + \Sexpr{c}\right]\\
+&= 2 (\Sexpr{a}) w - \Sexpr{b} + 0
+\;\;=\;\; \Sexpr{2*a} w - \Sexpr{b}
+\end{align*}
+Set the derivative = 0 and solve for $w$.
+\begin{equation*}
+\Sexpr{2*a} w - \Sexpr{b} = 0
+\quad \implies \quad
+w = \frac{\Sexpr{b}}{\Sexpr{2*a}} = \Sexpr{b/(2*a)}
+\end{equation*}
+<<>>=
+mean(x)
+@
+Check second derivative condition, etc...
+\end{frame}
+
+\begin{frame}{General Data}
+What value of $w$ minimizes $SSD(w)$ for any $x_1,x_2,\ldots,x_n$?
+
+Minimize
+\begin{align*}
+f(w) &= SSD(w) = \sum (x_i - w)^2\\
+&=\sum (x_i^2 - 2wx_i + w^2)\\
+&=\sum x_i^2 - 2w\sum x_i + \sum w^2\\
+&=\sum x_i^2 - 2w\sum x_i + n w^2\\
+\end{align*}
+So
+\begin{align*}
+\frac{d}{dw}f(w) &= -2\sum x_i + 2nw \overset{set}{=} 0 \Rightarrow w = \frac{1}{n}\sum x_i = \bar{x}
+\end{align*}
+Second derivative = $2n > 0$, so min (convex so global min).
+\end{frame}
+
+\begin{frame}[fragile]{The point}
+\begin{itemize}
+\item The mean minimizes the sum (and mean) of squared deviations.
+\item So the variance (and standard deviation) makes sense as a measure of spread from the mean.
+\item There are other (better) reasons to use the standard deviation as a measure of spread from the mean (more on this later).
+\item The median minimizes the sum (and mean) of absolute deviations.
+\item So the MAD makes sense as a measure of spread from the median.
+\item Caution: R's \code{mad()} function isn't quite the mean of absolute deviations. Multiplies this by a constant for theoretical reasons.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The standard deviation is \textbf{not} robust to extreme observations.}
+\footnotesize
+<<>>=
+sd(c(1, 2, 2, 3, 3))
+sd(c(1, 2, 2, 3, 10))
+sd(c(1, 2, 2, 3, 20))
+sd(c(1, 2, 2, 3, 100))
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{The MAD \textbf{is} robust to extreme observations.}
+\footnotesize
+<<>>=
+mad(c(1, 2, 2, 3, 3))
+mad(c(1, 2, 2, 3, 10))
+mad(c(1, 2, 2, 3, 20))
+mad(c(1, 2, 2, 3, 100))
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{When to use each?}
+\begin{itemize}
+\item Use the standard deviation for reasonably symmetric distributions without any extreme observations.
+\item Use the MAD as a robust version of SD (also for symmetric distributions), can accomodate a couple extreme observations.
+\end{itemize}
+\end{frame}
 
 
 \end{document}

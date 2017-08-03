@@ -1,0 +1,268 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{More Numerical and Graphical Summaries using Percentiles}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Percentiles
+\item Five Number Summary
+\item Boxplots to compare distributions.
+\item Sections 1.6.5 and 1.6.6 in DBC.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Trump's Tweet Length}
+<<echo=FALSE, message=FALSE>>=
+library(tidyverse)
+trump <- read_csv("../../data/trump.csv")
+ggplot(trump, aes(x = length)) +
+  geom_histogram(bins = 25)
+@
+\begin{itemize}
+\item Mean = \Sexpr{mean(trump$length)}, median = \Sexpr{median(trump$length)}
+\item Standard deviation = \Sexpr{sd(trump$length)}, MAD = \Sexpr{mad(trump$length)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Are these sufficient summaries?}
+\begin{itemize}
+\item Tells us nothing about the left skew.
+\item Doesn't tell us that a fourth of all tweets are greater than 138 characters.
+\item Doesn't tell us that small tweets are quite rare.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Percentiles}
+\begin{block}{percentile}
+The $p$th \alert{percentile} of a distribution is the value that has $p$ percent of the observations fall at or below it. To calculate the percentile, arrange the observations in increasing order and count up the required percent from the bottom of the list.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Why do we care?}
+\begin{itemize}
+\item If we know a few percentiles, that gives us an idea of the shape of a distribution.
+\item Knowing the \textbf{same} percentiles of two distributions makes it easy to quickly compare them.
+\item It's usual to return the 0th (= minimum), 25th, 50th (= median), 75th, and 100th (= maximum) percentiles.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Quartiles}
+\begin{itemize}
+\item The 25th and 75th percentiles have special names:
+\end{itemize}
+\begin{block}{Quartiles}
+The \alert{first quartile} $Q_1$ is the 25th percentile. It is the median of the lower half of the data.
+
+The \alert{third quartile} $Q_3$ is the 75th percentile. It is the median of the upper half of the data.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Trump's Tweets}
+<<>>=
+boxplot(trump$length, range = 0)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Boxplots tell us about skew: trump}
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+library(gridExtra)
+pl1 <- ggplot(trump, aes(x = "", y = length)) +
+  geom_boxplot(coef = Inf) +
+  coord_flip() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_blank()) +
+  xlab("")
+pl2 <- ggplot(trump, aes(x = length)) +
+  geom_histogram(bins = 25)
+gridExtra::grid.arrange(pl1, pl2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Boxplots tell us about skew: email}
+<<echo = FALSE>>=
+data("email", package = "openintro")
+pl1 <- ggplot(email, aes(x = "", y = num_char)) +
+  geom_boxplot(coef = Inf) +
+  coord_flip() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_blank()) +
+  xlab("  ")
+pl2 <- ggplot(email, aes(x = num_char)) +
+  geom_histogram(bins = 25) +
+  xlab("email length")
+gridExtra::grid.arrange(pl1, pl2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Boxplots tell us about skew: satGPA}
+<<echo = FALSE>>=
+data("satGPA", package = "openintro")
+pl1 <- ggplot(satGPA, aes(x = "", y = SATV)) +
+  geom_boxplot(coef = Inf) +
+  coord_flip() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_blank()) +
+  xlab("  ")
+pl2 <- ggplot(satGPA, aes(x = SATV)) +
+  geom_histogram(bins = 25) +
+  xlab("SAT Verbal Scores")
+gridExtra::grid.arrange(pl1, pl2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Most boxplots you see will actually have more in them}
+<<>>=
+boxplot(trump$length)
+@
+What are those points?
+\end{frame}
+
+\begin{frame}[fragile]{IQR}
+To answer that, we first need to introduce the interquartile range (IQR).
+\begin{block}{IQR}
+The \alert{interquartile range IQR} is the distance between the first and third quartiles,
+$$
+IQR = Q_3 - Q_1,
+$$
+and is a measure of spread.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Like MAD, IQR is a robust measure of spread}
+\footnotesize
+<<>>=
+IQR(c(1, 2, 2, 3, 3))
+IQR(c(1, 2, 2, 3, 10))
+IQR(c(1, 2, 2, 3, 20))
+IQR(c(1, 2, 2, 3, 100))
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{$1.5 \times IQR$ Rule}
+\begin{block}{$1.5 \times IQR$ Rule}
+People will often call an observation a suspected outlier if it falls more than $1.5 \times IQR$ above the third quartile or below the first quartile.
+\end{block}
+\begin{itemize}
+\item In most boxplots, the upper whisker extends to the largest observation within $1.5 \times IQR$ of $Q_3$.
+\item In most boxplots, the lower whisker extends to the smallest observation within $1.5 \times IQR$ of $Q_1$.
+\item Points outside of $[Q1 - 1.5\times IQR, Q3 + 1.5 \times IQR]$ are labelled ``suspsected outliers'' and are plotted individually.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Sometimes, be suspicious of this rule}
+<<echo = FALSE>>=
+ggplot(data = email, mapping = aes(x = "", y = num_char)) +
+  geom_boxplot() +
+  ylab("email length") +
+  xlab("")
+num_out <- mean(email$num_char > quantile(email$num_char, 0.75) + 1.5 * IQR(email$num_char))
+@
+\Sexpr{round(num_out * 100, digits = 2)} percent of all emails are ``outliers''?
+\end{frame}
+
+\begin{frame}{Recall Movie Scores Dataset}
+Observational units: Movies that sold tickets in 2015.
+
+Variables:
+\begin{itemize}
+\item \code{rt} Rotten tomatoes score normalized to a 5 point scale.
+\item \code{meta} Metacritic score normalized to a 5 point scale.
+\item \code{imdb} IMDB score normalized to a 5 point scale.
+\item \code{fan} Fandango score.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Recall Movie Scores Dataset}
+\footnotesize
+<<echo=FALSE>>=
+options(width = 100)
+@
+
+<<message=FALSE>>=
+read_csv("../../data/movie.csv") %>%
+  select(FILM, RT_norm, Metacritic_norm,
+         IMDB_norm, Fandango_Stars) %>%
+  transmute(film = FILM, rt = RT_norm, meta = Metacritic_norm,
+            imdb = IMDB_norm, fan = Fandango_Stars) ->
+  movie
+head(movie)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{How to compare these distributions?}
+Side-by-side boxplots!
+<<>>=
+boxplot(movie[, 2:5])
+@
+\end{frame}
+
+\begin{frame}[fragile]{Using ggplot2}
+<<fig.height=3.5>>=
+movie_long <- gather(movie, key = "system",
+                     value = "score", rt:fan)
+ggplot(movie_long, aes(x = system, y = score)) +
+  geom_boxplot()
+@
+\end{frame}
+
+\begin{frame}[fragile]{What do you notice?}
+<<echo=FALSE>>=
+ggplot(movie_long, aes(x = system, y = score)) +
+  geom_boxplot()
+@
+\end{frame}
+
+\begin{frame}[fragile]{Another option: stacked histograms}
+<<>>=
+ggplot(movie_long, aes(x = score)) +
+  geom_histogram(bins = 20) +
+  facet_grid(system ~ ., scales = "free_y")
+@
+\end{frame}
+
+\end{document}
