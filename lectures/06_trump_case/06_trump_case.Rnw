@@ -1,0 +1,135 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Are Android Phones More Negative?}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Introduction to hypothesis testing.
+\item Section 1.8 of DBC.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Trump's Tweets}
+\footnotesize
+<<message=FALSE>>=
+library(tidyverse)
+read_csv("../../data/trump.csv") %>%
+  select(source, text, hour,
+         quote, picture, positive, negative) %>%
+  filter(quote == "no_quote") ->
+  trump
+glimpse(trump)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}{Why are we interested in this?}
+\centering
+\includegraphics[scale = 0.35]{trumptweet2}
+\end{frame}
+
+\begin{frame}{We use sentiment analysis to evaluate this statement.}
+\begin{itemize}
+\item According to one annotation, each word can consist of one/none of two sentiments (positive or negative) and some/all/none of eight primary emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust).
+\item See \url{http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm}.
+\item Examples:
+\begin{itemize}
+\item \alert{abandon} has the \textbf{negative} sentiment and the \textbf{fear} and \textbf{sadness} emotions.
+\item \alert{trump} has no sentiment and the \textbf{surprise} emotion.
+\item \alert{maroon} has the \textbf{negative} sentiment and no emotions.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Example}
+\begin{itemize}
+\item Tweet from android: ``The dishonest media didn't mention that Bernie Sanders was very angry looking during Crooked's speech. He wishes he didn't make that deal!''
+\item Tweet from iPhone: ``Join me in Fayetteville, North Carolina tomorrow evening at 6pm. Tickets now available at:''
+\item Let's see if these differences are actually statistically meaningful.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Caveat: Sentiment analysis is not perfect:}
+\begin{itemize}
+\item Tweet: ``Michael Morell, the lightweight former Acting Director of C.I.A., and a man who has made serious bad calls, is a total Clinton flunky!''
+\item Seems negative.
+\item \alert{bad} has sentiments ``disgust'', ``fear'', ``negative'', and ``sadness''
+\item \alert{calls} has sentiments ``anticipation'', ``negative'', ``trust''
+\item \alert{director} has sentiments ``positive" and ``trust''.
+\item So we would say it has elements of disgust, fear, negative, positive, sadness, anticipation, and trust? This seems a little too complicated for a negative tweet.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{two-way table}
+<<>>=
+tabdat <- table(trump$negative, trump$source)
+rownames(tabdat) <- c("Non-negative", "Negative")
+tabdat
+@
+If we want to see an association between phone-source and negative sentiments, what conditional distribution should we look at?
+\end{frame}
+
+\begin{frame}[fragile]{two-way table}
+<<>>=
+proptab <- prop.table(tabdat, margin = 2)
+proptab
+@
+\begin{itemize}
+\item \Sexpr{round(proptab[2, 1] * 100)}\% of tweets from Androids contain some negative words.
+\item \Sexpr{round(proptab[2, 2] * 100)}\% of tweets from iPhones contain some negative words.
+\item Seems like a large difference = \Sexpr{round(proptab[2, 1] * 100 - proptab[2, 2] * 100)}\%. But couldn't we have just seen this by chance?
+\item E.g. if President Trump uses a new phone at random, but by chance he just used the Android phone
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hypotheses}
+\begin{itemize}
+\item We label these hypotheses $H_0$ and $H_A$.
+\item $H_0$: The variables \code{source} and \code{negative} are independent. They have no relationship, and the observed difference in negative proportions was due to chance.
+\item $H_1$: The variables \code{source} and \code{negative} are not independent (they are associated). The observed difference in negative proportions is not due to chance.
+\end{itemize}
+\end{frame}
+
+
+
+\end{document}

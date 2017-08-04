@@ -97,9 +97,28 @@ The \alert{third quartile} $Q_3$ is the 75th percentile. It is the median of the
 \end{block}
 \end{frame}
 
+
+\begin{frame}[fragile]{Boxplot}
+\begin{itemize}
+\item It's \emph{very} useful to plot these quantiles in what is called a \alert{boxplot}.
+\end{itemize}
+\begin{block}{boxplot}
+A \alert{boxplot} is a graph of the five number summary. A central box spans the quartiles $Q_1$ and $Q_3$. A line in the box marks the median $M$. Lines (the ``whiskers'') extend from the box out to the smallest and largest observations.
+\end{block}
+\end{frame}
+
 \begin{frame}[fragile]{Trump's Tweets}
-<<>>=
+<<eval=FALSE>>=
 boxplot(trump$length, range = 0)
+@
+\vspace{-10mm}
+<<echo=FALSE, fig.height=6>>=
+boxplot(trump$length, range = 0)
+y <- quantile(trump$length, c(0, 0.25, 0.5, 0.75, 1))
+y[5] <- y[5] + 3
+x <- rep(0.75, length = length(y))
+text_vec <- c("min", "Q1", "M", "Q3", "max")
+text(x, y, text_vec)
 @
 \end{frame}
 
@@ -121,7 +140,7 @@ gridExtra::grid.arrange(pl1, pl2)
 
 \begin{frame}[fragile]{Boxplots tell us about skew: email}
 <<echo = FALSE>>=
-data("email", package = "openintro")
+data(email, package = "openintro")
 pl1 <- ggplot(email, aes(x = "", y = num_char)) +
   geom_boxplot(coef = Inf) +
   coord_flip() +
@@ -247,6 +266,12 @@ movie_long <- gather(movie, key = "system",
                      value = "score", rt:fan)
 ggplot(movie_long, aes(x = system, y = score)) +
   geom_boxplot()
+@
+\end{frame}
+
+\begin{frame}[fragile]{What does movie_long look like?}
+<<>>=
+movie_long
 @
 \end{frame}
 

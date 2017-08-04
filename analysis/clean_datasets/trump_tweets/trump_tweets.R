@@ -38,15 +38,20 @@ library(tidytext)
 twords <- tweets %>% unnest_tokens(word, text) %>%
   select(id, word)
 
-temp <- twords %>% right_join(get_sentiments("nrc")) %>%
-  filter(!is.na(sentiment)) %>%
+temp <- twords %>% left_join(get_sentiments("nrc"), by = "word") %>%
   group_by(id) %>%
-  count(sentiment, sort = TRUE) %>%
-  spread(key = sentiment, value = n)
+  count(sentiment) %>%
+  ungroup() %>%
+  spread(key = sentiment, value = n) %>%
+  select(-`<NA>`)
 
 temp[, 2:11] <- !is.na(temp[, 2:11])
 
-tweets2 <- inner_join(tweets, temp, by = "id")
+tweets2 <- left_join(tweets, temp, by = "id")
+
+## Sanity check
+print(data_frame(word = twords$word[34:56]) %>% left_join(get_sentiments("nrc")), n = Inf)
+tweets2$text[4]
 
 tweets3 <- filter(tweets2, quote == "no_quote")
 
