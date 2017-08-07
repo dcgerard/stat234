@@ -157,8 +157,8 @@ Find the mean and median of the following numbers:
 \begin{frame}{Deviations}
 \begin{itemize}
 \item A measure of center is nice, but how do we describe variability of the points from the center?
-\item Idea: Use the deviations from the mean $(x_i - \bar{x})$.
-\item Can we use the average of the deviations?
+\item Idea: Use the deviations from a measure of center $(x_i - w)$.
+\item Can we use the average of the deviations from the mean ($w = \bar{x}$)?
 \end{itemize}
 \end{frame}
 
@@ -262,14 +262,14 @@ What does the $SAD(w)$ function look like for these data?
 <<xyplot-MAD-bike-speed, echo=FALSE, fig.height=3.5>>=
 m <- median(trump$length)
 SAD <- function(w) { sum( abs(trump$length-w) ) }
-potential_length <- seq(126, 131, length = 100)
+potential_length <- seq(112, 116, length = 100)
 sad_vec <- rep(NA, length(potential_length))
 for (index in 1:length(potential_length)) {
   sad_vec[index] <- SAD(potential_length[index])
 }
 qplot(potential_length, sad_vec, geom = "line", ylab = "SAD(w)", xlab = "w") +
   geom_vline(xintercept = m, color = "red") +
-  annotate("text", label = "median", x = 127.5, y = 23980)
+  annotate("text", label = "median", x = 114, y = 43480)
 @
 \vskip-0.25cm
 Where is the function $SAD(w)$ smallest (minimized)?
@@ -392,6 +392,39 @@ mad(c(1, 2, 2, 3, 100))
 \item Use the standard deviation for reasonably symmetric distributions without any extreme observations.
 \item Use the MAD as a robust version of SD (also for symmetric distributions), can accomodate a couple extreme observations.
 \end{itemize}
+\end{frame}
+
+\section{Linear transformations}
+
+\begin{frame}{Linear Transformations}
+\begin{itemize}
+\item Sometimes, we want to analyze data in different units.
+\item Temperature: Celsius = $\frac{5}{9}$(Fahrenheit - 32)
+\item Curve: exam = score + (0.25)(100 - score) (This curve adds back 25\% of exam points missed).
+\item Standardized Score: $z_i = \frac{x_i - \bar{x}}{s}$.
+\item \textbf{Claim} All three are examples of linear transformations: $y = a + bx$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Relationships (without proof)}
+\begin{itemize}
+\item Let $y_i = a + bx_i$ for $i = 1,2,\ldots, n$.
+\item \textbf{Claim}: $\bar{y} = a + b\bar{x}$.
+\item \textbf{Claim}: $\text{median}(y_1,\ldots,y_n) = a + b~\text{median}(x_1,\ldots,x_n)$
+\item \textbf{Claim}: $\text{SD}(y) = |b| \text{SD}(x)$
+\item \textbf{Claim}: $\text{MAD}(y) = |b| \text{MAD}(x)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof of first claim (with too much detail)}
+\begin{align*}
+\bar{y} &= \frac{1}{n}\sum_{i = 1}^{n}y_i \text{ (definition of $\bar{y}$)}\\
+&= \frac{1}{n}\sum_{i = 1}^{n}(a + bx_i) \text{ (definition of $y_i$)}\\
+&= \frac{1}{n}\sum_{i = 1}^{n}a + b\frac{1}{n}\sum_{i = 1}^{n}x_i \text{ (associative property)}\\
+&= \frac{1}{n}\sum_{i = 1}^{n}a + b\bar{x} \text{ (definition of $\bar{x}$)}\\
+&= \frac{1}{n}n a + b\bar{x} \text{ ($n$ summations of $a$)}\\
+&= a + b\bar{x} \text{ ($n$'s cancel)}
+\end{align*}
 \end{frame}
 
 

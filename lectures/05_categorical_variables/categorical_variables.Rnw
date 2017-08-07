@@ -1,5 +1,5 @@
 \documentclass{beamer}
-\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer, tikzsymbols}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
 \beamertemplatenavigationsymbolsempty
 \useoutertheme[subsection=false]{miniframes}
 \usetheme[progressbar=frametitle]{metropolis}
@@ -9,7 +9,7 @@
 \renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
 
 
-\title{Describing Shapes of Quantitative Variables with Histograms}
+\title{Describing Categorical Variables}
 \author{David Gerard}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
@@ -46,9 +46,265 @@ opts_chunk$set(
 \begin{itemize}
 \item Two-way tables.
 \item Conditional distributions.
-\item Bar Charts (and pie-charts \dVomey)
+\item Bar Charts (and pie-charts)
+\item Section 1.7 of DBC
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{Recall: email dataset}
+These data represent incoming emails for the first three months of 2012 for an email account.
+
+Some variables:
+\begin{itemize}
+\item \code{spam} Indicator for whether the email was spam.
+\item \code{to\_multiple} Indicator for whether the email was addressed to more than one recipient.
+\item \code{viagra} The number of times ``viagra'' appeared in the email.
+\item \code{num\_car} The number of characters in the email, in thousands.
+\item \code{number} Factor variable saying whether there was no number, a small number (under 1 million), or a big number.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{email: What are the cases? Variables?}
+<<message=FALSE>>=
+library(tidyverse)
+data("email", package = "openintro")
+head(select(email, spam, to_multiple,
+               viagra, num_char, number))
+@
+\end{frame}
+
+\begin{frame}[fragile]{Distribution of categorical variable}
+\begin{itemize}
+\item Recall: The \alert{distribution} of a variable tells us what values it takes and how often it takes these values
+\item In terms of categorical variables, the distribution is just the counts of cases/proportions/percents in each category.
+\item A table of counts for a single variable is a \alert{frequency table}.
+\item A table of proportions/percentages for a single variable is a \alert{relative frequency table}.
+\end{itemize}
+<<>>=
+table(email$number)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Barchart}
+<<>>=
+barplot(table(email$number)) ## need table
+@
+\end{frame}
+
+\begin{frame}[fragile]{Using ggplot2}
+<<>>=
+qplot(email$number, geom = "bar")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Piecharts}
+<<>>=
+pie(table(email$number))
+@
+\end{frame}
+
+\begin{frame}[fragile]{Piecharts in GGplot}
+<<>>=
+qplot(x = factor(1), fill = email$number,
+      geom = "bar", width = 1) +
+  coord_polar(theta = "y")
+@
+\end{frame}
+
+\begin{frame}{Never use picharts}
+\begin{itemize}
+\item It's hard to make a pichart in ggplot2 because \emph{they are bad plots}.
+\item Humans find it easier to distinguish height rather than distinguish area.
+\item Which category has more emails: ``big'' or ``none''.
+\item In which plot is it easier to see which category has more emails?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Never use 3D graphics to plot 2D data}
+They tend to distort/obscure the view of the data and are distracting.
+\begin{center}
+\includegraphics[scale = 0.5]{3dplot}
+\end{center}
+\end{frame}
+
+\begin{frame}{Joint distribution}
+\begin{itemize}
+\item What about the \emph{joint} distribution of two categorical variables?
+\item The \alert{distribution} of a variable tells us what values it takes and how often it takes these values.
+\item The joint distribution is just the counts of cases/proportions/percents in each possible combination of categories.
+\item A table of these counts is a \alert{contingency table}, also called a \alert{two-way table}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{First Contingency Table}
+<<>>=
+tabdat <- table(email$spam, email$number)
+rownames(tabdat) <- c("Not Spam", "Spam")
+tabdat
+@
+\end{frame}
+
+\begin{frame}[fragile]{Often shown the row/column totals (or ``margins'')}
+<<echo=FALSE>>=
+coltotals <- colSums(tabdat)
+rowtotals <- rowSums(tabdat)
+total     <- sum(tabdat)
+@
+\begin{center}
+\begin{tabular}{lcccr}
+& none & small & big & total\\
+\hline
+Not Spam & \Sexpr{tabdat[1, 1]} & \Sexpr{tabdat[1, 2]} & \Sexpr{tabdat[1, 3]} & \Sexpr{rowtotals[1]} \\
+Spam & \Sexpr{tabdat[2, 1]} & \Sexpr{tabdat[2, 2]} & \Sexpr{tabdat[2, 3]} & \Sexpr{rowtotals[2]} \\
+\hline
+total & \Sexpr{coltotals[1]} & \Sexpr{coltotals[2]} & \Sexpr{coltotals[3]} & \Sexpr{total}
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item What does \Sexpr{tabdat[1, 2]} represent?
+\item What does \Sexpr{tabdat[1, 3]} represent?
+\item What does \Sexpr{rowtotals[1]} represent?
+\item What does \Sexpr{coltotals[2]} represent?
+\item What does \Sexpr{total} represent?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Joint Distribution}
+More informative: joint distribution in proportions:
+<<echo = FALSE>>=
+propdat <- prop.table(tabdat)
+@
+<<>>=
+prop.table(tabdat)
+@
+\begin{itemize}
+\item What does \Sexpr{propdat[1, 2]} represent?
+\item What does \Sexpr{propdat[1, 3]} represent?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Row Proportions}
+\begin{block}{row proportions}
+The \alert{row proportions} are computed as the counts divided by the row totals.
+\end{block}
+<<echo=FALSE>>=
+propdat <- prop.table(tabdat, margin = 1)
+@
+<<>>=
+prop.table(tabdat, margin = 1)
+@
+\begin{itemize}
+\item What does \Sexpr{propdat[1, 2]} represent?
+\item What does \Sexpr{propdat[1, 3]} represent?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Column Proportions}
+\begin{block}{column proportions}
+The \alert{column proportions} are computed as the counts divided by the column totals.
+\end{block}
+<<echo=FALSE>>=
+propdat <- prop.table(tabdat, margin = 2)
+@
+<<>>=
+prop.table(tabdat, margin = 2)
+@
+\begin{itemize}
+\item What does \Sexpr{propdat[1, 2]} represent?
+\item What does \Sexpr{propdat[1, 3]} represent?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Why do we care?}
+\begin{itemize}
+\item Row/column proportions help us determine if two categorical variables are \alert{associated}.
+\item E.g. Is the distribution of spam conditioned on seeing no numbers different from the distribution of spam conditioned on seeing small numbers? If so, then \code{number} and \code{spam} are associated.
+\item Would these be row or column proportions?
+\item Can also look for associations by checking the distribution of number conditioned on an email being spam and the distribution of number contioned on an email not being spam.
+\item Would these be row or column proportions?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: segmented barplot}
+<<>>=
+barplot(table(email$spam, email$number),
+        xlab = "number", ylab = "spam")
+@
+\vspace{-5mm}
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: standardized segmented barplot}
+\vspace{-5mm}
+<<>>=
+barplot(prop.table(table(email$spam, email$number),
+                   margin = 2),
+        xlab = "number", ylab = "spam")
+@
+\vspace{-5mm}
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: segmented barplot}
+<<>>=
+barplot(table(email$number, email$spam),
+        xlab = "spam", ylab = "number")
+@
+\vspace{-5mm}
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: standardized segmented barplot}
+\vspace{-5mm}
+<<>>=
+barplot(prop.table(table(email$number, email$spam),
+                   margin = 2),
+        xlab = "spam", ylab = "number")
+@
+\vspace{-5mm}
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: mosaic plot}
+<<>>=
+plot(table(email$spam, email$number),
+     xlab = "spam", ylab = "number")
+@
+\vspace{-10mm}
+Width proportional to the counts in each \code{spam} category.\\
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing row proportions: mosaic plot}
+<<>>=
+plot(table(email$number, email$spam),
+     xlab = "number", ylab = "spam")
+@
+\vspace{-10mm}
+Width proportional to the counts in each \code{number} category.\\
+What does the bottom left box represent?
+\end{frame}
+
+\begin{frame}[fragile]{Segmented barplot with ggplot2}
+<<>>=
+qplot(email$spam, fill = email$number,
+      geom = "bar")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mosaic plot with ggplot2 and ggmosaic}
+<<message=FALSE, warning = FALSE, fig.height = 3.5>>=
+library(ggmosaic)
+ggplot(data = email) +
+  geom_mosaic(aes(x = product(number, spam),
+                  fill = number))
+@
+\end{frame}
+
+\begin{frame}{What's important in a mosaic plot?}
+\begin{itemize}
+\item What in a mosaic plot are we looking for to see if two variables are associated?
+\end{itemize}
+\end{frame}
 
 \end{document}

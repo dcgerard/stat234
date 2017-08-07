@@ -70,7 +70,7 @@ glimpse(trump)
 
 \begin{frame}{We use sentiment analysis to evaluate this statement.}
 \begin{itemize}
-\item According to one annotation, each word can consist of one/none of two sentiments (positive or negative) and some/all/none of eight primary emotions (anger, fear, anticipation, trust, surpirse, sadness, joy, and disgust).
+\item According to one annotation, each word can consist of one/none of two sentiments (positive or negative) and some/all/none of eight primary emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust).
 \item See \url{http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm}.
 \item Examples:
 \begin{itemize}
@@ -114,11 +114,12 @@ If we want to see an association between phone-source and negative sentiments, w
 proptab <- prop.table(tabdat, margin = 2)
 proptab
 @
+\vspace{-3mm}
 \begin{itemize}
 \item \Sexpr{round(proptab[2, 1] * 100)}\% of tweets from Androids contain some negative words.
 \item \Sexpr{round(proptab[2, 2] * 100)}\% of tweets from iPhones contain some negative words.
 \item Seems like a large difference = \Sexpr{round(proptab[2, 1] * 100 - proptab[2, 2] * 100)}\%. But couldn't we have just seen this by chance?
-\item E.g. if President Trump uses a new phone at random, but by chance he just used the Android phone
+\item E.g. if President Trump uses a new phone at random, but by chance he happended to use the Android phone for more negative tweets.
 \end{itemize}
 \end{frame}
 
@@ -126,10 +127,186 @@ proptab
 \begin{itemize}
 \item We label these hypotheses $H_0$ and $H_A$.
 \item $H_0$: The variables \code{source} and \code{negative} are independent. They have no relationship, and the observed difference in negative proportions was due to chance.
-\item $H_1$: The variables \code{source} and \code{negative} are not independent (they are associated). The observed difference in negative proportions is not due to chance.
+\item $H_A$: The variables \code{source} and \code{negative} are not independent (they are associated). The observed difference in negative proportions is not due to chance.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Observed/Expected counts under $H_0$}
+<<echo=FALSE>>=
+rs <- rowSums(tabdat)
+cs <- colSums(tabdat)
+ts <- sum(tabdat)
+@
+Observed:
+\begin{center}
+\begin{tabular}{l|ccc}
+& Android & iPhone & Total\\
+\hline
+Non-negative & \Sexpr{tabdat[1, 1]} & \Sexpr{tabdat[1, 2]} & \Sexpr{rs[1]}\\
+Non-negative & \Sexpr{tabdat[2, 1]} & \Sexpr{tabdat[2, 2]} & \Sexpr{rs[2]}\\
+\hline
+Total & \Sexpr{cs[1]} & \Sexpr{cs[2]} & \Sexpr{ts}
+\end{tabular}
+\end{center}
+Expected:
+\begin{center}
+\begin{tabular}{l|ccc}
+& Android & iPhone & Total\\
+\hline
+Non-negative & $\Sexpr{cs[1]}\frac{\Sexpr{rs[1]}}{\Sexpr{ts}} = \Sexpr{round(cs[1] * rs[1] / ts)}$ & $\Sexpr{cs[2]}\frac{\Sexpr{rs[1]}}{\Sexpr{ts}} = \Sexpr{round(cs[2] * rs[1] / ts)}$ & \Sexpr{rs[1]}\\
+Non-negative & $\Sexpr{cs[1]}\frac{\Sexpr{rs[2]}}{\Sexpr{ts}} = \Sexpr{round(cs[1] * rs[2] / ts)}$ & $\Sexpr{cs[2]}\frac{\Sexpr{rs[2]}}{\Sexpr{ts}} = \Sexpr{round(cs[2] * rs[2] / ts)}$ & \Sexpr{rs[2]}\\
+\hline
+Total & \Sexpr{cs[1]} & \Sexpr{cs[2]} & \Sexpr{ts}
+\end{tabular}
+\end{center}
+Expected = sample size $\times$ observed overall rate.
+\end{frame}
+
+\begin{frame}{Do we expect exactly this result?}
+\begin{itemize}
+\item If $H_0$ were true, would we expect the difference in proportions of tweets that are negative to be \emph{exactly} zero?
+\item NO! Just by chance, we would expect one phone to send out a few more negative tweets than the other phone.
+\item If you flip a fair coin, do you always expect \emph{exactly} 50\% of the flips to be tails?
+\item But what constitutes ``a few''?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{How are tweets generated under $H_0$?}
+\begin{itemize}
+\item Under $H_0$, Trump chooses a tweet, then randomly chooses a phone to send out the tweet, regardless of it being negative or not.
+\item We can actually perform this randomization!
+\item I.e., randomly assign \Sexpr{sum(trump$source == "Android")} of the tweets (whose negativity we know) to be sent from the Android phone and the rest (\Sexpr{sum(trump$source == "iPhone")}) to be sent from the iPhone.
+\item Why these numbers?
+<<>>=
+table(trump$source)
+@
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Resampling}
+The idea of \alert{resampling} is to
+\begin{itemize}
+\item use only the observed data (not a statistical model)
+\item resample (sample from the sample)
+\item with or without replacement
+\item I create different realizations of possible experimental results
+(if the null hypothesis were actually true).
+\item I compare many, many resampled experimental results with the
+observed experimental results
+I decide if observed result is common or rare to occur by chance
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item If observed data are rare compared to resampled results:
+the data may point to something interesting (an effect)
+\item If observed data are common within resampled results:
+maybe result just occurred by chance
+(no evidence of an effect)
+\end{itemize}
+
+Applet Simulation:\\
+\url{http://www.rossmanchance.com/applets/ChiSqShuffle.html?yawning=1}
+\end{frame}
+
+\begin{frame}[fragile]{One such simulation}
+<<>>=
+tabdat <- table(trump$negative, sample(trump$source))
+propdat <- prop.table(tabdat, margin = 2)
+propdat
+@
+So in this case, \Sexpr{propdat[1, 1]} of the Android tweets are negative and \Sexpr{propdat[1, 2]} of the iPhone tweets are negative. \\
+This difference \Sexpr{propdat[1, 1] - propdat[1, 2]} is much smaller than in the original dataset.
+\end{frame}
+
+\begin{frame}[fragile]{Wait, what was that code?}
+<<>>=
+new_dat <- data_frame(negative = trump$negative,
+                      source = sample(trump$source))
+print(new_dat, n = 7)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wait, what was that code?}
+<<>>=
+new_dat <- data_frame(negative = trump$negative,
+                      source = sample(trump$source))
+print(new_dat, n = 7)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wait, what was that code?}
+<<>>=
+new_dat <- data_frame(negative = trump$negative,
+                      source = sample(trump$source))
+print(new_dat, n = 7)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wait, what was that code?}
+I am keeping \code{negative} fixed while shuffling the ordering of \code{source}.\\
+Then I create the contingency table.
+<<>>=
+table(new_dat$negative, new_dat$source)
+@
+\end{frame}
+
+\begin{frame}[fragile]{We can repeat this}
+Repeating this many times will tell us what the ``likely'' values of the difference are under $H_0$.
+<<cache=TRUE>>=
+simdat <- rep(NA, length = 1000)
+for (index in 1:1000) {
+  tabdat <- table(trump$negative, sample(trump$source))
+  propdat <- prop.table(tabdat, margin = 2)
+  simdat[index] <- propdat[1, 1] - propdat[1, 2]
+}
+realtab <- prop.table(table(trump$negative, trump$source),
+                      margin = 2)
+realstat <- realtab[1, 1] - realtab[1, 2]
+@
+\end{frame}
+
+\begin{frame}[fragile]{Plot the simulations}
+<<>>=
+hist(simdat, xlim = c(realstat, max(simdat)))
+abline(v = realstat, col = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}{Possible conclusions}
+\begin{itemize}
+\item $H_0$: \code{source} and \code{negative} are not associated, what we observed was just do to random chance, even though the probability of observing the data we saw (given that this was just due to random chance) is remarkably small.
+\item $H_A$: \code{source} and \code{negative} are associated.
+\item Since the data we observe is incredibly unlikely under $H_0$, we \alert{reject} $H_0$ and conclude $H_A$.
+\item This idea of rejecting a hypothesis when the data are rare under said hypothesis is the foundation of much of statistical inference.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Some Fun}
+<<message=FALSE>>=
+read_csv("../../data/trump.csv") %>%
+  select(source, text, hour,
+         quote, picture) ->
+  trump
+@
+\end{frame}
+
+\begin{frame}[fragile]{Some Fun}
+Weird copy and pasting:
+<<>>=
+plot(prop.table(table(trump$source, trump$quote)),
+     main = "quote")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Some Fun}
+Pictures for advertising events:
+<<>>=
+plot(prop.table(table(trump$source, trump$picture)),
+     main = "picture")
+@
+\end{frame}
 
 
 \end{document}
