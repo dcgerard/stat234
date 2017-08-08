@@ -12,10 +12,49 @@ knitr::opts_chunk$set(echo = TRUE)
 # Abstract:
 I reproduce some of the plots from Rstudio's [ggplot2](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf) cheat sheet using Base R graphics. I didn't try to pretty up these plots, but **you should**.
 
+```{r, echo=FALSE}
+set.seed(1)
+```
+
 I use this dataset
 ```{r}
 data(mpg, package = "ggplot2")
 ```
+
+# General Considerations
+
+The main functions that I generally use for plotting are
+
+- Plotting Functions
+    - `plot`
+    - `lines`
+    - `par`
+    - `hist`
+    - `boxplot`
+    - `text`
+    - `legend`
+    - `mosaicplot`
+    - `barplot`
+    - `jitter`
+    - `rug`
+    - `polygon`
+    - `points`
+    - `mtext`
+- Sometimes needed to transform data (or make new data) to make appropriate plots:
+    - `table`
+    - `density`
+    - `loess`
+    - `predict`
+
+All of the plotting functions have arguments that control the way the plot looks. You should read about these arguments. In particular, read carefully the help page `?plot.default`. Useful ones are:
+
+- `main`: This controls the title.
+- `xlab`, `ylab`: These control the x and y axis labels.
+- `col`: This will control the color of the lines/points/areas.
+- `cex`: This will control the size of points.
+- `pch`: The type of point (circle, dot, triangle, etc...)
+- `lwd`: Line width.
+- `lty`: Line type (solid, dashed, dotted, etc...).
 
 # One Variable
 
@@ -40,7 +79,7 @@ tabdat <- table(mpg$drv)
 barplot(tabdat)
 ```
 
-Differnt type of bar plot
+Different type of bar plot
 ```{r}
 plot(tabdat)
 ```
@@ -141,6 +180,16 @@ y <- f(x)
 plot(x, y, type = "l")
 ```
 
+# Color Coding and Legends
+Color code a scatterplot by a categorical variable and add a legend.
+```{r}
+x <- jitter(mpg$hwy)
+y <- jitter(mpg$cty)
+z <- factor(mpg$drv)
+plot(x, y, col = z)
+legend("topleft", legend = levels(z), col = 1:nlevels(z), pch = 1, title = "Drive")
+```
+
 # Faceting
 
 `par` sets the graphics options, where `mfrow` is the parameter controling the facets.
@@ -157,16 +206,6 @@ par(old_options)
 
 The first line sets the new options and saves the old options in the list `old_options`. The last line reinstates the old options.
 
-# General Considerations
 
-All of these functions have arguments that control the way the plot looks. You should read about these arguments. In particular, read carefully the help page `?plot.default`. Useful ones are:
-
-- `main`: This controls the title.
-- `xlab`, `ylab`: These control the x and y axis labels.
-- `col`: This will control the color of the lines/points/areas.
-- `cex`: This will control the size of points.
-- `pch`: The type of point (circle, dot, triangle, etc...)
-- `lwd`: Line width.
-- `lty`: Line type (solid, dashed, dotted, etc...).
 
 

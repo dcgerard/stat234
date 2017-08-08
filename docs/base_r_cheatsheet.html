@@ -317,6 +317,46 @@ div.tocify {
 <p>I use this dataset</p>
 <pre class="r"><code>data(mpg, package = &quot;ggplot2&quot;)</code></pre>
 </div>
+<div id="general-considerations" class="section level1">
+<h1>General Considerations</h1>
+<p>The main functions that I generally use for plotting are</p>
+<ul>
+<li>Plotting Functions
+<ul>
+<li><code>plot</code></li>
+<li><code>lines</code></li>
+<li><code>par</code></li>
+<li><code>hist</code></li>
+<li><code>boxplot</code></li>
+<li><code>text</code></li>
+<li><code>legend</code></li>
+<li><code>mosaicplot</code></li>
+<li><code>barplot</code></li>
+<li><code>jitter</code></li>
+<li><code>rug</code></li>
+<li><code>polygon</code></li>
+<li><code>points</code></li>
+<li><code>mtext</code></li>
+</ul></li>
+<li>Sometimes needed to transform data (or make new data) to make appropriate plots:
+<ul>
+<li><code>table</code></li>
+<li><code>density</code></li>
+<li><code>loess</code></li>
+<li><code>predict</code></li>
+</ul></li>
+</ul>
+<p>All of the plotting functions have arguments that control the way the plot looks. You should read about these arguments. In particular, read carefully the help page <code>?plot.default</code>. Useful ones are:</p>
+<ul>
+<li><code>main</code>: This controls the title.</li>
+<li><code>xlab</code>, <code>ylab</code>: These control the x and y axis labels.</li>
+<li><code>col</code>: This will control the color of the lines/points/areas.</li>
+<li><code>cex</code>: This will control the size of points.</li>
+<li><code>pch</code>: The type of point (circle, dot, triangle, etc…)</li>
+<li><code>lwd</code>: Line width.</li>
+<li><code>lty</code>: Line type (solid, dashed, dotted, etc…).</li>
+</ul>
+</div>
 <div id="one-variable" class="section level1">
 <h1>One Variable</h1>
 <div id="continuous" class="section level2">
@@ -324,20 +364,20 @@ div.tocify {
 <p>Density plot</p>
 <pre class="r"><code>density_object &lt;- density(mpg$hwy)
 plot(density_object)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Histogram</p>
 <pre class="r"><code>hist(mpg$hwy, breaks = 10)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="discrete" class="section level2">
 <h2>Discrete</h2>
 <p>Barplot</p>
 <pre class="r"><code>tabdat &lt;- table(mpg$drv)
 barplot(tabdat)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Differnt type of bar plot</p>
-<pre class="r"><code>plot(tabdat)</code></pre>
 <p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Different type of bar plot</p>
+<pre class="r"><code>plot(tabdat)</code></pre>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 </div>
 <div id="two-variables" class="section level1">
@@ -346,24 +386,24 @@ barplot(tabdat)</code></pre>
 <h2>Continuous X, Continuous Y</h2>
 <p>Scatterplot</p>
 <pre class="r"><code>plot(mpg$cty, mpg$hwy)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Jitter points to account for overlaying points.</p>
 <pre class="r"><code>x &lt;- jitter(mpg$cty)
 y &lt;- jitter(mpg$hwy)
 plot(x, y)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Add a rug plot</p>
 <pre class="r"><code>plot(x, y)
 rug(x, side = 1)
 rug(y, side = 2)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Add a Loess Smoother</p>
 <pre class="r"><code>loess_fit &lt;- loess(hwy ~ cty, data = mpg)
 xnew &lt;- seq(min(x), max(x), length = 100)
 ynew &lt;- predict(object = loess_fit, newdata = data.frame(cty = xnew))
 plot(x, y)
 lines(xnew, ynew, col = 2, lty = 2)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Loess smoother with upper and lower 95% confidence bands</p>
 <pre class="r"><code>loess_fit &lt;- loess(hwy ~ cty, data = mpg)
 xnew &lt;- seq(min(x), max(x), length = 100)
@@ -375,7 +415,7 @@ plot(x, y)
 lines(xnew, ynew, col = 2, lty = 2)
 lines(xnew, upper_bound, col = 4, lty = 2)
 lines(xnew, lower_bound, col = 4, lty = 2)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Loess smoother with upper and lower 95% confidence bands and that fancy shading from <code>ggplot2</code>.</p>
 <pre class="r"><code>loess_fit &lt;- loess(hwy ~ cty, data = mpg)
 xnew &lt;- seq(min(x), max(x), length = 100)
@@ -388,24 +428,24 @@ yshade &lt;- c(upper_bound, lower_bound[length(lower_bound):1])
 plot(x, y)
 lines(xnew, ynew, col = 2, lty = 2)
 polygon(xshade, yshade, col = &quot;#0000FF33&quot;, border = FALSE)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Add text to a plot</p>
 <pre class="r"><code>plot(x, y)
 text(15, 40, &quot;some text&quot;)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="discrete-x-continuous-y" class="section level2">
 <h2>Discrete X, Continuous Y</h2>
 <p>Boxplot</p>
 <pre class="r"><code>boxplot(hwy ~ class, data = mpg)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="discrete-x-discrete-y" class="section level2">
 <h2>Discrete X, Discrete Y</h2>
 <p>Mosaic Plot</p>
 <pre class="r"><code>tabdat &lt;- table(mpg$fl, mpg$drv)
 mosaicplot(tabdat, color = TRUE)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="continuous-function" class="section level2">
 <h2>Continuous Function</h2>
@@ -417,8 +457,18 @@ mosaicplot(tabdat, color = TRUE)</code></pre>
 x &lt;- seq(-2, 2, length = 100)
 y &lt;- f(x)
 plot(x, y, type = &quot;l&quot;)</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
+</div>
+<div id="color-coding-and-legends" class="section level1">
+<h1>Color Coding and Legends</h1>
+<p>Color code a scatterplot by a categorical variable and add a legend.</p>
+<pre class="r"><code>x &lt;- jitter(mpg$hwy)
+y &lt;- jitter(mpg$cty)
+z &lt;- factor(mpg$drv)
+plot(x, y, col = z)
+legend(&quot;topleft&quot;, legend = levels(z), col = 1:nlevels(z), pch = 1, title = &quot;Drive&quot;)</code></pre>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 </div>
 <div id="faceting" class="section level1">
 <h1>Faceting</h1>
@@ -430,22 +480,9 @@ plot(density(mpg$cty))
 plot(table(mpg$fl))
 barplot(table(mpg$fl))
 plot(table(mpg$fl, mpg$drv))</code></pre>
-<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="base_r_cheatsheet_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code>par(old_options)</code></pre>
 <p>The first line sets the new options and saves the old options in the list <code>old_options</code>. The last line reinstates the old options.</p>
-</div>
-<div id="general-considerations" class="section level1">
-<h1>General Considerations</h1>
-<p>All of these functions have arguments that control the way the plot looks. You should read about these arguments. In particular, read carefully the help page <code>?plot.default</code>. Useful ones are:</p>
-<ul>
-<li><code>main</code>: This controls the title.</li>
-<li><code>xlab</code>, <code>ylab</code>: These control the x and y axis labels.</li>
-<li><code>col</code>: This will control the color of the lines/points/areas.</li>
-<li><code>cex</code>: This will control the size of points.</li>
-<li><code>pch</code>: The type of point (circle, dot, triangle, etc…)</li>
-<li><code>lwd</code>: Line width.</li>
-<li><code>lty</code>: Line type (solid, dashed, dotted, etc…).</li>
-</ul>
 </div>
 
 <hr>
