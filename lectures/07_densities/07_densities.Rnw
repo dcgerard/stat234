@@ -90,7 +90,7 @@ Starting to look like a smooth curve!
 A \alert{density curve} describes the overall pattern of a distribution. The area under the curve and above any range of values is the proportion of all observations that fall in that range. A density cuve is a curve that
 \begin{itemize}
 \item Is always on or above the horizontal axis.
-\item Has area exactly 1 underneat it.
+\item Has area exactly 1 underneath it.
 \end{itemize}
 \end{block}
 \end{frame}
@@ -107,6 +107,8 @@ Variables:
 \end{itemize}
 \end{frame}
 
+
+
 <<echo = FALSE,message=FALSE>>=
 library(tidyverse)
 read_csv("../../data/movie.csv") %>%
@@ -115,7 +117,6 @@ read_csv("../../data/movie.csv") %>%
   transmute(film = FILM, rt = RT_norm, meta = Metacritic_norm,
             imdb = IMDB_norm, fan = Fandango_Stars) ->
   movie
-head(movie)
 @
 
 \begin{frame}[fragile]{Density of Metacritic scores}
@@ -203,12 +204,12 @@ plot(md)
 \end{frame}
 
 \begin{frame}{Mean and median}
-\begin{block}
+\begin{block}{median}
 The \alert{median} of a density curve is the equal-areas point, the point that divides the area under the curve in half.
 \end{block}
 
-\begin{block}
-- The \alert{mean} of a density curve is the balance point, at which the curve would balance if made of solid material.
+\begin{block}{mean}
+The \alert{mean} of a density curve is the balance point, at which the curve would balance if made of solid material.
 \end{block}
 \end{frame}
 
@@ -260,7 +261,7 @@ Such ``bell-shaped'' curves show up everywhere.
 
 \begin{frame}{Normal density}
 One particular bell-shaped density curve is the normal density.
-\begin{block}
+\begin{block}{normal curve}
 The \alert{normal curve} describes the \alert{normal distribution}. It is bell-shaped and is defined by the equation:
 $$
 f(x|\mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{1}{2\sigma^2}(x - \mu)^2},

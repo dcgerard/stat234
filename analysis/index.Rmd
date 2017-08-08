@@ -5,7 +5,15 @@ output:
     toc: false
 ---
 
+# Useful Links/Downloads
+
+- [Rstudio](https://www.rstudio.com/resources/cheatsheets/) has made some very useful cheat sheets that you can reference while you are programming in R. I've placed some of the more useful ones for this class here:
+    - [Base R](./cheat_sheets/base-r.pdf)
+    - [Data Wrangling](./cheat_sheets/data-transformation-cheatsheet.pdf)
+    - [ggplot2](./cheat_sheets/ggplot2-cheatsheet-2.1.pdf)
+    - [Data Import](./cheat_sheets/data-import-cheatsheet.pdf)
+    - [Rstudio IDE](./cheat_sheets/rstudio-IDE-cheatsheet.pdf)
+    
+
 # Lectures
 
-* [Syllabus](00_administrative.html)
-* [Data Basics](01_introduction.html)

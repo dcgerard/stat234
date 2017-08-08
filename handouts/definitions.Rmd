@@ -69,7 +69,7 @@ $$
 - Adding the same number $a$ (positive or negative) to each observation adds $a$ to the measures of center and to the quartiles but does *not* change measures of spread (IQR and standard deviation).
 - A **density curve** describes the overall pattern of a distribution. The area under the curve and above any range of values is the proportion of all observations that fall in that range. A density cuve is a curve that
     - Is always on or above the horizontal axis.
-    - Has area exactly 1 underneat it.
+    - Has area exactly 1 underneath it.
 - The **median** of a density curve is the equal-areas point, the point that divides the area under the curve in half.
 - The **mean** of a density curve is the balance point, at which the curve would balance if made of solid material.
 - The **normal curve** describes the **normal distribution**. It is bell-shaped and is defined by the equation:
