@@ -13,6 +13,7 @@ output:
     - [ggplot2](./cheat_sheets/ggplot2-cheatsheet-2.1.pdf)
     - [Data Import](./cheat_sheets/data-import-cheatsheet.pdf)
     - [Rstudio IDE](./cheat_sheets/rstudio-IDE-cheatsheet.pdf)
+- In addition, I wrote up a brief cheat sheet for [R Base graphics](base_r_cheatsheet.html).
     
 
 # Lectures
