@@ -68,6 +68,14 @@ glimpse(trump)
 \includegraphics[scale = 0.35]{trumptweet2}
 \end{frame}
 
+\begin{frame}[fragile]{Example}
+\begin{itemize}
+\item Tweet from android: ``The dishonest media didn't mention that Bernie Sanders was very angry looking during Crooked's speech. He wishes he didn't make that deal!''
+\item Tweet from iPhone: ``Join me in Fayetteville, North Carolina tomorrow evening at 6pm. Tickets now available at:''
+\item Let's see if these differences are actually statistically meaningful.
+\end{itemize}
+\end{frame}
+
 \begin{frame}{We use sentiment analysis to evaluate this statement.}
 \begin{itemize}
 \item According to one annotation, each word can consist of one/none of two sentiments (positive or negative) and some/all/none of eight primary emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust).
@@ -78,14 +86,6 @@ glimpse(trump)
 \item \alert{trump} has no sentiment and the \textbf{surprise} emotion.
 \item \alert{maroon} has the \textbf{negative} sentiment and no emotions.
 \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Example}
-\begin{itemize}
-\item Tweet from android: ``The dishonest media didn't mention that Bernie Sanders was very angry looking during Crooked's speech. He wishes he didn't make that deal!''
-\item Tweet from iPhone: ``Join me in Fayetteville, North Carolina tomorrow evening at 6pm. Tickets now available at:''
-\item Let's see if these differences are actually statistically meaningful.
 \end{itemize}
 \end{frame}
 
@@ -119,7 +119,7 @@ proptab
 \item \Sexpr{round(proptab[2, 1] * 100)}\% of tweets from Androids contain some negative words.
 \item \Sexpr{round(proptab[2, 2] * 100)}\% of tweets from iPhones contain some negative words.
 \item Seems like a large difference = \Sexpr{round(proptab[2, 1] * 100 - proptab[2, 2] * 100)}\%. But couldn't we have just seen this by chance?
-\item E.g. if President Trump uses a new phone at random, but by chance he happended to use the Android phone for more negative tweets.
+\item E.g. if President Trump uses a new phone at random, but by chance he happened to use the Android phone for more negative tweets.
 \end{itemize}
 \end{frame}
 

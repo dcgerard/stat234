@@ -36,6 +36,7 @@ opts_chunk$set(
   prompt=FALSE,
   comment=NA
 )
+set.seed(1)
 @
 
 \begin{frame}[fragile]
@@ -346,12 +347,12 @@ ggplot(trump, aes(x = length)) +
 \begin{frame}[fragile]{It's sometimes important to check if normality is a valid approximation.}
 \begin{itemize}
 \item Idea: Is the 68-95-99.7 rule approximately correct for the \code{satGPA} data?
-\item More generally, do the percentiles of the data match with the percentiles of the theoretical normal distribution?
-\item Compare the $p$th percentile of the data and the $p$th percentile of a $N(\bar{x}, s^2)$ distribution. If they are pretty close, then normality is a good approximation.
+\item More generally, do the percentiles (quantiles) of the data match with the percentiles (quantiles) of the theoretical normal distribution?
+\item Compare the $p$th percentile (quantile) of the data and the $p$th percentile (quantile) of a $N(\bar{x}, s^2)$ distribution. If they are pretty close, then normality is a good approximation.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Look at percentiles}
+\begin{frame}[fragile]{Look at percentiles (quantiles)}
 \footnotesize
 <<>>=
 mu    <- mean(satGPA$SATV)
@@ -360,10 +361,10 @@ qnorm(p = 0.2, mean = mu, sd = sigma)
 quantile(x = satGPA$SATV, probs = 0.2)
 @
 \normalsize
-That matches almost exactly, what about other percentiles?
+That matches almost exactly, what about other percentiles (quantiles)?
 \end{frame}
 
-\begin{frame}[fragile]{More percentiles}
+\begin{frame}[fragile]{More percentiles (quantiles)}
 \footnotesize
 <<>>=
 qnorm(p = 0.4, mean = mu, sd = sigma)
@@ -372,7 +373,7 @@ quantile(x = satGPA$SATV, probs = 0.4)
 \normalsize
 \end{frame}
 
-\begin{frame}[fragile]{more percentiles}
+\begin{frame}[fragile]{more percentiles(quantiles)}
 \footnotesize
 <<>>=
 qnorm(p = 0.9, mean = mu, sd = sigma)
@@ -430,39 +431,54 @@ Top left is real data, rest are simulated from $N(\bar{x}, s^2)$ --- looks good 
 \begin{frame}[fragile]{Problem: Skewed left}
 <<echo=FALSE>>=
 x <- rgamma(100, 2, 2)
+op <- par(mfrow = c(1,2))
+hist(x)
 qqnorm(x)
 qqline(x)
+par(op)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Problem: Skewed right}
 <<echo=FALSE>>=
+op <- par(mfrow = c(1,2))
+hist(-x)
 qqnorm(-x)
 qqline(-x)
+par(op)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Problem: Outliers}
 <<echo=FALSE>>=
-x <- c(rnorm(100), 4)
+x <- c(rnorm(100), 4.5)
+op <- par(mfrow = c(1,2))
+hist(x)
 qqnorm(x)
 qqline(x)
+par(op)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Problem: Heavy tails}
 <<echo=FALSE>>=
 x <- rt(200, 3)
+op <- par(mfrow = c(1,2))
+hist(x)
 qqnorm(x)
 qqline(x)
+par(op)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Problem: Light tails}
 <<echo=FALSE>>=
 x <- runif(100)
+op <- par(mfrow = c(1,2))
+hist(x)
 qqnorm(x)
 qqline(x)
+par(op)
 @
 \end{frame}
 

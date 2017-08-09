@@ -97,6 +97,38 @@ The \alert{third quartile} $Q_3$ is the 75th percentile. It is the median of the
 \end{block}
 \end{frame}
 
+\begin{frame}[fragile]{Example: Trump's Tweet Length}
+These \alert{ARE NOT} the qaurtiles of Trump's tweet length
+<<echo=FALSE>>=
+hist(trump$length)
+abline(v = seq(0, 140, length = 5), lty = 2, lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Example: Trump's Tweet Length}
+These \alert{ARE NOT} the qaurtiles of Trump's tweet length
+<<echo=FALSE>>=
+hist(trump$length, breaks = seq(0, 140, length = 5))
+abline(v = seq(0, 140, length = 5), lty = 2, lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Example: Trump's Tweet Length}
+These \alert{ARE} the qaurtiles of Trump's tweet length
+<<echo=FALSE>>=
+hist(trump$length, breaks = seq(0, 140, length = 5))
+abline(v = quantile(trump$length, probs = c(0, 0.25, 0.5, 0.75, 1)),
+       lwd = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Example: Trump's Tweet Length}
+These \alert{ARE} the qaurtiles of Trump's tweet length
+<<echo=FALSE, warning=FALSE>>=
+qvec <- quantile(trump$length, probs = c(0, 0.25, 0.5, 0.75, 1))
+hist(trump$length, breaks = qvec, freq = TRUE)
+@
+\end{frame}
 
 \begin{frame}[fragile]{Boxplot}
 \begin{itemize}
@@ -174,7 +206,7 @@ gridExtra::grid.arrange(pl1, pl2)
 
 \begin{frame}[fragile]{Most boxplots you see will actually have more in them}
 <<>>=
-boxplot(trump$length)
+boxplot(email$num_char)
 @
 What are those points?
 \end{frame}
@@ -269,7 +301,7 @@ ggplot(movie_long, aes(x = system, y = score)) +
 @
 \end{frame}
 
-\begin{frame}[fragile]{What does movie_long look like?}
+\begin{frame}[fragile]{What does movie\_long look like?}
 <<>>=
 movie_long
 @

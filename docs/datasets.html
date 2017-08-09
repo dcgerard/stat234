@@ -11,7 +11,7 @@
 
 <meta name="author" content="David Gerard" />
 
-<meta name="date" content="2017-07-31" />
+<meta name="date" content="2017-08-09" />
 
 <title>Datasets for Stat 234</title>
 
@@ -307,7 +307,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Datasets for Stat 234</h1>
 <h4 class="author"><em>David Gerard</em></h4>
-<h4 class="date"><em>2017-07-31</em></h4>
+<h4 class="date"><em>2017-08-09</em></h4>
 
 </div>
 
@@ -319,6 +319,7 @@ div.tocify {
 <li><a href="https://github.com/dcgerard/stat234/raw/master/data/big_mac.csv" download>Big Mac Index</a></li>
 <li><a href="https://github.com/dcgerard/stat234/raw/master/data/bob.csv" download>Bob Ross Paintings</a></li>
 <li><a href="https://github.com/dcgerard/stat234/raw/master/data/movie.csv" download>Movie Ratings</a></li>
+<li><a href="https://github.com/dcgerard/stat234/raw/master/data/nba2016.csv" download>NBA Player Statistics</a></li>
 <li><a href="https://github.com/dcgerard/stat234/raw/master/data/trek.csv" download>Star Trek Word Counts</a></li>
 <li><a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>Trump’s Twitter</a></li>
 </ul>
@@ -369,6 +370,41 @@ div.tocify {
 <li><code>IMDB_user_vote_count</code>: The number of IMDB users who voted for the film.</li>
 <li><code>Fandango_votes</code>: The numuber of Fandango reviews a film obtained.</li>
 <li><code>Fandango_Difference</code>: <code>Fandango_Stars - Fandango_Ratingvalue</code>.</li>
+</ul>
+</div>
+<div id="nba-player-statistics" class="section level2">
+<h2><a href="https://github.com/dcgerard/stat234/raw/master/data/nba2016.csv" download>NBA Player Statistics</a></h2>
+<p>Player statistics for the 2016-2017 season of the National Basketball League (NBA). I obtained these data <a href="https://www.basketball-reference.com/leagues/NBA_2017_totals.html">here</a>. The variables are:</p>
+<ul>
+<li><code>player</code>: The name of the player</li>
+<li><code>pos</code>: position</li>
+<li><code>age</code>: age of the player (in years) at the start of February 1st of 2017.</li>
+<li><code>tm</code>: team</li>
+<li><code>g</code>: games played</li>
+<li><code>gs</code>: games started</li>
+<li><code>mp</code>: minutes played</li>
+<li><code>fg</code>: field goals made</li>
+<li><code>fga</code>: field goal attempts</li>
+<li><code>fgp</code>: field goal percentage</li>
+<li><code>three_p</code>: 3 point field goals made</li>
+<li><code>three_pa</code>: 3 point field goal attempts</li>
+<li><code>three_pp</code>: 3 point field goal percentage (<code>three_p / three_pa</code>)</li>
+<li><code>two_p</code>: two point field goals made</li>
+<li><code>two_pa</code>: two point field goal attempts</li>
+<li><code>two_pp</code>: two point field goal percentage (<code>two_p / two_pa</code>)</li>
+<li><code>efg</code>: effective field goal percentage. This adjusts for the fact that three point field goals are worth more but are more difficult to make. <code>efg = (fg + 0.5 * three_p) / fga</code></li>
+<li><code>ft</code>: free throws made</li>
+<li><code>fta</code>: free thow attempts</li>
+<li><code>ftp</code>: free throw percentage</li>
+<li><code>orb</code>: offensive rebounds</li>
+<li><code>drb</code>: defensive rebounds</li>
+<li><code>trb</code>: total rebounds</li>
+<li><code>ast</code>: assists</li>
+<li><code>stl</code>: steals</li>
+<li><code>blk</code>: blocks</li>
+<li><code>tov</code>: turnovers</li>
+<li><code>pf</code>: personal fouls</li>
+<li><code>pts</code>: points</li>
 </ul>
 </div>
 <div id="trump.csv" class="section level2">

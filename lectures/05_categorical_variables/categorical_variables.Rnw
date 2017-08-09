@@ -64,7 +64,7 @@ Some variables:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{email: What are the cases? Variables?}
+\begin{frame}[fragile]{Recall: Email dataset}
 <<message=FALSE>>=
 library(tidyverse)
 data("email", package = "openintro")
@@ -78,10 +78,18 @@ head(select(email, spam, to_multiple,
 \item Recall: The \alert{distribution} of a variable tells us what values it takes and how often it takes these values
 \item In terms of categorical variables, the distribution is just the counts of cases/proportions/percents in each category.
 \item A table of counts for a single variable is a \alert{frequency table}.
-\item A table of proportions/percentages for a single variable is a \alert{relative frequency table}.
 \end{itemize}
 <<>>=
 table(email$number)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The relative frequency table}
+\begin{itemize}
+\item A table of proportions/percentages for a single variable is a \alert{relative frequency table}.
+\end{itemize}
+<<>>=
+prop.table(table(email$number))
 @
 \end{frame}
 
@@ -91,9 +99,23 @@ barplot(table(email$number)) ## need table
 @
 \end{frame}
 
+\begin{frame}[fragile]{Barchart of proportions}
+<<>>=
+barplot(prop.table(table(email$number))) ## need table
+@
+\end{frame}
+
 \begin{frame}[fragile]{Using ggplot2}
 <<>>=
 qplot(email$number, geom = "bar")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Barchart of proportions using ggplot2}
+<<>>=
+ggplot(email, aes(number)) +
+  geom_bar(aes(y=..count../sum(..count..))) +
+  ylab("proportion")
 @
 \end{frame}
 
@@ -222,6 +244,26 @@ prop.table(tabdat, margin = 2)
 \item Would these be row or column proportions?
 \item Can also look for associations by checking the distribution of number conditioned on an email being spam and the distribution of number contioned on an email not being spam.
 \item Would these be row or column proportions?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Notice the word "conditioned"}
+<<>>=
+prop.table(tabdat, margin = 2)
+@
+\begin{itemize}
+\item The row/column proportions represent conditional distributions.
+\item Each column is the distribution of spam conditioned on either no big number (column 1), a small number (column 2), or a big number (column 3).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Notice the word "conditioned"}
+<<>>=
+prop.table(tabdat, margin = 1)
+@
+\begin{itemize}
+\item The row/column proportions represent conditional distributions.
+\item Each row is the distribution of number conditioned on either an email being not spam (first row) or spam (second row).
 \end{itemize}
 \end{frame}
 

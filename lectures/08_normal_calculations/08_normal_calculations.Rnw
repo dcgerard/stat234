@@ -1,0 +1,127 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Calculating Probabilities with the Normal distribution}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Standardizing Variables
+\item Normal probability calculations.
+\item Section 3.1 of DBC
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Comparing observations from different distributions}
+<<echo=FALSE>>=
+data(satGPA, package = "openintro")
+op <- par(mfrow = c(1, 2))
+hist(satGPA$SATV)
+hist(satGPA$SATM)
+par(op)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Comparing observations from different distributions}
+<<echo=FALSE>>=
+data(satGPA, package = "openintro")
+op <- par(mfrow = c(1, 2))
+hist(satGPA$SATV)
+abline(v = 60, lty = 2, col = 2, lwd = 2)
+hist(satGPA$SATM)
+abline(v = 65, lty = 2, col = 2, lwd = 2)
+par(op)
+@
+Suppose Jean-luc scored a 60 on his SATV and Geordi scored a 65 on his SATM. Who did better?
+\end{frame}
+
+\begin{frame}{Not as easy as you think}
+\begin{itemize}
+\item Can't just compare the numbers --- a 65 on the SAT math test might be much easier than a 60 on the SAT verbal test.
+\item I.e. the two scores are in different units. We need a way to compare these observations without units.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Standardizing and $z$-scores}
+\begin{block}{standardizing and $z$-scores}
+If $x$ is an observation from a distribution that has mean $\mu$ and standard deviation $\sigma$, the \alert{standardized value} of $x$ is
+\begin{align*}
+  z = \frac{x - \mu}{\sigma}.
+\end{align*}
+A standardized value is often called a \alert{$z$-score}.
+\end{block}
+The $z$-score is in units of standard deviations above the mean.
+\end{frame}
+
+\begin{frame}[fragile]{The mean and SD's of SATV and SATM}
+<<>>=
+mu_m    <- mean(satGPA$SATM)
+sigma_m <- sd(satGPA$SATM)
+mu_v    <- mean(satGPA$SATV)
+sigma_v <- sd(satGPA$SATV)
+cat(mu_m, ",", sigma_m, ",", mu_v, ",", sigma_v)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Back to Jean-luc and Geordi}
+<<echo=FALSE>>=
+zj <- (60 - mu_v) / sigma_v
+zg <- (65 - mu_m) / sigma_m
+@
+\begin{align*}
+z_{jl} &= \frac{60 - \mu_{v}}{\sigma_v} = \Sexpr{zj}\\
+z_{g} &= \frac{65 - \mu_{m}}{\sigma_m} = \Sexpr{zg}.
+\end{align*}
+\begin{itemize}
+\item So Jean-luc is \Sexpr{zj} standard deviations above the SATM mean and Geordi is \Sexpr{zg} standard deviations above the SATV mean. So Jean-luc performed better relative to everyone else than Geordi.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Other Examples}
+\begin{itemize}
+\item Comparing the heights of two children of different ages (``which one is taller relative to their age?'').
+\item
+\end{itemize}
+\end{frame}
+
+
+
+\end{document}

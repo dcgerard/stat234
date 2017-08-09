@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 * <a href="https://github.com/dcgerard/stat234/raw/master/data/big_mac.csv" download>Big Mac Index</a>
 * <a href="https://github.com/dcgerard/stat234/raw/master/data/bob.csv" download>Bob Ross Paintings</a>
 * <a href="https://github.com/dcgerard/stat234/raw/master/data/movie.csv" download>Movie Ratings</a>
+* <a href="https://github.com/dcgerard/stat234/raw/master/data/nba2016.csv" download>NBA Player Statistics</a>
 * <a href="https://github.com/dcgerard/stat234/raw/master/data/trek.csv" download>Star Trek Word Counts</a>
 * <a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>Trump's Twitter</a>
 
@@ -65,6 +66,40 @@ The data in movie.csv consist of various ratings of the movies that were in thea
 * `IMDB_user_vote_count`: The number of IMDB users who voted for the film.
 * `Fandango_votes`: The numuber of Fandango reviews a film obtained.
 * `Fandango_Difference`: `Fandango_Stars - Fandango_Ratingvalue`.
+
+## <a href="https://github.com/dcgerard/stat234/raw/master/data/nba2016.csv" download>NBA Player Statistics</a>
+
+Player statistics for the 2016-2017 season of the National Basketball League (NBA). I obtained these data [here](https://www.basketball-reference.com/leagues/NBA_2017_totals.html). The variables are:
+
+* `player`: The name of the player
+* `pos`: position
+* `age`: age of the player (in years) at the start of February 1st of 2017.
+* `tm`: team
+* `g`: games played
+* `gs`: games started
+* `mp`: minutes played
+* `fg`: field goals made
+* `fga`: field goal attempts
+* `fgp`: field goal percentage
+* `three_p`: 3 point field goals made
+* `three_pa`: 3 point field goal attempts
+* `three_pp`: 3 point field goal percentage (`three_p / three_pa`)
+* `two_p`: two point field goals made
+* `two_pa`: two point field goal attempts
+* `two_pp`: two point field goal percentage (`two_p / two_pa`)
+* `efg`: effective field goal percentage. This adjusts for the fact that three point field goals are worth more but are more difficult to make. `efg = (fg + 0.5 * three_p) / fga`
+* `ft`: free throws made
+* `fta`: free thow attempts
+* `ftp`: free throw percentage
+* `orb`: offensive rebounds
+* `drb`: defensive rebounds
+* `trb`: total rebounds
+* `ast`: assists
+* `stl`: steals
+* `blk`: blocks
+* `tov`: turnovers
+* `pf`: personal fouls
+* `pts`: points
 
 ## <a href="https://github.com/dcgerard/stat234/raw/master/data/trump.csv" download>trump.csv</a>
 
