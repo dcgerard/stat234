@@ -50,33 +50,48 @@ opts_chunk$set(
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Comparing observations from different distributions}
-<<echo=FALSE>>=
-data(satGPA, package = "openintro")
-op <- par(mfrow = c(1, 2))
-hist(satGPA$SATV)
-hist(satGPA$SATM)
-par(op)
+\section{Standardizing Variables}
+
+\begin{frame}[fragile]{NBA Data}
+Player statistics for the 2016-2017 season of the NBA
+\begin{itemize}
+\item \code{player} The name of the player.
+\item \code{pts} The total points for the season
+\item \code{two\_pp} Two point field goal percentage.
+\item \code{three\_pp} Three point field goal percentage.
+\item Many others ...
+\item Here, I only kept players that attempted at least 20 two-point and 20 three-point field goals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{NBA Data}
+<<message=FALSE>>=
+library(tidyverse)
+nba <- read_csv("../../data/nba2016.csv") %>%
+  filter(two_pa >= 20, three_pa >= 20) %>%
+  select(player, pts, two_pp, three_pp)
+glimpse(nba)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Comparing observations from different distributions}
+\begin{frame}[fragile]{LeBron James}
 <<echo=FALSE>>=
-data(satGPA, package = "openintro")
-op <- par(mfrow = c(1, 2))
-hist(satGPA$SATV)
-abline(v = 60, lty = 2, col = 2, lwd = 2)
-hist(satGPA$SATM)
-abline(v = 65, lty = 2, col = 2, lwd = 2)
-par(op)
+lj2 <- nba$two_pp[stringr::str_detect(nba$player, "LeBron")]
+lj3 <- nba$three_pp[stringr::str_detect(nba$player, "LeBron")]
 @
-Suppose Jean-luc scored a 60 on his SATV and Geordi scored a 65 on his SATM. Who did better?
+\begin{itemize}
+\item LeBron James is the greatest player in the history of basketball (you will be tested on this).
+\item Is he better at three point field goals or two point field goals relative to other players?
+\item His three-point field goal percentage is \Sexpr{lj3} and his two-point field goal percentage is \Sexpr{lj2}.
+\item Can we just say that he is a better two-point field goal shooter?
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Not as easy as you think}
 \begin{itemize}
-\item Can't just compare the numbers --- a 65 on the SAT math test might be much easier than a 60 on the SAT verbal test.
-\item I.e. the two scores are in different units. We need a way to compare these observations without units.
+\item Can't just compare the numbers --- three point field goals are much harder.
+\item I.e. the two statistics are in different units. We need a way to compare these observations without units.
+\item He \emph{might} be better than most people at three point FG and worst than most people at two point FG, or vice versa.
 \end{itemize}
 \end{frame}
 
@@ -91,37 +106,293 @@ A standardized value is often called a \alert{$z$-score}.
 The $z$-score is in units of standard deviations above the mean.
 \end{frame}
 
-\begin{frame}[fragile]{The mean and SD's of SATV and SATM}
+\begin{frame}[fragile]{Mean and SD of two and three FG \%}
 <<>>=
-mu_m    <- mean(satGPA$SATM)
-sigma_m <- sd(satGPA$SATM)
-mu_v    <- mean(satGPA$SATV)
-sigma_v <- sd(satGPA$SATV)
-cat(mu_m, ",", sigma_m, ",", mu_v, ",", sigma_v)
+mu2    <- mean(nba$two_pp)
+sigma2 <- sd(nba$two_pp)
+mu3    <- mean(nba$three_pp)
+sigma3 <- sd(nba$three_pp)
+c(mu2, mu3)
+c(sigma2, sigma3)
+@
+Three point field goals are harder!
+\end{frame}
+
+\begin{frame}[fragile]{LeBron's $z$-scores}
+<<echo=FALSE>>=
+z2 <- (lj2 - mu2) / sigma2
+z3 <- (lj3 - mu3) / sigma3
+@
+\begin{itemize}
+\item $z_2$ = $\frac{\Sexpr{lj2} - \Sexpr{mu2}}{\Sexpr{sigma2}} = \Sexpr{z2}$.
+\item $z_3$ = $\frac{\Sexpr{lj3} - \Sexpr{mu3}}{\Sexpr{sigma3}} = \Sexpr{z3}$
+\item The King (LeBron) is \Sexpr{round(z2, digits = 2)} SD's above the mean for two-point field goals but only \Sexpr{round(z3, digits = 2)} SD's above the mean for three-point field goals.
+\item Relative to everyone else, he is a lot better at two-point field goals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Graphically}
+<<echo=FALSE>>=
+op <- par(mfrow = c(1, 2))
+hist(nba$two_pp, main = "Two-point FG %", xlab = "Two-point FG %")
+abline(v = lj2, col = 2, lty = 2, lwd = 2)
+hist(nba$three_pp, main = "Three-point FG %", xlab = "Three-point FG %")
+abline(v = lj3, col = 2, lty = 2, lwd = 2)
+legend("topleft", lty = 2, col = 2, lwd = 2, "LeBron", bty = "n")
+par(op)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Back to Jean-luc and Geordi}
+\begin{frame}[fragile]{Another Example: Lance Thomas}
 <<echo=FALSE>>=
-zj <- (60 - mu_v) / sigma_v
-zg <- (65 - mu_m) / sigma_m
+lt2 <- nba$two_pp[nba$player == "Lance Thomas"]
+lt3 <- nba$three_pp[nba$player == "Lance Thomas"]
 @
-\begin{align*}
-z_{jl} &= \frac{60 - \mu_{v}}{\sigma_v} = \Sexpr{zj}\\
-z_{g} &= \frac{65 - \mu_{m}}{\sigma_m} = \Sexpr{zg}.
-\end{align*}
 \begin{itemize}
-\item So Jean-luc is \Sexpr{zj} standard deviations above the SATM mean and Geordi is \Sexpr{zg} standard deviations above the SATV mean. So Jean-luc performed better relative to everyone else than Geordi.
+\item Lance Thomas (New York Knicks) has a two-point FT \% of \Sexpr{lt2} and a three-point FG \% of \Sexpr{lt3}.
+\item Is he better at two-point field goals or three point field goals relative to his peers?
 \end{itemize}
+<<>>=
+(0.371 - mean(nba$two_pp)) / sd(nba$two_pp)
+(0.447 - mean(nba$three_pp)) / sd(nba$three_pp)
+@
+He is \textbf{way} better at three point field goals.
+\end{frame}
+
+\begin{frame}[fragile]{Graphically}
+<<echo=FALSE>>=
+op <- par(mfrow = c(1, 2))
+hist(nba$two_pp, main = "Two-point FG %", xlab = "Two-point FG %")
+abline(v = lt2, col = 2, lty = 2, lwd = 2)
+hist(nba$three_pp, main = "Three-point FG %", xlab = "Three-point FG %")
+abline(v = lt3, col = 2, lty = 2, lwd = 2)
+legend("topleft", lty = 2, col = 2, lwd = 2, "Lance", bty = "n")
+par(op)
+@
 \end{frame}
 
 \begin{frame}{Other Examples}
 \begin{itemize}
 \item Comparing the heights of two children of different ages (``which one is taller relative to their age?'').
-\item
+\item Did you do better on the SAT or the ACT?
+\item How about the midterm vs the final exam?
 \end{itemize}
 \end{frame}
 
+\section{Normal $z$-scores}
 
+\begin{frame}[fragile]{Looks normal}
+<<>>=
+hist(nba$two_pp)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Still looks normal}
+<<>>=
+zscores <- (nba$two_pp - mean(nba$two_pp)) /
+  sd(nba$two_pp)
+hist(zscores)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mean and SD}
+<<>>=
+mean(zscores)
+sd(zscores)
+@
+The ``blah e-16'' is just R's way of saying zero.
+\end{frame}
+
+\begin{frame}{Recall: Relationships}
+\begin{itemize}
+\item Let $y_i = a + bx_i$ for $i = 1,2,\ldots, n$.
+\item $\bar{y} = a + b\bar{x}$.
+\item $\text{median}(y_1,\ldots,y_n) = a + b~\text{median}(x_1,\ldots,x_n)$
+\item $\text{SD}(y) = |b| \text{SD}(x)$
+\item $\text{MAD}(y) = |b| \text{MAD}(x)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{You prove}
+\begin{itemize}
+\item \textbf{Claim}: Let $z_i = \frac{x_i - \bar{x}}{s_x}$ for $i = 1,\ldots, n$. Then $\bar{z} = 0$ and $s_z = 1$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Property of Normal Distributions}
+\begin{itemize}
+\item Actually, if we apply a linear transformation to a variable that has a normal distribution, then the resulting variable \alert{also has a normal distribution}.
+\item Thus, if $x$ is normal with mean $\mu$ and variance $\sigma^2$, then $z = \frac{x - \mu}{\sigma}$ is normal with mean 0 and variance 1.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Normal $z$-scores}
+<<echo=FALSE>>=
+set.seed(1)
+@
+<<>>=
+x <- rnorm(n = 100, mean = 5, sd = 2)
+hist(x)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Normal $z$-scores}
+<<>>=
+z <- (x - mean(x)) / sd(x)
+hist(z)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Check normality}
+<<>>=
+qqnorm(z)
+qqline(z)
+@
+\end{frame}
+
+\section{Normal Probability Calculations}
+
+\begin{frame}[fragile]{Approximations}
+\begin{itemize}
+\item We know LeBron's two-point field goal percentage. What percent of NBA players have a worse percentage?
+\item We could either calculate this out directly
+<<>>=
+lj2 <- nba$two_pp[nba$player == "LeBron James"]
+sum(nba$two_pp < lj2) / length(nba$two_pp)
+@
+\item Or we could use a the normal distribution as an approximation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Normal approximation}
+<<echo=FALSE>>=
+x <- seq(0, 0.7, length = 500)
+y <- dnorm(x = x, mean = mu2, sd = sigma2)
+hist(nba$two_pp, freq = FALSE, xlab = "Two Point FG %", main = "")
+lines(x, y)
+abline(v = lj2, col = 2, lwd = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Area we want}
+<<echo=FALSE>>=
+xshade <- c(x[x <= lj2], lj2)
+yshade <- c(y[x < lj2], 0)
+hist(nba$two_pp, freq = FALSE, xlab = "Two Point FG %", main = "")
+lines(x, y)
+polygon(xshade, yshade, col = "#0000FF55", border = FALSE)
+abline(v = lj2, col = 2, lwd = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Easy Way: use `pnorm`}
+<<>>=
+pnorm(q = lj2, mean = mean(nba$two_pp),
+      sd = sd(nba$two_pp))
+@
+Pretty close to the observed frequency!
+<<>>=
+sum(nba$two_pp < lj2) / length(nba$two_pp)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The Hard Way: Convert to $z$-scores and use a table}
+\begin{itemize}
+\item Proportion of players who have a two-point FG\% less than that of LeBron = proportionof players whose $z$-score is less than that of Lebron.
+\item Recall LeBron's $z$-score: $z_{lj} = 2.26$
+\end{itemize}
+<<echo=FALSE>>=
+x_standard <- seq(-3, 3, length = 500)
+y_standard <- dnorm(x_standard)
+z_nba <- (nba$two_pp - mean(nba$two_pp)) / sd(nba$two_pp)
+xshade <- c(x_standard[x_standard <= 2.26], 2.26)
+yshade <- c(y_standard[x_standard < 2.26], 0)
+hist(z_nba, freq = FALSE, xlab = "Two Point FG z-scores", main = "")
+lines(x_standard, y_standard)
+polygon(xshade, yshade, col = "#0000FF55", border = FALSE)
+abline(v = 2.26, col = 2, lwd = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}{Table}
+\begin{itemize}
+\item Want area to the left of 2.26 from a normal distribution with mean 0 and standard deviation 1.
+\item Look this up in Table B in DBC pp427-429.
+\end{itemize}
+
+\footnotesize
+\begin{tabular}{c | rrrrr | rrrrr |}
+  \cline{2-11}
+&&&& \multicolumn{4}{c}{Second decimal place of $Z$} &&& \\
+  \cline{2-11}
+$Z$ & 0.00 & 0.01 & 0.02 & 0.03 & 0.04 & 0.05 & 0.06 & 0.07 & 0.08 & 0.09 \\
+  \hline
+  \hline
+  &&&& \multicolumn{4}{c}{\vdots} &&& \\
+  2.0 & \scriptsize{0.9772} & \scriptsize{0.9778} & \scriptsize{0.9783} & \scriptsize{0.9788} & \scriptsize{0.9793} & \scriptsize{0.9798} & \scriptsize{0.9803} & \scriptsize{0.9808} & \scriptsize{0.9812} & \scriptsize{0.9817} \\
+  2.1 & \scriptsize{0.9821} & \scriptsize{0.9826} & \scriptsize{0.9830} & \scriptsize{0.9834} & \scriptsize{0.9838} & \scriptsize{0.9842} & \scriptsize{0.9846} & \scriptsize{0.9850} & \scriptsize{0.9854} & \scriptsize{0.9857} \\
+  2.2 & \scriptsize{0.9861} & \scriptsize{0.9864} & \scriptsize{0.9868} & \scriptsize{0.9871} & \scriptsize{0.9875} & \scriptsize{0.9878} & \scriptsize{0.9881} & \scriptsize{0.9884} & \scriptsize{0.9887} & \scriptsize{0.9890} \\
+  2.3 & \scriptsize{0.9893} & \scriptsize{0.9896} & \scriptsize{0.9898} & \scriptsize{0.9901} & \scriptsize{0.9904} & \scriptsize{0.9906} & \scriptsize{0.9909} & \scriptsize{0.9911} & \scriptsize{0.9913} & \scriptsize{0.9916} \\
+  2.4 & \scriptsize{0.9918} & \scriptsize{0.9920} & \scriptsize{0.9922} & \scriptsize{0.9925} & \scriptsize{0.9927} & \scriptsize{0.9929} & \scriptsize{0.9931} & \scriptsize{0.9932} & \scriptsize{0.9934} & \scriptsize{0.9936} \\
+  &&&& \multicolumn{4}{c}{\vdots} &&& \\
+  \hline
+\end{tabular}
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]{Another Problem}
+What about the Proportion of players who are better two-point field goal shooters than LeBron?
+<<echo=FALSE>>=
+xshade <- c(lj2, x[x >= lj2])
+yshade <- c(0, y[x > lj2])
+hist(nba$two_pp, freq = FALSE, xlab = "Two Point FG %", main = "")
+polygon(xshade, yshade, col = "#0000FF55", border = FALSE)
+lines(x, y)
+abline(v = lj2, col = 2, lwd = 2, lty = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The Easy Way}
+<<>>=
+1 - pnorm(q = lj2, mean = mean(nba$two_pp),
+          sd = sd(nba$two_pp))
+pnorm(q = lj2, mean = mean(nba$two_pp),
+      sd = sd(nba$two_pp),
+      lower.tail = FALSE)
+sum(nba$two_pp >= lj2) / length(nba$two_pp)
+@
+\end{frame}
+
+\begin{frame}{The hard way}
+White Board
+\end{frame}
+
+\begin{frame}{Another Problem}
+What proportion of NBA players shoot between 0.4 and 0.5 for two-point FG?
+<<echo=FALSE>>=
+xshade <- c(0.4, x[x > 0.4 & x < 0.5], 0.5)
+yshade <- c(0, y[x > 0.4 & x < 0.5], 0)
+hist(nba$two_pp, freq = FALSE, xlab = "Two Point FG %", main = "")
+polygon(xshade, yshade, col = "#0000FF55", border = FALSE)
+lines(x, y)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The Easy Way}
+<<>>=
+less5 <- pnorm(0.5, mean = mean(nba$two_pp),
+               sd = sd(nba$two_pp))
+less4 <- pnorm(0.4, mean = mean(nba$two_pp),
+               sd = sd(nba$two_pp))
+less5 - less4
+sum(nba$two_pp >= 0.4 & nba$two_pp <= 0.5) /
+  length(nba$two_pp)
+@
+\end{frame}
+
+\begin{frame}{The hard way}
+White Board
+\end{frame}
 
 \end{document}
