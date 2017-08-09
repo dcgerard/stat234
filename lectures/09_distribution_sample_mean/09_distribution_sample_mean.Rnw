@@ -51,5 +51,379 @@ opts_chunk$set(
 \end{itemize}
 \end{frame}
 
+\section{Population and Sample}
+
+\begin{frame}{Population and Sample}
+\begin{block}{population}
+A \alert{population} is a set of cases (observational units) about which information is wanted.
+\end{block}
+\begin{block}{sample}
+A \alert{sample} is a subset of the population.
+\end{block}
+\end{frame}
+
+\begin{frame}{Examples}
+\begin{itemize}
+\item We want to know demographic information of Americans so we randomly select a group of 50 Americans and ask them a bunch of questions. (sample? population?)
+\item We are interested in the quality of anchovies so we take 10 cans and taste them. (sample? population?)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why sample?}
+\begin{itemize}
+\item It is expensive/impossible to collect information on the whole population (when this is done it is called a census).
+\item Even when a census is performed, it is often less accurate than a well-designed sample (hard to collect information on everything, so this introduces biases into the observations you see).
+\item With a large enough sample, we can be pretty sure of the information we want on the population, making taking a census unnecessary.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Random Sampling}
+\begin{itemize}
+\item Often, samples are collected \alert{randomly} to remove bias.
+\item \alert{bias} is where some cases are more likely to be in the sample than other cases.
+\item E.g. some political pollsters mostly call landlines, which biases the sample toward older individuals. What could be the issue here?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Statistics and Parameters}
+\begin{block}{parameter}
+A \alert{parameter} is a number that describes a population. It is usually unknown and what we want information on. People usually use greek letter $\mu, \sigma, \rho$ to represent parameters.
+\end{block}
+\begin{block}{statistic}
+A \alert{statistic} is a number that describes a sample. It is known and is used to estimate a population parameter. People usually use latin letters $\bar{x}, s, r$ to represent statistics.
+\end{block}
+\end{frame}
+
+\begin{frame}{Example}
+\begin{itemize}
+\item We want to know the average height of U.S. males so we measure the average height of a sample of 50 U.S. males and came up with 5'11''. (parameter? statistic?)
+\end{itemize}
+\end{frame}
+
+\section{The sample mean}
+
+\begin{frame}[fragile]{Recall: NBA Data}
+Player statistics for the 2016-2017 season of the NBA
+\begin{itemize}
+\item \code{player} The name of the player.
+\item \code{pts} The total points for the season
+\item \code{two\_pp} Two point field goal percentage.
+\item \code{three\_pp} Three point field goal percentage.
+\item Many others ...
+\item Here, I only kept players that attempted at least 20 two-point and 20 three-point field goals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Recall: NBA Data}
+<<echo=FALSE>>=
+set.seed(1)
+@
+<<message=FALSE>>=
+library(tidyverse)
+nba <- read_csv("../../data/nba2016.csv") %>%
+  filter(two_pa >= 20, three_pa >= 20) %>%
+  select(player, pts, two_pp, three_pp)
+glimpse(nba)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The inference problem}
+\begin{itemize}
+\item Suppose I want to know the average total points of NBA players. However, I can only collect a sample of 5 players.
+\end{itemize}
+<<>>=
+nsamp <- 5
+samd <- sample(nba$pts, size = nsamp)
+samd
+@
+\end{frame}
+
+\begin{frame}[fragile]{Point Estimate}
+Of course, we know the actual mean number of points $\mu$ because we have the entire population.
+<<>>=
+mean(nba$pts)
+@
+A good estimate might be the average of the sample $\bar{x}$
+<<>>=
+mean(samd)
+@
+\end{frame}
+
+\begin{frame}{Point Estimate}
+The sample average here is a point estimate of the population mean.
+\begin{block}{point estimate}
+A \alert{point estimate} is a single number used to estimate a population parameter.
+\end{block}
+\end{frame}
+
+\begin{frame}{Aside}
+\begin{itemize}
+\item How would you estimate the population median?
+\item How would you estimate the population standard deviation?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A different sample}
+However, since the sample was drawn at random, we could have obtained a different sample, and so a different point estimate.
+<<>>=
+samd <- sample(nba$pts, size = nsamp)
+samd
+mean(samd)
+@
+\end{frame}
+
+\begin{frame}[fragile]{And another sample}
+<<>>=
+samd <- sample(nba$pts, size = nsamp)
+samd
+mean(samd)
+@
+\end{frame}
+
+\begin{frame}[fragile]{And another sample}
+<<>>=
+samd <- sample(nba$pts, size = nsamp)
+samd
+mean(samd)
+@
+\end{frame}
+
+\begin{frame}[fragile]{And another sample}
+<<>>=
+samd <- sample(nba$pts, size = nsamp)
+samd
+mean(samd)
+@
+\end{frame}
+
+\begin{frame}{Sampling distribution}
+\begin{itemize}
+\item With every sample we are getting a different $\bar{x}$.
+\item We can ask what possible values $\bar{x}$ can take and how often it takes those values.
+\item That is, we can ask about $\bar{x}$'s \emph{distribution}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Sampling distribution}
+\begin{block}{sampling distribution}
+A \alert{sampling distribution} is the distribution of a sample statistic.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Repeat sample 1000 times.}
+<<>>=
+itermax <- 1000
+xbar_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  xbar_vec[index] <- mean(samd)
+}
+@
+\end{frame}
+
+\begin{frame}[fragile]{Plot the results}
+<<>>=
+hist(xbar_vec, main = "")
+abline(v = mean(nba$pts), lty = 2, col = 2, lwd = 2)
+legend("topright", "pop mean", lty = 2, col = 2, lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The sampling distribution}
+\begin{itemize}
+\item The sample mean has the correct center.
+\item There is a lot of variability about that center though.
+\end{itemize}
+<<>>=
+sd(xbar_vec)
+@
+\begin{block}{standard error}
+The standard deviation associated with a point estimate is called a \alert{standard error}.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{What if we have a bigger sample}
+<<>>=
+nsamp <- 10
+xbar10_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  xbar10_vec[index] <- mean(samd)
+}
+sd(xbar10_vec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{What if we have a bigger sample}
+<<>>=
+nsamp <- 50
+xbar50_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  xbar50_vec[index] <- mean(samd)
+}
+sd(xbar50_vec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{What if we have a bigger sample}
+<<>>=
+nsamp <- 100
+xbar100_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  xbar100_vec[index] <- mean(samd)
+}
+sd(xbar100_vec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Standard error decreases with larger sample sizes!}
+<<echo=FALSE>>=
+dfdat <- data_frame(n5 = xbar_vec,
+                    n10 = xbar10_vec,
+                    n50 = xbar50_vec,
+                    n100 = xbar100_vec)
+longdat <- gather(dfdat, key = "SampleSize", value = "xbar")
+longdat$SampleSize <- factor(stringr::str_replace(longdat$SampleSize, "n", ""),
+                             levels = c(5, 10, 50, 100))
+ggplot(data = longdat, aes(x = SampleSize, y = xbar)) +
+  geom_boxplot() +
+  geom_hline(yintercept = mean(nba$pts), lty = 2, col = 2, lwd = 1)
+@
+Dashed red line is population mean.
+\end{frame}
+
+\begin{frame}{Standard error}
+\begin{block}{standard error}
+Given $n$ independent observations from a population with standard deviation $\sigma$, the standard error of the sample mean is equal to
+\begin{align*}
+SE = \frac{\sigma}{\sqrt{n}}.
+\end{align*}
+\end{block}
+\begin{itemize}
+\item Since $\sigma$ is generally unknown, we estimate SE with $s / \sqrt{n}$, where $s$ is the sample standard deviation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{What happens as sample size increases?}
+<<echo=FALSE>>=
+hist(nba$pts, xlab = "Points", main = "Histogram of points", breaks = 20,
+     freq = FALSE)
+x <- seq(0, 2500, length = 500)
+y <- dnorm(x, mean = mean(nba$pts), sd = sd(nba$pts))
+lines(x, y)
+@
+\end{frame}
+
+\begin{frame}[fragile]{What happens as sample size increases?}
+<<echo=FALSE>>=
+hist(xbar_vec, xlab = "Mean Points, n = 5", main = "Histogram of xbar",
+     breaks = 20, freq = FALSE)
+x <- seq(300, 1300, length = 500)
+y <- dnorm(x, mean = mean(xbar_vec), sd = sd(xbar_vec))
+lines(x, y)
+@
+\end{frame}
+
+\begin{frame}[fragile]{What happens as sample size increases?}
+<<echo=FALSE>>=
+hist(xbar50_vec, xlab = "Mean Points, n = 5", main = "Histogram of xbar",
+     breaks = 20, freq = FALSE)
+x <- seq(450, 1000, length = 500)
+y <- dnorm(x, mean = mean(xbar50_vec), sd = sd(xbar50_vec))
+lines(x, y)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wat happens as the sample size increases?}
+$n = 1$
+<<>>=
+qqnorm(nba$pts)
+qqline(nba$pts)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wat happens as the sample size increases?}
+$n = 5$
+<<>>=
+qqnorm(xbar_vec)
+qqline(xbar_vec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Wat happens as the sample size increases?}
+$n = 50$
+<<>>=
+qqnorm(xbar50_vec)
+qqline(xbar50_vec)
+@
+\end{frame}
+
+
+\begin{frame}{General result}
+\begin{itemize}
+\item In general, sample means converge to a normal distribution as the sample size increases.
+\item Many other statistics do this as well (proportions, medians, standard devaitions).
+\item We will provide a heuristic proof of this result later.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Skewed distributions}
+For highly skewed distributions, it takes more samples for normality to be a good approximation.
+<<>>=
+data(email, package = "openintro")
+hist(email$num_char)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed distributions, $n = 5$}
+<<echo = FALSE>>=
+itermax <- 1000
+nsamp <- 5
+xvec <- rep(NA, length = itermax)
+for (index in 1:itermax) {
+  xvec[index] <- mean(sample(email$num_char, size = nsamp))
+}
+hist(xvec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed distributions, $n = 10$}
+<<echo = FALSE>>=
+itermax <- 1000
+nsamp <- 10
+xvec <- rep(NA, length = itermax)
+for (index in 1:itermax) {
+  xvec[index] <- mean(sample(email$num_char, size = nsamp))
+}
+hist(xvec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed distributions, $n = 50$}
+<<echo = FALSE>>=
+itermax <- 1000
+nsamp <- 50
+xvec <- rep(NA, length = itermax)
+for (index in 1:itermax) {
+  xvec[index] <- mean(sample(email$num_char, size = nsamp))
+}
+hist(xvec)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Skewed distributions, $n = 100$}
+<<echo = FALSE>>=
+itermax <- 1000
+nsamp <- 100
+xvec <- rep(NA, length = itermax)
+for (index in 1:itermax) {
+  xvec[index] <- mean(sample(email$num_char, size = nsamp))
+}
+hist(xvec)
+@
+\end{frame}
+
 
 \end{document}
