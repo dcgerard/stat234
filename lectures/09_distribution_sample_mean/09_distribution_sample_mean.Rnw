@@ -425,5 +425,63 @@ hist(xvec)
 @
 \end{frame}
 
+\section{More sampling distributions}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution}
+<<>>=
+nsamp <- 50
+sd_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  sd_vec[index] <- sd(samd)
+}
+@
+\end{frame}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution}
+<<>>=
+hist(sd_vec, main = "Sampling distribution
+     of sample standard deviation",
+     xlab = "sd")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution}
+<<>>=
+nsamp <- 50
+med_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  med_vec[index] <- median(samd)
+}
+@
+\end{frame}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution}
+<<>>=
+hist(med_vec, main = "Sampling distribution
+     of sample median",
+     xlab = "median")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution, but not all sampling distributions converge to a normal}
+<<>>=
+nsamp <- 50
+max_vec <- rep(NA, itermax)
+for (index in 1:itermax) {
+  samd <- sample(nba$pts, size = nsamp)
+  max_vec[index] <- max(samd)
+}
+@
+\end{frame}
+
+\begin{frame}[fragile]{Every statistic has a sampling distribution, but not all sampling distributions converge to a normal}
+<<>>=
+hist(max_vec, main = "Sampling distribution
+     of sample maximum",
+     xlab = "max")
+@
+\end{frame}
 
 \end{document}

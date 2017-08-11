@@ -243,6 +243,21 @@ hist(z)
 @
 \end{frame}
 
+\begin{frame}[fragile]{$N(5, 2^2)$ and $N(0, 1)$ on same plot}
+<<echo=FALSE>>=
+w <- seq(-3, 11, length = 500)
+x1 <- dnorm(w, mean = 5, sd = 2)
+z1 <- dnorm(w)
+
+plot(w, z1, type = "l", col = "white", ylab = "density", xlab = "")
+hist(x, add = TRUE, freq = FALSE)
+hist(z, add = TRUE, freq = FALSE)
+polygon(w, x1, col = "#0000FF55")
+polygon(w, z1, col = "#00FF0055")
+legend("topright", fill = c("#0000FF55", "#00FF0055"), legend = c("N(5, 4)", "N(0, 1)"))
+@
+\end{frame}
+
 \begin{frame}[fragile]{Check normality}
 <<>>=
 qqnorm(z)
@@ -298,7 +313,7 @@ sum(nba$two_pp < lj2) / length(nba$two_pp)
 
 \begin{frame}[fragile]{The Hard Way: Convert to $z$-scores and use a table}
 \begin{itemize}
-\item Proportion of players who have a two-point FG\% less than that of LeBron = proportionof players whose $z$-score is less than that of Lebron.
+\item Proportion of players who have a two-point FG\% less than that of LeBron = proportion of players whose $z$-score is less than that of Lebron.
 \item Recall LeBron's $z$-score: $z_{lj} = 2.26$
 \end{itemize}
 <<echo=FALSE>>=

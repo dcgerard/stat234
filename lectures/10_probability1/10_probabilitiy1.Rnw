@@ -1,0 +1,723 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\usepackage[misc]{ifsym}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+\newfont\dice{dice3d}
+%\DeclareFontShape{U}{dice3d}{m}{n}{<-> s*[4] dice3d}{}
+
+\title{Introduction to Probability}
+\author{David Gerard\\
+Most of these slides are borrowed from Linda Collins}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objective}
+\begin{itemize}
+\item Sample Space
+\item Axioms of Probability
+\item Proofs from axioms
+\item Conditional probability
+\item Sections 2.1 and 2.2 in DBC
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Probability vs.\ Statistics}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{itemize}
+\item {\bf Population:}
+A collection of all {\em units} of interest (people, households, items
+produced, etc.).
+
+\item {\bf Sample:}
+A subset of a population that is actually observed.
+
+\item {\bf Random Sample:}
+A sample that gives an equal pre-assigned
+chance to every unit in population to enter sample.
+\begin{itemize}
+\item
+Frees the sample from bias (so that the sample is representative of population)
+\item
+Effectively neutralize all confounding factors at once
+\end{itemize}
+
+\item {\bf Probability:}
+If we know the population (or at least a reasonable model for it), then
+we can determine what a random sample is ``likely" to look like.
+
+\item {\bf Statistics (Inference):}
+If we only have the sample, what can we reasonably conclude about the
+population?
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Assigning Probabilities}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{\bf Symmetry of outcomes: all outcomes of an experiment are assumed equally likely}
+
+\medskip
+Assume $N$ outcomes:
+Probability of an outcome: $1/N$.
+
+Event is defined as
+a subset of possible outcomes.
+
+Probability of event containing $n$ outcomes: $n/N$\\
+
+\begin{itemize}
+\item
+requires finitely many and equally likely outcomes
+\item
+can be determined by counting outcomes
+\end{itemize}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Axioms of Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Sample space $S$: set of possible outcomes
+Events: collection $\mathcal{A}$ of subsets of $S$.
+
+A {\bf probability} on a sample space $S$ (and a set $\mathcal{A}$
+of events) is a function which assigns each event $A$ (in
+$\mathcal{A}$) a value in $[0,1]$ and satisfies the following rules:
+
+\begin{itemize}
+\item
+{\bf Axiom 1:} All probabilities are nonnegative:
+\[P(A)\geq 0\qquad\mbox{for all events $A$}.\]
+\item
+{\bf Axiom 2:} The probability of the whole sample space is 1:
+\[P(S)=1.\]
+\item
+{\bf Axiom 3 (Addition Rule):} If two events $A$ and $B$ are disjoint then
+\[
+P(A\cup B)=P(A)+P(B),
+\]
+%that is the probability that $A$ or $B$ occurs is the sum of their probabilities.
+
+%More general form: If $\{A_1, A_2, A_3, \ldots\}$ is a sequence of
+%mutually exclusive events, then
+%\vspace{-7pt}
+%\[
+%P(A_1\cup A_2\cup A_3\cup\ldots) = \sum_{i=1}^{\infty} P(A_i)
+%\]
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Axioms of Probablity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Suppose a random experiment has $N$ different outcomes,
+such that $i$th outcomes occurs with probability $p_i$, $i=1,\ldots,N$.
+It is natural to define the probability of an event as the sum of the probabilities of
+the distinct outcomes making up the event.\par
+
+\textbf{Why do we need to learn techniques for counting?}
+If each outcome  equally likely,  $p_1=\ldots=p_N=1/N$,
+then for any event $A$,
+\[ P(A) = \frac{\#(A)}{\#(S)}=\frac{\mbox{number of outcomes in $A$}}
+  {\mbox{number of outcomes in $S$}} \]
+
+This setup satisfies the 3 axioms
+\begin{columns}[T]
+\begin{column}{.35\textwidth}
+\begin{itemize}
+\item
+$P(A)\geq 0$
+\item
+$\displaystyle P(S)=\frac{\#(S)}{\#(S)}=1$
+\end{itemize}
+\end{column}
+\begin{column}{.64\textwidth}
+\begin{itemize}
+\item
+If $A$ and $B$ are disjoint then
+\begin{align*}
+P(A\cup B)=\frac{\#(A\cup B)}{\#(S)}
+&=\frac{\#(A)}{\#(S)}+\frac{\#(B)}{\#(S)}\\
+&=P(A)+P(B).
+\end{align*}
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{A Set Theory Primer}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+A set is {\em``a collection of definite, well distinguished objects
+of our perception or of our thought''}.
+{\scshape\normalsize (Georg Cantor, 1845-1918)}
+\end{center}
+\bigskip
+
+Some important sets:
+\begin{itemize}
+\item
+$\mathbb{N}=\{1,2,3,\ldots\}$, the set of {\em natural numbers}
+\item
+$\mathbb{Z}=\{\ldots,-2,-1,0,1,2,\ldots\}$, the set of {\em integers}
+\item
+$\mathbb{R}=(-\infty,\infty)$, the set of {\em real numbers}
+\end{itemize}
+\vskip0.3cm
+
+Intervals are denoted as follows:
+\begin{itemize}
+\item[\quad]
+$[0,1]$\quad the interval from 0 to 1 including 0 and 1
+\item[\quad]
+$[0,1)$\quad the interval from 0 to 1 including 0 but not 1
+\item[\quad]
+$(0,1)$\quad the interval from 0 to 1 not including 0 and 1
+\end{itemize}
+If $a$ is an element of the set $A$ then we write $a\in A$.
+\medskip
+
+If $a$ is not an element of the set $A$ then we write $a\notin A$.
+
+\end{frame}
+
+\begin{frame}{Set's are intuitively thought of in terms of Venn diagrams}
+\begin{itemize}
+\item $S$ = a set, $A$ = a subset of $S$, $B$ = another subset of $S$.
+\item Denoted $A \subseteq S$ and $B \subseteq S$.
+\end{itemize}
+\begin{center}
+\includegraphics[scale = 0.7]{./venn/basic_venn}
+\end{center}
+\end{frame}
+
+\begin{frame}{Empty Set}
+\begin{itemize}
+\item The set with no elements is called the \alert{empty set}.
+\item Denoted $\emptyset$.
+\item For any set $A$, we have $\emptyset \subseteq A$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Set complement}
+\begin{itemize}
+\item \alert{Set Complement}: Set of all elements in $S$ that are not in $A$.
+\item Denoted $A$ ($A^c$ or $A'$)
+\end{itemize}
+\begin{center}
+\includegraphics[scale = 0.7]{./venn/nota}
+\end{center}
+\end{frame}
+
+\begin{frame}{Intersection}
+\begin{itemize}
+\item The \alert{intersection} of $A$ and $B$: Set of all elements in $S$ which are both in $A$ and in $B$.
+\item Denoted $A \cap B$.
+\end{itemize}
+\begin{center}
+\includegraphics[scale=0.7]{./venn/anb}
+\end{center}
+\end{frame}
+
+\begin{frame}{Set difference}
+\begin{itemize}
+\item The \alert{set difference} of $A$ and $B$: Set of all elements in $A$ which are not in $B$.
+\item Denoted $A\setminus B$.
+\end{itemize}
+\begin{center}
+\includegraphics[scale = 0.7]{./venn/alessb}
+\end{center}
+\end{frame}
+
+\begin{frame}{Set union}
+\begin{itemize}
+\item The \alert{union} of $A$ and $B$: Set of all elements in $S$ that are in $A$ or in $B$ or in both.
+\item Denoted $A\cup B$.
+\end{itemize}
+\begin{center}
+\includegraphics[scale=0.7]{./venn/aorb}
+\end{center}
+\end{frame}
+
+\begin{frame}{Two questions}
+\begin{itemize}
+\item What is $A \cup A^c$?
+\item What is $A \cap A^c$?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Disjoint/mutually exclusive}
+\begin{itemize}
+\item $A$ and $B$ are \alert{disjoint} if $A$ and $B$ have no common
+elements, that is $A\cap B=\emptyset$.
+Two events $A$ and $B$ with this property are said to be \alert{mutually exclusive}.
+\end{itemize}
+\begin{center}
+\includegraphics[scale=0.7]{./venn/disjoint}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{The Mathematics of Probability}
+
+{\bf We assume the collection of events $\mathcal{A}$ satisfies:}
+
+\begin{itemize}
+\item $\phi,S \in \mathcal{A}$
+\item if $A \in \mathcal{A}$ then $A^c \in \mathcal{A}$
+\item If $A,B \in \mathcal{A}$ then $A \cap B \in \mathcal{A}$
+\item If $A,B \in \mathcal{A}$ then $A \cup B \in \mathcal{A}$
+\item If $A \in \mathcal{A}$ then $A \cap B \in \mathcal{A}$
+\end{itemize}
+
+
+%\[
+%\omega\in A\cup B\follows \omega\in A \text{ or } \omega\in B
+%\]
+%\[
+%\omega\in A^c\follows \omega\notin A
+%\]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Mathematics of Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $A$ and $B$ be events in a outcome set $S$.
+\medskip
+
+{\bf Partition rule:}\qquad
+$P(A)=P(A\cap B)+P(A\cap B^c)$
+\medskip
+
+{\em Example:}
+Roll a pair of fair dice
+\begin{align*}
+P(&\text{Total of 10})\\
+&=P(\text{Total of 10 and double})
++P(\text{Total of 10 and no double})\\
+&=\frac{1}{36}+\frac{2}{36}=\frac{3}{36}=\frac{1}{12}
+\end{align*}
+
+{\bf Complement rule:}\qquad
+$P(A^c)=1-P(A)$
+
+\medskip
+{\em Example:}
+Often useful for events of the type ``at least one''\\
+or ``at least as large as some small number"
+%\begin{align*}
+%P(&\text{Total is at least 4})\\
+%&=1-P(\text{Total is less than 4})
+%=1-\frac{3}{36}=\frac{33}{36}
+%\end{align*}
+\[
+P(\text{Total is at least 4})
+=1-P(\text{Total is less than 4})
+=1-\frac{3}{36}=\frac{33}{36}
+\]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Mathematics of Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $A$ and $B$ be events in an outcome set $S$.
+\medskip
+
+{\bf Containment rule:}\qquad
+$P(A)\leq P(B)$
+for all $A\subseteq B$
+\medskip
+
+{\em Example:} Compare ``two ones" with ``any double",
+\[
+\frac{1}{36}=P(\text{two ones})\leq
+P(\text{any double})=\frac{6}{36}=\frac{1}{6}
+\]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Mathematics of Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{\bf Inclusion exclusion formula:}$P(A\cup B)=P(A)+P(B)-P(A\cap B)$
+
+{\em Example:}
+Roll a pair of fair dice
+\begin{align*}
+P(&\text{Total of 10 or double})\\
+&=P(\text{Total of 10})
++P(\text{Double})-P(\text{Total of 10 and double})\\
+&=\frac{3}{36}+\frac{6}{36}-\frac{1}{36}=\frac{8}{36}=\frac{2}{9}
+\end{align*}
+The two events are
+$
+\text{Total of 10}=\{(4,6),(6,4),(5,5)\}
+$
+and
+\[
+\text{Double}
+=\{(1,1),(2,2),(3,3),(4,4),(5,5),(6,6)\}
+\]
+The intersection is
+$\displaystyle{
+\text{Total of 10 and double}=\{(5,5)\}.}$
+
+Adding the probabilities for the two events, the probability for
+the event $\{(5,5)\}$ is added twice, so we need to subtract this
+probability back out.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Complement Rule}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+
+  Show that $P(A^c) = 1-P(A)$
+
+This proof asks us to confirm an equation\\
+mathematical expression A = mathematical expression B
+
+
+General form of a proof:
+\begin{itemize}
+  \item First, write down any existing definitions or previously proven facts
+  you can think of that are related
+	 to any formulas/symbols appearing in expressions A and B
+  \item Start the proof with the left side (expression A) or with the most
+	 complex of the two expressions.
+  \item Use algebra and established statistical facts to re-write this
+	 right-side expression until it equals the left-side
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Complement Rule}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+  \vskip0.2cm
+  [Some knowledge of sets will be needed too.]
+\vskip0.5cm
+  Show that $P(A^c) = 1-P(A)$
+  \vskip0.25cm
+
+  \begin{itemize}
+	 \item $A$ \& $A^c$ are disjoint (mutually exclusive, don't overlap). \\
+  So, $P(A\cup A^c) = P(A)+P(A^c)$ (Axiom 3).
+\item Also, $A\cup A^c = S$.\\
+So, $P(A\cup A^c) = P(S) = 1$ (Axiom 2).
+
+\item Therefore, $P(A)+P(A^c) = 1.$ \\
+\item That is, $P(A^c) = 1-P(A).$
+\end{itemize}
+We only needed 1st step of proof algorithm this time - gather info.
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Isn't $0\le P(A) \le 1$?\quad \\...but Axiom 1 is just $P(A)\ge 0.$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.
+  \vskip0.2cm
+Any other probability relationships can be derived from the axioms.
+\vskip0.5cm
+Let's prove that $P(A) \le 1$.
+\vskip0.25cm
+
+\begin{itemize}
+\item   By the complement rule, $1-P(A)=P(A^c)$
+\item  and $P(A^c)\ge 0$ (Axiom 1).
+\item So, $1-P(A)\ge0 \;\;\implies\;\;1\ge P(A)$.
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Some more probability facts}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We can also prove ...
+\begin{itemize}
+\item The Law of Total Probability = Partition Rule
+\begin{align*}
+  \phantom{\text{or\;\;}} P(A) &= P(A\cap B)+P(A\cap B^c)\\
+  \text{or\;\;} P(A) &= P(A\cap B)+P(``A- B")
+\end{align*}
+\item The Inclusion-Exclusion Formula
+  \vskip0.3cm
+\begin{center}
+$P(A\cup B)=P(A)+P(B)-P(A\cap B)$\\
+\end{center}
+
+\item Probability for subsets
+If $A\subseteq B$, then $P(A)\le P(B)$
+  \vskip0.3cm
+  Let's try to prove the last one.
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Proving a Conditional Statement}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If $A\subseteq B$, then $P(A)\le P(B)$
+\vfill
+
+This proof asks us to confirm a conditional statement:\\
+If statement A is true, then statement B must also be true\\
+(the opposite direction might not hold)
+\vfill
+
+General form of a proof:
+\begin{itemize}
+  \item First, review existing definitions or previously proven facts related to
+statements A and B
+  \item Start the proof by stating that statement A is true
+  \item Use algebra and established statistical facts to write a series of "then"
+statements that logically follow from statement A; eventually leading
+logically to statement B
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Proving a Conditional Statement}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+
+  [Some knowledge of sets will be needed too.]
+
+
+Show that if $A\subseteq B$, then $P(A)\le P(B)$
+
+Suppose  $A\subseteq B$.
+\begin{itemize}
+\item Then, $A\cap B=A$
+\item Always true: $P(A\cap B)+P(A^c\cap B)=P(B)$\\
+  (law of total probability)
+\item So, $P(A)+P(A^c\cap B)=P(B)$
+\item and $P(A) \le P(A)+P(A^c\cap B)$\\
+	 since $P(A^c\cap B) \ge 0$ \;\; (Axiom 1)
+\item Putting everything together... $P(A) \le P(B)$
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Probability gives chances for events in outcome set $S$.
+
+{\em Often: Have partial information about event of interest.}
+
+
+{\bf Example: }Number of Deaths in the U.S. in 1996
+\begin{center}
+{\tiny
+\begin{tabular}{l|r|rrrrrr}
+Cause&All ages&1-4&5-14&15-24&25-44&45-64&$\geq65$\\
+\hline
+Heart &733,125  & 207 &  341 &920  &16,261&102,510&612,886\\
+Cancer            &544,161  &440&  1,035&1,642  &22,147&132,805&386,092\\
+HIV               & 32,003 & 149&  174 &420 &22,795&8,443 &22\\
+Accidents$^1$    &92,998  &2,155 &  3,521&13,872  &26,554&16,332&30,564\\
+Homicide$^2$    &24,486   &  395&   513 & 6,548&9,261&7,717 &52\\
+\hline
+All causes& 2,171,935&5,947&8,465&32,699& 148,904&380,396&1,717,218
+\end{tabular}}\medskip\par
+\begin{minipage}[t]{14cm}
+\tiny
+$^1$ Accidents and adverse effects, $^2$ Homicide and legal intervention
+\end{minipage}
+\end{center}
+
+Probabilities and conditional probabilities for causes of death:
+\begin{itemize}
+\item
+$P(\text{accident})= \pause 92,998/2,171,935=0.04282$
+\item
+$P(5\le \text{age}\le 14)= \pause 8,465/2,171,935=0.00390$
+\item
+$P(\text{accident}\text{ and }5\le\text{age}\le
+14)= \pause 3,521/2,171,935=0.00162$
+\item
+$P(\text{accident}\; |\; 5\le\text{age}\le 14)= \pause 3,521/8,465=0.41595$
+%\item
+%$P(\text{accident}|25\le\text{age}\le 44)=0.17833$
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{align*}
+  P(\mbox{accident}| 5\le\mbox{age}\le 14)
+    &= \frac{3,521}{8,465}
+  = \frac{3,521/2,171,935}{8,465/2,171,935}\\[.3em]
+    &= \frac{P(\mbox{accident}\mbox{ and }5\le\mbox{age}\le 14)}
+            {P(5\le\mbox{age}\le 14)}
+\end{align*}
+
+{\bf Conditional probability} of $A$ given $B$
+\[
+P(A\; |\; B)=\frac{P(A\cap B)}{P(B)},\qquad\text{ if }P(B)>0
+\]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$\leadsto$ measure conditional probability with respect to a subset of $S$
+
+{\bf Conditional probability} of $A$ given $B$
+\[
+P(A\; |\; B)=\frac{P(A\cap B)}{P(B)},\qquad\text{ if }P(B)>0
+\]
+
+If $P(B)=0$ then $P(A|B)$ is undefined.
+
+$\leadsto$
+{\bf Multiplication rule:} $P(A\cap B) = P(A\; |\; B) \times P(B).$
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\small
+{\bf Example: }Roll two fair dice
+\medskip
+
+What is probability that 2nd die shows {\dice 1}?
+$\displaystyle{
+P(\text{2nd die = {\dice 1}})=\frac{1}{6}}$
+
+What is probability 2nd die shows {\dice 1} if 1st
+die showed {\dice 1}?
+\[
+P(\text{2nd die = {\dice 1}}\; |\; \text{1st die = {\dice 1}})=\frac{1}{6}
+\]
+\dots and if the 1st die did not show {\dice 1}?
+\[
+P(\text{2nd die = {\dice 1}}\; |\; \text{1st die $\neq$ {\dice
+1}})=\frac{1}{6}
+\]
+Chance of {\dice 1} on 2nd die the same, no matter what the 1st.
+\normalsize
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The event $A$ is {\bf independent} of the event $B$ if its
+chances are not affected by the occurrence of $B$,
+\[
+P(A|B)=P(A).
+\]
+
+You can show that the following definitions of independence are equivalent.
+\[
+P(A|B)=P(A)
+\]
+\[
+P(B|A)=P(B)
+\]
+\[
+P(A\cap B) = P(A)\times P(B)
+\]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Suppose event $A$ is independent of event $B.$
+
+Then, knowing that $B$ has occurred does not effect the probability of
+event $A$ occurring: $P(A|B) = P(A).$ Now,
+
+\begin{align*}
+P(B|A)
+&= \frac{P(A\cap B)}{P(A)}
+= \frac{P(A|B)P(B)}{P(A)}
+= \frac{P(A)P(B)}{P(A)}
+= P(B)
+\end{align*}
+Thus, event $B$ is independent of event $A.$
+
+The argument in the other direction is exactly the same.  \\
+So, the
+following two statements are equivalent:
+$$P(A|B)=P(A)\qquad {\rm and} \qquad P(B|A)=P(B)$$
+and we simply state that events $A$ and $B$ are independent.
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Also, if $A$ and $B$ are independent events, then
+$$P(A\cap B) = P(A|B)P(B) = P(A)P(B)$$
+and in the other direction...
+If $P(A\cap B) = P(A)P(B),$ then
+$$P(A|B) = \frac{P(A\cap B)}{P(B)}
+         = \frac{P(A)P(B)}{P(B)}
+         = P(A).$$
+
+Thus, the following three statements are equivalent definitions of
+independence of events $A$ and $B:$
+$$P(A|B)=P(A)$$
+$$P(B|A)=P(B)$$
+$$P(A\cap B) = P(A)\times P(B)$$
+
+\end{frame}
+
+
+\end{document}
