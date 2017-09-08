@@ -64,6 +64,9 @@ A data frame with 1000 observations on the following 6 variables.
 \end{frame}
 
 \begin{frame}[fragile]{satGPA}
+<<echo = FALSE>>=
+set.seed(1)
+@
 <<message=FALSE>>=
 library(tidyverse)
 data(satGPA, package = "openintro")
@@ -259,6 +262,16 @@ qplot(movie$meta, bins = 11)
 \begin{frame}[fragile]{Metacritic Score: Maybe some Modality?}
 <<>>=
 qplot(movie$meta, bins = 21)
+@
+\end{frame}
+
+\begin{frame}{Outliers}
+\begin{block}{outliers}
+\alert{Outliers} are observations that lie outside the overall pattern of a distribution. Always look for outliers and try to explain them.
+\end{block}
+<<echo=FALSE>>=
+x <- c(rnorm(100), 6)
+hist(x)
 @
 \end{frame}
 

@@ -99,6 +99,7 @@ head(fumbles) ## only shows first few obs
 \begin{frame}{Data Frames}
 \begin{itemize}
 \item The way I organized the fumbles dataset is called a \alert{data frame}.
+\item DBC calls this a ``data matrix''.
 \item Each row corresponds to a unique case.
 \item Each column corresponds to a variable.
 \item Most datasets in R are \code{data.frame} objects.
@@ -142,7 +143,7 @@ head(fumb2)
 \begin{frame}[fragile]{Categorical or Quantitative?}
 \begin{itemize}
 \item Social security numbers?
-\item Phone numbers?
+\item Phone numbers area code?
 \item I place the class into 10 different groups, labeled 1 through 10. Is group number quantitative or categorical?
 \item Grade point average (GPA)?
 \end{itemize}

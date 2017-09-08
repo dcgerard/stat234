@@ -1,0 +1,225 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+
+\title{Proofs from axioms}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Proving probability results from axioms
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Recall: The Axioms of Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A {\bf probability} on a sample space $S$ (and a set $\mathcal{A}$
+of events) is a function which assigns each event $A$ (in
+$\mathcal{A}$) a value in $[0,1]$ and satisfies the following rules:
+
+\begin{itemize}
+\item
+{\bf Axiom 1:} All probabilities are nonnegative:
+\[P(A)\geq 0\qquad\mbox{for all events $A$}.\]
+\item
+{\bf Axiom 2:} The probability of the whole sample space is 1:
+\[P(S)=1.\]
+\item
+{\bf Axiom 3 (Addition Rule):} If two events $A$ and $B$ are disjoint (have no outcomes in common) then
+\[
+P(A\cup B)=P(A)+P(B),
+\]
+%that is the probability that $A$ or $B$ occurs is the sum of their probabilities.
+
+%More general form: If $\{A_1, A_2, A_3, \ldots\}$ is a sequence of
+%mutually exclusive events, then
+%\vspace{-7pt}
+%\[
+%P(A_1\cup A_2\cup A_3\cup\ldots) = \sum_{i=1}^{\infty} P(A_i)
+%\]
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Complement Rule}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+
+  Show that $P(A^c) = 1-P(A)$
+
+This proof asks us to confirm an equation\\
+mathematical expression A = mathematical expression B
+
+
+General form of a proof:
+\begin{itemize}
+  \item First, write down any existing definitions or previously proven facts
+  you can think of that are related
+	 to any formulas/symbols appearing in expressions A and B
+  \item Start the proof with the left side (expression A) or with the most
+	 complex of the two expressions.
+  \item Use algebra and established statistical facts to re-write this
+	 right-side expression until it equals the left-side
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Complement Rule}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+  \vskip0.2cm
+  [Some knowledge of sets will be needed too.]
+\vskip0.5cm
+  Show that $P(A^c) = 1-P(A)$
+  \vskip0.25cm
+
+  \begin{itemize}
+	 \item $A$ \& $A^c$ are disjoint (mutually exclusive, don't overlap). \\
+  So, $P(A\cup A^c) = P(A)+P(A^c)$ (Axiom 3).
+\item Also, $A\cup A^c = S$.\\
+So, $P(A\cup A^c) = P(S) = 1$ (Axiom 2).
+
+\item Therefore, $P(A)+P(A^c) = 1.$ \\
+\item That is, $P(A^c) = 1-P(A).$
+\end{itemize}
+We only needed 1st step of proof algorithm this time - gather info.
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Isn't $0\le P(A) \le 1$?\quad \\...but Axiom 1 is just $P(A)\ge 0.$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.
+  \vskip0.2cm
+Any other probability relationships can be derived from the axioms.
+\vskip0.5cm
+Let's prove that $P(A) \le 1$.
+\vskip0.25cm
+
+\begin{itemize}
+\item   By the complement rule, $1-P(A)=P(A^c)$
+\item  and $P(A^c)\ge 0$ (Axiom 1).
+\item So, $1-P(A)\ge0 \;\;\implies\;\;1\ge P(A)$.
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Some more probability facts}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We can also prove ...
+\begin{itemize}
+\item The Law of Total Probability = Partition Rule
+\begin{align*}
+  \phantom{\text{or\;\;}} P(A) &= P(A\cap B)+P(A\cap B^c)\\
+  \text{or\;\;} P(A) &= P(A\cap B)+P(``A- B")
+\end{align*}
+\item The Inclusion-Exclusion Formula
+  \vskip0.3cm
+\begin{center}
+$P(A\cup B)=P(A)+P(B)-P(A\cap B)$\\
+\end{center}
+
+\item Probability for subsets
+If $A\subseteq B$, then $P(A)\le P(B)$
+  \vskip0.3cm
+  Let's try to prove the last one.
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Proving a Conditional Statement}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If $A\subseteq B$, then $P(A)\le P(B)$
+\vfill
+
+This proof asks us to confirm a conditional statement:\\
+If statement A is true, then statement B must also be true\\
+(the opposite direction might not hold)
+\vfill
+
+General form of a proof:
+\begin{itemize}
+  \item First, review existing definitions or previously proven facts related to
+statements A and B
+  \item Start the proof by stating that statement A is true
+  \item Use algebra and established statistical facts to write a series of "then"
+statements that logically follow from statement A; eventually leading
+logically to statement B
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Proving a Conditional Statement}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  The axioms are the fundamental building blocks of probability.\\
+Any other probability relationships can be derived from the axioms.
+
+  [Some knowledge of sets will be needed too.]
+
+
+Show that if $A\subseteq B$, then $P(A)\le P(B)$
+
+Suppose  $A\subseteq B$.
+\begin{itemize}
+\item Then, $A\cap B=A$
+\item Always true: $P(A\cap B)+P(A^c\cap B)=P(B)$\\
+  (law of total probability)
+\item So, $P(A)+P(A^c\cap B)=P(B)$
+\item and $P(A) \le P(A)+P(A^c\cap B)$\\
+	 since $P(A^c\cap B) \ge 0$ \;\; (Axiom 1)
+\item Putting everything together... $P(A) \le P(B)$
+\end{itemize}
+
+\end{frame}
+
+
+
+\end{document}

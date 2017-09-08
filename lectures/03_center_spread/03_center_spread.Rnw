@@ -152,6 +152,10 @@ Find the mean and median of the following numbers:
 \end{align*}
 \end{frame}
 
+\begin{frame}{Are centers enough to describe a distribution?}
+\url{https://youtu.be/4B2xOvKFFz4}
+\end{frame}
+
 \section{Measures of Spread}
 
 \begin{frame}{Deviations}

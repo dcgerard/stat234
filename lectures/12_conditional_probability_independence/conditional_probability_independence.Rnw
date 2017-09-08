@@ -1,0 +1,243 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+\newfont\dice{dice3d}
+
+\title{Conditional Probability and Independence}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Conditional Probability
+\item Independence
+\item Section 2.2 in DBC
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Probability gives chances for events in outcome set $S$.
+
+{\em Often: Have partial information about event of interest.}
+
+
+{\bf Example: }Number of Deaths in the U.S. in 1996
+\begin{center}
+{\tiny
+\begin{tabular}{l|r|rrrrrr}
+Cause&All ages&1-4&5-14&15-24&25-44&45-64&$\geq65$\\
+\hline
+Heart &733,125  & 207 &  341 &920  &16,261&102,510&612,886\\
+Cancer            &544,161  &440&  1,035&1,642  &22,147&132,805&386,092\\
+HIV               & 32,003 & 149&  174 &420 &22,795&8,443 &22\\
+Accidents$^1$    &92,998  &2,155 &  3,521&13,872  &26,554&16,332&30,564\\
+Homicide$^2$    &24,486   &  395&   513 & 6,548&9,261&7,717 &52\\
+\hline
+All causes& 2,171,935&5,947&8,465&32,699& 148,904&380,396&1,717,218
+\end{tabular}}\medskip\par
+\begin{minipage}[t]{14cm}
+\tiny
+$^1$ Accidents and adverse effects, $^2$ Homicide and legal intervention
+\end{minipage}
+\end{center}
+
+Probabilities and conditional probabilities for causes of death:
+\begin{itemize}
+\item
+$P(\text{accident})= \pause 92,998/2,171,935=0.04282$
+\item
+$P(5\le \text{age}\le 14)= \pause 8,465/2,171,935=0.00390$
+\item
+$P(\text{accident}\text{ and }5\le\text{age}\le
+14)= \pause 3,521/2,171,935=0.00162$
+\item
+$P(\text{accident}\; |\; 5\le\text{age}\le 14)= \pause 3,521/8,465=0.41595$
+%\item
+%$P(\text{accident}|25\le\text{age}\le 44)=0.17833$
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{align*}
+  P(\mbox{accident}| 5\le\mbox{age}\le 14)
+    &= \frac{3,521}{8,465}
+  = \frac{3,521/2,171,935}{8,465/2,171,935}\\[.3em]
+    &= \frac{P(\mbox{accident}\mbox{ and }5\le\mbox{age}\le 14)}
+            {P(5\le\mbox{age}\le 14)}
+\end{align*}
+
+\begin{block}{Conditional Probability}
+\alert{Conditional probability} of $A$ given $B$
+\[
+P(A\; |\; B)=\frac{P(A\cap B)}{P(B)},\qquad\text{ if }P(B)>0
+\]
+\end{block}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conditional Probability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$\leadsto$ measure conditional probability with respect to a subset of $S$
+
+{\bf Conditional probability} of $A$ given $B$
+\[
+P(A\; |\; B)=\frac{P(A\cap B)}{P(B)},\qquad\text{ if }P(B)>0
+\]
+
+If $P(B)=0$ then $P(A|B)$ is undefined.
+
+$\leadsto$
+\begin{block}{Multiplication rule:}
+$P(A\cap B) = P(A\; |\; B) \times P(B).$
+\end{block}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\small
+{\bf Example: }Roll two fair dice
+\medskip
+
+What is probability that 2nd die shows {\dice 1}?
+$\displaystyle{
+P(\text{2nd die = {\dice 1}})=\frac{1}{6}}$
+
+What is probability 2nd die shows {\dice 1} if 1st
+die showed {\dice 1}?
+\[
+P(\text{2nd die = {\dice 1}}\; |\; \text{1st die = {\dice 1}})=\frac{1}{6}
+\]
+\dots and if the 1st die did not show {\dice 1}?
+\[
+P(\text{2nd die = {\dice 1}}\; |\; \text{1st die $\neq$ {\dice
+1}})=\frac{1}{6}
+\]
+Chance of {\dice 1} on 2nd die the same, no matter what the 1st.
+\normalsize
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The event $A$ is {\bf independent} of the event $B$ if its
+chances are not affected by the occurrence of $B$,
+\[
+P(A|B)=P(A).
+\]
+
+You can show that the following definitions of independence are equivalent.
+\begin{block}{Independence}
+Events $A$ and $B$ are \alert{independent} if
+\begin{align*}
+P(A|B)&=P(A) \text{ if and only if}\\
+P(B|A)&=P(B) \text{ if and only if}\\
+P(A\cap B) &= P(A)\times P(B)
+\end{align*}
+\end{block}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Suppose event $A$ is independent of event $B.$
+
+Then, knowing that $B$ has occurred does not effect the probability of
+event $A$ occurring: $P(A|B) = P(A).$ Now,
+
+\begin{align*}
+P(B|A)
+&= \frac{P(A\cap B)}{P(A)}
+= \frac{P(A|B)P(B)}{P(A)}
+= \frac{P(A)P(B)}{P(A)}
+= P(B)
+\end{align*}
+Thus, event $B$ is independent of event $A.$
+
+The argument in the other direction is exactly the same.  \\
+So, the
+following two statements are equivalent:
+$$P(A|B)=P(A)\qquad {\rm and} \qquad P(B|A)=P(B)$$
+and we simply state that events $A$ and $B$ are independent.
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Independence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Also, if $A$ and $B$ are independent events, then
+$$P(A\cap B) = P(A|B)P(B) = P(A)P(B)$$
+and in the other direction...
+If $P(A\cap B) = P(A)P(B),$ then
+$$P(A|B) = \frac{P(A\cap B)}{P(B)}
+         = \frac{P(A)P(B)}{P(B)}
+         = P(A).$$
+
+Thus, the following three statements are equivalent definitions of
+independence of events $A$ and $B:$
+$$P(A|B)=P(A)$$
+$$P(B|A)=P(B)$$
+$$P(A\cap B) = P(A)\times P(B)$$
+
+\end{frame}
+
+\begin{frame}{Comparison: Independence vs Disjoint Events}
+\begin{itemize}
+\item Disjoint event are \alert{not} independent: for disjoint events, even if $P(A) > 0$, $P(A|B) = 0$.
+\item Disjoint events can use a special case of the inclusion/exclusion formula: $P(A \cup B) = P(A) + P(B) - P(A and B) = P(A) + P(B)$.
+\item I sometimes call this the ``or'' rule.
+\item Independent events can use a special case of the multiplication rule: $P(A \cap B) = P(A|B)P(B) = P(A)P(B)$.
+\item I sometimes call this the ``and'' rule.
+\item Note: Independence cannot be displayed as a Venn diagram because it depends not just on the outcomes that make up the events, but also the probabilities of the events.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise}
+If $A$ and $B$ are two independent events, prove that $A^c$ is independent of $B^c$.
+\end{frame}
+
+\end{document}
