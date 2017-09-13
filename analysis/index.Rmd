@@ -7,7 +7,10 @@ output:
 
 # Useful Links/Downloads
 
-- [OpenIntro](https://www.openintro.org/stat/textbook.php?stat_book=os) is the textbook for the class that you can [download](https://www.openintro.org/download.php?file=os3&referrer=/stat/textbook.php) for FREE. In addition to the textbook, their website has additional lecture slides, video lectures, and labs for practicing R.
+- There are two textbooks for this course
+    - [OpenIntro](https://www.openintro.org/stat/textbook.php?stat_book=os): You can [download](https://www.openintro.org/download.php?file=os3&referrer=/stat/textbook.php) this textbook for FREE. In addition to the textbook, their website has additional lecture slides, video lectures, and labs for practicing R. This book will generally be used for everything but probability.
+    - [From Algorithms to Z-Scores: Probabilistic and Statistical Modeling in Computer Science](http://heather.cs.ucdavis.edu/probstatbook): Again, this book can be [downloaded](http://heather.cs.ucdavis.edu/~matloff/132/PLN/probstatbook/ProbStatBook.pdf) entirely for free. This book will be useful for the more mathematical introduction to probability that is beyond the scope of OpenIntro.
+- A fast, practical way to learn R is through the [swirl](http://swirlstats.com/) package. Follow the instructions from that link to go through a few tutorials.
 - [Rstudio](https://www.rstudio.com/resources/cheatsheets/) has made some very useful cheat sheets that you can reference while you are programming in R. I've placed some of the more useful ones for this class here:
     - [Base R](./cheat_sheets/base-r.pdf)
     - [Data Wrangling](./cheat_sheets/data-transformation-cheatsheet.pdf)

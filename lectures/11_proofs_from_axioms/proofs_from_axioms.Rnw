@@ -119,15 +119,15 @@ Any other probability relationships can be derived from the axioms.
   \vskip0.25cm
 
   \begin{itemize}
-	 \item $A$ \& $A^c$ are disjoint (mutually exclusive, don't overlap). \\
+	 \pause \item $A$ \& $A^c$ are disjoint (mutually exclusive, don't overlap). \\
   So, $P(A\cup A^c) = P(A)+P(A^c)$ (Axiom 3).
-\item Also, $A\cup A^c = S$.\\
+\pause \item Also, $A\cup A^c = S$.\\
 So, $P(A\cup A^c) = P(S) = 1$ (Axiom 2).
 
-\item Therefore, $P(A)+P(A^c) = 1.$ \\
-\item That is, $P(A^c) = 1-P(A).$
+\pause \item Therefore, $P(A)+P(A^c) = 1.$ \\
+\pause \item That is, $P(A^c) = 1-P(A).$
 \end{itemize}
-We only needed 1st step of proof algorithm this time - gather info.
+\pause We only needed 1st step of proof algorithm this time - gather info.
 
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,9 +142,9 @@ Let's prove that $P(A) \le 1$.
 \vskip0.25cm
 
 \begin{itemize}
-\item   By the complement rule, $1-P(A)=P(A^c)$
-\item  and $P(A^c)\ge 0$ (Axiom 1).
-\item So, $1-P(A)\ge0 \;\;\implies\;\;1\ge P(A)$.
+\pause \item   By the complement rule, $1-P(A)=P(A^c)$
+\pause \item  and $P(A^c)\ge 0$ (Axiom 1).
+\pause \item So, $1-P(A)\ge0 \;\;\implies\;\;1\ge P(A)$.
 \end{itemize}
 
 \end{frame}
@@ -209,13 +209,13 @@ Show that if $A\subseteq B$, then $P(A)\le P(B)$
 
 Suppose  $A\subseteq B$.
 \begin{itemize}
-\item Then, $A\cap B=A$
-\item Always true: $P(A\cap B)+P(A^c\cap B)=P(B)$\\
+\pause \item Then, $A\cap B=A$
+\pause \item Always true: $P(A\cap B)+P(A^c\cap B)=P(B)$\\
   (law of total probability)
-\item So, $P(A)+P(A^c\cap B)=P(B)$
-\item and $P(A) \le P(A)+P(A^c\cap B)$\\
+\pause \item So, $P(A)+P(A^c\cap B)=P(B)$
+\pause \item and $P(A) \le P(A)+P(A^c\cap B)$\\
 	 since $P(A^c\cap B) \ge 0$ \;\; (Axiom 1)
-\item Putting everything together... $P(A) \le P(B)$
+\pause \item Putting everything together... $P(A) \le P(B)$
 \end{itemize}
 
 \end{frame}

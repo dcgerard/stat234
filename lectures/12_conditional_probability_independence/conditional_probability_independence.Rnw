@@ -7,6 +7,7 @@
 
 \providecommand{\code}[1]{}
 \renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
 
 \newfont\dice{dice3d}
 
@@ -83,14 +84,14 @@ $^1$ Accidents and adverse effects, $^2$ Homicide and legal intervention
 Probabilities and conditional probabilities for causes of death:
 \begin{itemize}
 \item
-$P(\text{accident})= \pause 92,998/2,171,935=0.04282$
+$P(\text{accident})= \hid{2-}{92,998/2,171,935=0.04282}$
 \item
-$P(5\le \text{age}\le 14)= \pause 8,465/2,171,935=0.00390$
+$P(5\le \text{age}\le 14)= \hid{3-}{8,465/2,171,935=0.00390}$
 \item
 $P(\text{accident}\text{ and }5\le\text{age}\le
-14)= \pause 3,521/2,171,935=0.00162$
+14)= \hid{4-}{3,521/2,171,935=0.00162}$
 \item
-$P(\text{accident}\; |\; 5\le\text{age}\le 14)= \pause 3,521/8,465=0.41595$
+$P(\text{accident}\; |\; 5\le\text{age}\le 14)= \hid{5-}{3,521/8,465=0.41595}$
 %\item
 %$P(\text{accident}|25\le\text{age}\le 44)=0.17833$
 \end{itemize}
@@ -102,10 +103,10 @@ $P(\text{accident}\; |\; 5\le\text{age}\le 14)= \pause 3,521/8,465=0.41595$
 
 \begin{align*}
   P(\mbox{accident}| 5\le\mbox{age}\le 14)
-    &= \frac{3,521}{8,465}
-  = \frac{3,521/2,171,935}{8,465/2,171,935}\\[.3em]
-    &= \frac{P(\mbox{accident}\mbox{ and }5\le\mbox{age}\le 14)}
-            {P(5\le\mbox{age}\le 14)}
+    \hid{2-}{&= \frac{3,521}{8,465}}
+  \hid{3-}{= \frac{3,521/2,171,935}{8,465/2,171,935}\\[.3em]}
+    \hid{4-}{&= \frac{P(\mbox{accident}\mbox{ and }5\le\mbox{age}\le 14)}
+            {P(5\le\mbox{age}\le 14)}}
 \end{align*}
 
 \begin{block}{Conditional Probability}
@@ -191,10 +192,10 @@ event $A$ occurring: $P(A|B) = P(A).$ Now,
 
 \begin{align*}
 P(B|A)
-&= \frac{P(A\cap B)}{P(A)}
-= \frac{P(A|B)P(B)}{P(A)}
-= \frac{P(A)P(B)}{P(A)}
-= P(B)
+&\hid{2-}{= \frac{P(A\cap B)}{P(A)}}
+\hid{3-}{= \frac{P(A|B)P(B)}{P(A)}}
+\hid{4-}{= \frac{P(A)P(B)}{P(A)}}
+\hid{5-}{= P(B)}
 \end{align*}
 Thus, event $B$ is independent of event $A.$
 
@@ -210,12 +211,12 @@ and we simply state that events $A$ and $B$ are independent.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Also, if $A$ and $B$ are independent events, then
-$$P(A\cap B) = P(A|B)P(B) = P(A)P(B)$$
+$$P(A\cap B) \hid{2-}{= P(A|B)P(B)} \hid{3-}{= P(A)P(B)}$$
 and in the other direction...
 If $P(A\cap B) = P(A)P(B),$ then
-$$P(A|B) = \frac{P(A\cap B)}{P(B)}
-         = \frac{P(A)P(B)}{P(B)}
-         = P(A).$$
+$$P(A|B) \hid{4-}{= \frac{P(A\cap B)}{P(B)}}
+         \hid{5-}{= \frac{P(A)P(B)}{P(B)}}
+         \hid{6-}{= P(A).}$$
 
 Thus, the following three statements are equivalent definitions of
 independence of events $A$ and $B:$

@@ -1,0 +1,782 @@
+%<<echo=FALSE>>=
+%OLD <- options(width=90)
+%@
+%<<echo=FALSE>>=
+%options(OLD)
+%@
+
+%\documentclass{beamer}% regular slides (with pauses)
+\documentclass[handout]{beamer}% handout (no pauses)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Change the lecture information here %%%%%%%%%%%%%%%%
+\def\chapnum{Week \#3: Continuous Uniform Distribution}
+\title{Title}
+\author{Author Name}
+\date{Lecture Date}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%% Start of suggested definitions and packages %%%%%%%%%%%%
+%%%%%% Do not change unless you really know what you are doing %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage[misc]{ifsym} % for the dice symbol \Cube{}
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+
+
+%\input{defs}
+%\usepackage{comment}
+%\usepackage{pstricks}
+%\usepackage{graphicx}
+%\usepackage{booktabs}
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[a4paper,border shrink=3mm]
+%\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=3mm
+
+\usepackage{setspace}
+\ifdefined\knitrout
+  \renewenvironment{knitrout}{\begin{spacing}{0.75}\begin{tiny}}{\end{tiny}\end{spacing}}
+\else
+\fi
+
+
+% other
+\def\Sum{\sum\nolimits}
+\def\b#1{\fboxsep=0pt\colorbox{black}{\color{white}\Cube{#1}}}
+\def\w#1{\Cube{#1}}
+%%%%%%%%%%%% End of shortcuts (macros) ##############
+
+%%%%%%%%% One way to hide answers until you want to show them %%%%%%%%%
+\def\Hide#1#2{\ul{~~~\onslide<#1>{\alert{#2}}~~~}}
+\def\hide#1#2{\ul{~~\onslide<#1>{\alert{#2}}~~}}
+\def\hid#1#2{\onslide<#1>{\alert{#2}}}
+% Choose the color of answers here too
+\setbeamercolor{alerted text}{fg=darkgray}
+%\setbeamercolor{alerted text}{fg=black}
+
+%------Centered Page Number Setup ------
+\defbeamertemplate{footline}{centered page number}
+{%
+  \hspace*{\fill}%
+  %\usebeamercolor[fg]{page number in head/foot}%
+  %\usebeamerfont{page number in head/foot}%
+  \tiny \chapnum: Page \insertframenumber\, of \inserttotalframenumber%
+  \hspace*{\fill}\vskip2pt%
+}
+%\setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{footline}[centered page number]
+%--------------------------------
+
+%\usetheme{Copenhagen}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[english]{babel}
+\def\ul{\underline}
+\linespread{1.1}
+% or whatever
+
+<<setup, include=FALSE, cache=FALSE>>=
+require(xtable)
+require(fastR)
+require(gap)
+options(format.R.blank=FALSE)
+options(width=80)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  fig.path='figure/graphics-',
+  cache.path='cache/graphics-',
+  dev="pdf",
+  fig.align='center',
+  fig.width=8,
+  fig.height=6,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  size = 'small',
+  tidy=FALSE,
+  prompt=FALSE,
+  comment=NA
+)
+# Tighten the spacing within R output from knitr
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(
+  crop=hook_pdfcrop,
+    inline = function(x) {
+      if(is.numeric(x)){
+          return(prettyNum(x, big.mark=","))
+      }else{
+          return(x)
+       }
+   },
+  document = hook1,
+  par=function(before, options, envir){
+    if (before) {
+    ## load packages before a chunk is executed
+    for (p in options$packages) library(p, character.only = TRUE)
+    }
+    if (before && options$fig.show!='none') par(oma=c(0,0,0,0)+0.01, mar=c(4,4,0,0)+0.01, cex=0.9, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+  }
+)
+opts_knit$set(concordance=TRUE, self.contained=FALSE)
+# For printing code blocks in black and white
+knit_theme$set("greyscale0")
+
+uchicago.lattice.theme=col.mosaic(bw=TRUE)
+uchicago.lattice.theme$box.dot$pch=20
+uchicago.lattice.theme$dot.symbol$pch=20
+uchicago.lattice.theme$plot.symbol$pch=20
+
+uchicago.lattice.theme$box.dot$cex=0.6
+uchicago.lattice.theme$dot.symbol$cex=0.6
+uchicago.lattice.theme$plot.symbol$cex=0.6
+uchicago.lattice.theme$layout.heights$main=0.5
+uchicago.lattice.theme$layout.heights$top.padding=0.0
+uchicago.lattice.theme$layout.heights$bottom.padding=0.0
+uchicago.lattice.theme$layout.widths$left.padding=0.75
+uchicago.lattice.theme$layout.widths$right.padding=0.75
+
+trellis.par.set(theme=uchicago.lattice.theme, warn=FALSE)
+trellis.par.set(fontsize=list(text=11,points=5))
+@
+
+
+
+\begin{document}
+%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks, fragile]{ Continuous Random Variables}
+\vspace{0.2cm}
+
+Let $X$ = the time it takes for a read/write head to locate a specific
+file header on a computer hard disk drive (once the head has been positioned over the
+correct track).
+\vskip1.0cm
+
+\begin{tikzpicture}
+\draw (0,0) circle (1.5cm);
+\draw (0,0) circle (1.3cm);
+\draw (0,0) circle (0.9cm);
+\draw (0,0) circle (0.7cm);
+\draw (0,0) circle (0.5cm);
+\draw (0,0) circle (0.3cm);
+\draw (0,0) circle (0.1cm);
+
+\draw [dashed] (0,0) circle (1.1cm);
+\draw[ultra thick, black, ->] (-0.05, 1.1) -- (0.05,1.1);
+\draw[ultra thick, black, ->] (0.05, -1.1) -- (-0.05,-1.1);
+\draw[ultra thick, black, ->] (-1.1, -0.05) -- (-1.1, 0.05);
+
+\draw[ultra thick, red, ->] (3,0) -- (1.1,0);
+\node at (3.9,0.05) {$x$=0ms};
+
+%\draw[ultra thick, black, ->] (1.1, 0.05) -- (1.1, -0.05);
+\node [blue] at (1.02,0.4) {\textbullet};
+\node at (2.3,0.6) {$x$=0.3ms};
+\node [blue] at (-0.4,-1.02) {\textbullet};
+\node at (0.2,-1.75)  {$x$=7.2ms};
+\node [blue] at (1.06,-.25) {\textbullet};
+\node at (2.3,-0.3) {$x$=9.8ms};
+\end{tikzpicture}
+\vskip0.5cm
+
+
+The disk makes one complete revolution every 10 milliseconds.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We want to answer questions like:
+\begin{enumerate}
+\item
+What is the chance of locating the file...
+in less than 2ms?
+\item
+What is the chance of locating the file...
+in somewhere between 5ms and 7ms?
+\item
+What is the average wait time?\\
+(That is, the average time to locate the file.)
+\end{enumerate}
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$X$ is a random variable.
+
+\begin{itemize}
+\item
+$X$ assigns a number to each outcome of a random experiment
+
+\item
+The experiment results in a random outcome because the disk
+is spinning.
+Once the read/write head reaches the correct track,
+the wait time until the file header comes around to meet
+the read/write head is random.
+
+\item
+Since the disk spins at a constant rate of 10ms per revolution,\\
+we should be able to determine probabilities for wait times.
+\end{itemize}
+\vskip0.5cm
+
+What are the possible values for $X?$
+\vskip0.1cm
+Sample Space = $S_X = \hid{2-}{[0,10)}$\hid{2-}{, which is an interval.}
+\vskip0.2cm
+\hid{3-}{That is, $X$ can take on any real number: $0\le x\le 10$.}
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consider the following probabilities:
+\begin{itemize}
+\item $P(2\le X\le 4)$
+\item $P(1\le X\le 3)$
+\item $P(5\le X\le 7)$
+\end{itemize}
+All are intervals of length 2ms.\\
+Is wait time $X$
+more likely to be in one 2ms interval than another?
+\vskip0.4cm
+
+\begin{tikzpicture}
+\draw (0,0) circle (1.5cm);
+\draw (0,0) circle (1.3cm);
+\draw (0,0) circle (0.9cm);
+\draw (0,0) circle (0.7cm);
+\draw (0,0) circle (0.5cm);
+\draw (0,0) circle (0.3cm);
+\draw (0,0) circle (0.1cm);
+
+\draw [dashed] (0,0) circle (1.1cm);
+\draw[ultra thick, black, ->] (-0.05, 1.1) -- (0.05,1.1);
+\draw[ultra thick, black, ->] (0.05, -1.1) -- (-0.05,-1.1);
+\draw[ultra thick, black, ->] (-1.1, -0.05) -- (-1.1, 0.05);
+
+\draw[ultra thick, red, ->] (3,0) -- (1.1,0);
+\node at (3.9,0.05) {$x$=0ms};
+
+%\draw[ultra thick, black, ->] (1.1, 0.05) -- (1.1, -0.05);
+\node [blue] at (1.02,0.4) {\textbullet};
+\node at (2.3,0.6) {$x$=0.3ms};
+\node [blue] at (-0.4,-1.02) {\textbullet};
+\node at (0.2,-1.75)  {$x$=7.2ms};
+\node [blue] at (1.06,-.25) {\textbullet};
+\node at (2.3,-0.3) {$x$=9.8ms};
+\end{tikzpicture}
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Since all 2ms intervals within [0,10) are equally likely,  then
+\vskip0.2cm
+
+\begin{enumerate}[(A)]
+
+\item
+$P(2\le X\le 4)$ = $P(1\le X\le 3)$ = $P(5\le X\le 7)$
+\vskip0.2cm
+and we say that $X$ has a \textbf{Uniform distribution}\\
+
+\item
+...and for each $x$ in $S_X$, $P(X=x)=c>0.$
+
+\end{enumerate}
+\vskip0.2cm
+
+Wait!  (B) cannot be true! ...because then $P(S_X)=\infty \ne 1$.
+\vskip0.5cm
+
+The sample space $S_X = [0,10)$ is an interval,
+{\bf\em not} a discrete set.
+\vskip0.5cm
+$S_X$ is not countable, listable.
+\vskip0.2cm
+We cannot sum $P(X=x)=c$ for all $x$ in [0,10).
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+So, $X$ is not a discrete random variable.
+\vskip0.5cm
+
+We say that $X$ is a {\bf continuous Uniform random variable}, \\
+since  the sample space is an interval.
+\vskip0.5cm
+
+\begin{itemize}
+\item
+Still, $X$ has a probability distribution.
+\item
+How can we describe the distribution over an interval?
+\item
+We know the  distribution is cannot be just\\
+a ``list" of  outcomes and their probabilities.
+\end{itemize}
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+For discrete r.v., we have no worries.
+\vskip0.5cm
+
+Suppose $Y$ has a \textbf{discrete Uniform distribution} with outcomes \\
+$S_Y=$ even \#'s from 0 to 20 $= \{0, 2, 4, \ldots, 18, 20\}$.
+\vskip0.3cm
+
+For any \textbf{discrete Uniform distribution} with $N$ outcomes,
+each outcome is equally likely with probability $1/N$.
+Here, $N=11$.
+
+\begin{align*}
+\sum_{\text{all } y} P(Y=y)
+& = \sum_{\text{all } y} f(y)
+ = f(0) + f(2) + \cdots + f(18) + f(20)\\
+& = (1/11) + (1/11) + \cdots + (1/11) + (1/11) \;\; = \;\; 1
+\end{align*}
+
+\vskip0.3cm
+For a continuous r.v., we need a different definition of distribution.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Recall the cumulative distribution function (cdf)
+\vskip0.25cm
+
+For any \textbf{discrete} r.v.\ $W$:
+$f(w)$ is a {\bf probability mass func} (pmf)
+\begin{align*}
+\text{cdf } = F(w_0) &= P(W\le w_0)
+ = \sum_{w\le w_0} P(W=w)
+ = \sum_{w\le w_0} f(w)
+\end{align*}
+
+<<echo=FALSE>>=
+n=10
+p=0.65
+ph=0.50
+m=2
+color="lightgrey"
+
+hist.binom.1sided <- function(n, p, ph, m=1, color=0, density=FALSE, varlabel="x") {
+# plots a relative frequency histogram of the binomial distribution
+# shades in the area to the left of sample proportion (ph)
+# m = difference between outcomes in sample space
+# For example, if m=1, outcomes are 0, 1, 2, ..., n
+# If m=2, outcomes are 0, 2, 4, ...., 2n
+        k = m * (0:n)
+        bp = dbinom(0:n, n, p)
+        if (density) {
+          bp = bp / m
+          ylabel="Probability Density"
+        }
+        else {
+          ylabel=paste("f(", varlabel, ") = Probability", sep="")
+        }
+        names(bp) = as.character(k)
+        barplot(bp,space=0, col = color, xlab=paste(varlabel, "0", sep=""), ylab=ylabel, ylim=c(0, 1.1*max(bp)))
+        l <- 0:(ph*n)
+        lbp<-bp[l+1]
+        rect(l,0,l+1,lbp,density=20)
+}
+@
+
+<<echo=FALSE, fig.width=4.2, fig.height=2.2, out.width='0.69\\linewidth'>>=
+hist.binom.1sided(n, p, ph, m, color, density=FALSE, varlabel="w")
+@
+
+\newpage\phantom{X}%\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Probability density = probability per unit $x$.
+\vskip0.2cm
+
+The width of each bar = 2,
+
+so height of each bar = probability density = probability / 2.
+\vskip0.2cm
+
+Area of each bar = probability.
+Combined area of all bars = 1
+\vskip0.4cm
+
+<<echo=FALSE, fig.width=3.8, fig.height=2.8, out.width='0.49\\linewidth', fig.show='hold'>>=
+hist.binom.1sided(n, p, ph, m, color, density=FALSE, varlabel="w")
+hist.binom.1sided(n, p, ph, m, color, density=TRUE, varlabel="w")
+@
+cdf is $F(w_0) = P(W\le w_0)$
+= sum of areas of all bars up to $w_0$.
+
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{\bfseries Continuous Normal:}
+$f(z)$ is a {\bf probability density funcn} (pdf)
+\begin{align*}
+\text{cdf } = F(z_0) &= P(Z\le z_0)
+ = \int_{z\le z_0} ``P(Z=z)"
+ = \int_{z\le z_0} f(z) dz
+\end{align*}
+
+<<echo=FALSE>>=
+# R code for normal density plot
+normal.1sided <-  function(z, avg, stdev, varlabel="z")
+{
+ zlim <- c( min(0, avg - 3.5*stdev), max(20, avg + 3.5*stdev) )
+ z1 <- seq(min(0, zlim[1]), max(20, zlim[2]), 0.1)
+ height.of.curve <- dnorm(z1, m=avg, s=stdev)
+ plot(z1, height.of.curve, type = "l", xlab = "", ylab = paste("f(", varlabel, ") = probability density", sep=""), frame.plot=F, xlim=zlim)
+ z2 <- z1[z1 < avg + z*stdev]
+ len <- length(z2)
+ segments(z2, rep(0, len), z2, height.of.curve[1:len])
+ mtext(paste(varlabel, "0", sep=""), side=1, line=3, at=(avg + stdev*z))
+}
+@
+
+<<echo=FALSE, fig.width=3.8, fig.height=2.8, out.width='0.49\\linewidth', fig.show='hold'>>=
+hist.binom.1sided(n, p, ph, m, color, density=TRUE)
+normal.1sided(z=(ph-p)/sqrt(p*(1-p)), avg=m*n*p, stdev=2*sqrt(n*p*(1-p)), "z")
+@
+
+The cdf is $F(z_0) = P(Z\le z_0)$
+= sum of area under pdf up to $z_0$.\\
+Total area under the pdf = 1.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+By the Fundamental Theorem of Calculus,
+$$\text{pdf } = f(x)=\frac{d}{dx}\int_{-\infty}^x f(u)\; du
+      =\frac{d}{dx} F(x) = F^\prime(x)$$
+\vskip1cm
+
+So, you can get back and forth between the pdf $f(x)$ and cdf $F(x)$.
+\vskip1cm
+
+$$ \text{cdf } = F(x) = P(X\le x)
+ = \int_{-\infty}^x f(u) du $$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Now, back to our hard disk file location situation:
+\vskip0.2cm
+
+$X$ = the time it takes for a read/write head to locate a specific
+file header on a computer hard disk drive (once the head has been positioned over the
+correct track).
+\vskip0.7cm
+
+Since all 2ms intervals within [0,10) are equally likely, \\
+we say that $X$ has a \textbf{continuous Uniform distribution}
+\vskip0.7cm
+
+$P(2\le X\le 4)$ = $P(1\le X\le 3)$ = $P(5\le X\le 7) =$ what value?
+\vskip0.4cm
+
+In fact, \textbf{all} intervals of equal length contained in [0,10)\\
+have  the same probability.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vskip0.25cm
+That is, the area under the curve is the same\\
+for \textbf{all} intervals equal length contained in [0,10).
+\vskip0.25cm
+
+This observation allows us to propose
+a form for the probability density function, $f(x):$  a straight line.
+\vskip0.2cm
+<<echo=FALSE, fig.width=4.2, fig.height=2.2, out.width='0.69\\linewidth'>>=
+a <- 0
+b <- 10
+mu <- (a+b)/2
+fx <- 1/b
+x <- c(a, b)
+y <- c(fx, fx)
+
+plot(x, y, type="l", bty="n", lwd=3, ylim=c(0, 1.2*fx), xlim=c(a-mu/2, b+mu/2), xaxt="n", yaxt="n", ylab="f(x)", xlab="x = wait time")
+lines(c(a,a), c(0,fx))
+lines(c(b,b), c(0,fx))
+abline(h=0, lty=2)
+axis(2, at=c(0,fx), labels=c(0, "H"))
+axis(1, at=c(a, b))
+@
+What is the height, $H$?
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+How tall is this pdf? \quad
+That is, what is the value of $H$?
+<<echo=FALSE, fig.width=4.2, fig.height=2.2, out.width='0.69\\linewidth'>>=
+a <- 0
+b <- 10
+mu <- (a+b)/2
+fx <- 1/b
+x <- c(a, b)
+y <- c(fx, fx)
+
+plot(x, y, type="l", bty="n", lwd=3, ylim=c(0, 1.2*fx), xlim=c(a-mu/2, b+mu/2), xaxt="n", yaxt="n", ylab="f(x)", xlab="x = wait time")
+lines(c(a,a), c(0,fx))
+lines(c(b,b), c(0,fx))
+abline(h=0, lty=2)
+axis(2, at=c(0,fx), labels=c(0, "H"))
+axis(1, at=c(a, b))
+
+#L1 <- 0
+#R1 <- b/5
+#polygon(c(L1, R1, R1, L1), c(0,0,fx,fx), density=10)
+#L2 <- 2*b/5
+#R2 <- 3*b/5
+#polygon(c(L2, R2, R2, L2), c(0,0,fx,fx), density=10)
+#L3 <- 4*b/5
+#R3 <- b
+#polygon(c(L3, R3, R3, L3), c(0,0,fx,fx), density=10)
+#
+#axis(2, at=c(0,fx), labels=c(0, "H"))
+#axis(1, at=c(a, R1, L2, R2, L3, b))
+@
+%Since all 2ms intervals within [0,10) are equally likely, \\
+%The 5 intervals [0,2), [2,4), [4,6), [6,8), and [8,10)\\
+%all have the same probability ($p$) to contain the random outcome $X$.
+%\vskip0.2cm
+%
+%...and the sum of their probabilities must be 1.\quad Why?
+%\vskip0.2cm
+%
+%So, $p+p+p+p+p=1 \implies $p=1/5 = 0.2$
+%\vskip0.2cm
+%
+%Each bar has width 2ms and area = $p=$ width$\times H = 2H$.
+%
+%Thus, the height of the curve must be $H=p/2=0.2/2=0.1=1/10$.
+%
+%
+%This is the \textf{continuous Uniform distribution}.
+%
+
+Total area under the curve above all possible $x$ values must be = 1.
+\vskip0.5cm
+
+The width of the ``box" is  10, with height $H$, and area $1=10(H)$.
+\vskip0.5cm
+
+Thus, $H = f(x) = 1/10 = 0.1$ for any $x$: $0\le x < 10$.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Just to confirm the total area under the curve = 1...
+
+\begin{align*}
+1 &= \int_{-\infty}^{\infty} f(x)\; dx = \int_{-\infty}^{\infty} H\; dx \\
+& = 0\;\; +\;\; \int_0^{10} H\; dx\;\; +\;\; 0\\
+& =  Hx \biggm\lvert_{x=0}^{x=10} \\
+& = H(10) - H(0)
+ = H(10)
+\end{align*}
+Therefore, $H(10) = 1$,
+\vskip0.2cm
+
+which implies $H = 1/10 = 0.10$,\;\; as before.
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+OK.  We had some questions at the start about the wait time $X$.
+
+\begin{enumerate}
+\item
+What is the chance of locating the file...
+in less than 2ms?
+\vskip0.2cm
+
+$P(X \le 2) =\; ?$
+
+\item
+What is the chance of locating the file...
+in somewhere between 5ms and 7ms?
+\vskip0.2cm
+
+$P(5\le X \le 7) =\; ?$
+
+\item
+What is the average wait time?\\
+(That is, the average time to locate the file.)
+\vskip0.2cm
+
+$E(X) =\; ?$
+
+\end{enumerate}
+
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+What is the chance of locating the file...
+in less than 2ms?
+\vskip0.3cm
+
+Educated guess: $P(X\le 2) = 2(0.10) = 0.2$
+\vskip0.3cm
+<<echo=FALSE, fig.width=4.2, fig.height=2.2, out.width='0.69\\linewidth'>>=
+a <- 0
+b <- 10
+mu <- (a+b)/2
+fx <- 1/b
+x <- c(a, b)
+y <- c(fx, fx)
+
+plot(x, y, type="l", bty="n", lwd=3, ylim=c(0, 1.2*fx), xlim=c(a-mu/2, b+mu/2), xaxt="n", yaxt="n", ylab="f(x)", xlab="x = wait time")
+lines(c(a,a), c(0,fx))
+lines(c(b,b), c(0,fx))
+abline(h=0, lty=2)
+
+L1 <- 0
+R1 <- 2
+polygon(c(L1, R1, R1, L1), c(0,0,fx,fx), density=10)
+axis(2, at=c(0,fx), labels=c("0", "0.10"))
+axis(1, at=c(a, R1, b))
+@
+\vskip0.5cm
+
+$\displaystyle{
+P(X \le 2)
+= F(2)
+= \int_{-\infty}^2 f(x) dx
+= \int_0^2 (0.10) dx
+= 0.10(2 - 0)
+= 0.20
+}$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+What is $P(5\le X \le 7) =\; ?$
+\vskip0.5cm
+
+General process to find probabilities of the form $P(a\le X\le b):$
+\begin{align*}
+P(a\le X\le b) &= \int_a^b f(x)\; dx\\
+&= \int_{-\infty}^b f(x)\; dx - \int_{-\infty}^a f(x)\; dx\\
+&= P(X\le b) - P(X\le a)\\
+&= F(b) - F(a)
+\end{align*}
+
+\vskip0.5cm
+$P(5\le X \le 7) = F(7) - F(5) = 7(0.10) - 5(0.10) = 0.20$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Comments and cautions about $F(b) - F(a):$
+\vskip0.5cm
+
+\textbf{For continuous random variables,}
+\vskip0.3cm
+$P(a\le X\le b)=P(a< X\le b)=P(a\le X< b)=P(a< X< b)$
+\vskip0.2cm
+
+since $\displaystyle P(X=a) = \int_a^a f(x)\; dx = 0$\quad and\quad $P(X=b)=0.$
+\vskip0.5cm
+
+\textbf{Be careful!} \\
+\textbf{For discrete random variables,}
+\vskip0.3cm
+
+when $P(Y=k)>0$,
+\vskip0.2cm
+$P(Y \le k) = F(k),$
+\vskip0.2cm
+but...\;\; $P(Y < k) = P(Y \le k-1) = F(k-1).$
+
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+What is the average wait time?
+\vskip0.1cm
+
+Educated guess by symmetry and balance: $\mu=E(X)=5$.
+\vskip0.4cm
+
+\textbf{For discrete random variables,}
+
+$$\mu=E(X) = \sum_{\text{all } x}\; x\; P(X=x) = \sum_{\text{all } x}\; x\; f(x)$$
+\vskip0.4cm
+
+
+\textbf{For continuous random variables:}
+$\displaystyle{ \mu=E(X) = \int_{-\infty}^{\infty}\; x\; f(x)\; dx }$
+\vskip0.2cm
+
+$$E(X) = \int_{-\infty}^{\infty}\; x\; f(x)\; dx
+  = \int_0^{10} \frac{x}{10}\; dx
+  = \left.\frac{x^2}{20}\right|_0^{10}
+  = \frac{10^2}{20} = \frac{100}{20} = 5$$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If $X\sim \textsf{Uniform}(a,b),$ then you can show that
+\begin{align*}
+f(x) &= \frac{1}{b-a} \mbox{ for } a\le x\le b\\\\
+\mu=E(X) & = \frac{a+b}{2} \qquad \mbox{ (midpoint of the range of } X)
+\end{align*}
+
+\vskip1cm
+For $X=$ wait time, $a=0$ and $b=10$, so
+
+$$\mu=E(X)  = \frac{a+b}{2} = \frac{0+10}{2} = \frac{10}{2} = 5$$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+What about variance and standard deviation?
+\vskip0.2cm
+\textbf{Variance (as always) = average squared distance from mean}
+\vskip0.2cm
+
+$\sigma^2 = Var(X) = E[ (X-\mu)^2]$
+\vskip0.4cm
+
+Simple guess for $X=$ wait time standard deviation: $\sigma \approx 2.5$
+\vskip0.4cm
+
+\textbf{For discrete random variables,}
+
+$$Var(X) = \sum_{\text{all } x}\; (x-\mu)^2\; P(X=x) = \sum_{\text{all } x}\; (x-\mu)^2\; f(x)$$
+\vskip0.2cm
+
+
+\textbf{For continuous random variables:}
+\vskip0.3cm
+
+$\displaystyle{ Var(X) = \int_{-\infty}^{\infty}\; (x-\mu)^2\; f(x)\; dx }$
+
+\newpage\phantom{X}\vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+If $X\sim \textsf{Uniform}(a,b),$ then you can show that
+$$ \sigma^2=E[(X-\mu)^2] = \frac{(b-a)^2}{12}$$
+
+\vskip0.5cm
+For $X=$ wait time, $a=0$ and $b=10$, so
+
+$$\sigma^2=Var(X)  = \frac{(b-a)^2}{12} = \frac{(10-0)^2}{12} = \frac{100}{12} = 8.333$$
+\vskip0.3cm
+
+Standard deviation: $\sigma=SD(X)=\sqrt{8.333} = \Sexpr{round(sqrt(100/12),3)}$
+\vskip0.3cm
+
+My guess was $\sigma=2.5$, \\
+just the simple median of possible distances from $\mu=5$.
+
+\end{frame}
+
+\end{document}

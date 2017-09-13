@@ -13,6 +13,8 @@
 \author{David Gerard}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
+\def\hid#1#2{\onslide<#1>{#2}}
+
 
 \begin{document}
 
@@ -188,10 +190,10 @@ Just tell the reader what result you are using.
 \begin{proof}
 \begin{align*}
 \sum (x_i - \bar{x}) &= \sum x_i - \sum \bar{x} \text{ (associative property)}\\
-&= \sum x_i - n\bar{x} \text{ (summing up $n$ identical things)}\\
-&= \sum x_i - n \frac{1}{n}\sum x_i \text{ (definition of $\bar{x}$)}\\
-&= \sum x_i - \sum x_i \text{ ($n$'s cancel)}\\
-&= 0.
+\hid{2-}{&= \sum x_i - n\bar{x} \text{ (summing up $n$ identical things)}\\}
+\hid{3-}{&= \sum x_i - n \frac{1}{n}\sum x_i \text{ (definition of $\bar{x}$)}\\}
+\hid{4-}{&= \sum x_i - \sum x_i \text{ ($n$'s cancel)}\\}
+\hid{5-}{&= 0.}
 \end{align*}
 \end{proof}
 \end{frame}
@@ -291,19 +293,18 @@ Consider again the data $x_1=\Sexpr{x[1]},\;\; x_2=\Sexpr{x[2]},\;\; x_3=\Sexpr{
 What is the $SSD(w)$ function for these data?
 \begin{align*}
   \sum_{i=1}^4 (x_i - w)^2
-  &= (\Sexpr{x[1]} - w)^2
+  \hid{2-}{&= (\Sexpr{x[1]} - w)^2
   + (\Sexpr{x[2]} - w)^2
   + (\Sexpr{x[3]} - w)^2
-  + (\Sexpr{x[4]} - w)^2\\
-  &= (\Sexpr{x[1]^2} - 2\Sexpr{x[1]}w + w^2)
+  + (\Sexpr{x[4]} - w)^2\\}
+  \hid{3-}{&= (\Sexpr{x[1]^2} - 2\Sexpr{x[1]}w + w^2)
   + \Sexpr{x[2]^2} - 2\Sexpr{x[2]}w + w^2)\\
   &\quad + (\Sexpr{x[3]^2} - 2\Sexpr{x[3]}w + w^2)
-  + (\Sexpr{x[4]^2} - 2\Sexpr{x[4]}w + w^2)\\
-&= \Sexpr{a}w^2  - \Sexpr{b} w + \Sexpr{c}
+  + (\Sexpr{x[4]^2} - 2\Sexpr{x[4]}w + w^2)\\}
+\hid{4-}{&= \Sexpr{a}w^2  - \Sexpr{b} w + \Sexpr{c}}
 \end{align*}
-So, as ugly as $\displaystyle{\sum_{i=1}^n (x_i - w)^2}$ originally looks
-
-it's just a smooth quadratic function (convex).
+\hid{5-}{So, as ugly as $\displaystyle{\sum_{i=1}^n (x_i - w)^2}$ originally looks\\
+it's just a smooth quadratic function (convex).}
 \end{frame}
 
 \begin{frame}[fragile]{What does the $SSD(w)$ function look like?}
@@ -423,11 +424,11 @@ mad(c(1, 2, 2, 3, 100))
 \begin{frame}{Proof of first claim (with too much detail)}
 \begin{align*}
 \bar{y} &= \frac{1}{n}\sum_{i = 1}^{n}y_i \text{ (definition of $\bar{y}$)}\\
-&= \frac{1}{n}\sum_{i = 1}^{n}(a + bx_i) \text{ (definition of $y_i$)}\\
-&= \frac{1}{n}\sum_{i = 1}^{n}a + b\frac{1}{n}\sum_{i = 1}^{n}x_i \text{ (associative property)}\\
-&= \frac{1}{n}\sum_{i = 1}^{n}a + b\bar{x} \text{ (definition of $\bar{x}$)}\\
-&= \frac{1}{n}n a + b\bar{x} \text{ ($n$ summations of $a$)}\\
-&= a + b\bar{x} \text{ ($n$'s cancel)}
+\hid{2-}{&=\frac{1}{n}\sum_{i = 1}^{n}(a + bx_i) \text{ (definition of $y_i$)}\\}
+\hid{3-}{&= \frac{1}{n}\sum_{i = 1}^{n}a + b\frac{1}{n}\sum_{i = 1}^{n}x_i \text{ (associative property)}\\}
+\hid{4-}{&= \frac{1}{n}\sum_{i = 1}^{n}a + b\bar{x} \text{ (definition of $\bar{x}$)}\\}
+\hid{5-}{&= \frac{1}{n}n a + b\bar{x} \text{ ($n$ summations of $a$)}\\}
+\hid{6-}{&= a + b\bar{x} \text{ ($n$'s cancel)}}
 \end{align*}
 \end{frame}
 

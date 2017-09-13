@@ -1,0 +1,196 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Stat 234: Statistical Models and Methods I}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Statistics}
+Statistics --- the field of answering questions using \alert{data}.
+
+My own personal projects:
+\begin{itemize}
+\item Phylogenetic inference
+\begin{itemize}
+\item Data: DNA sequences from individuals from three subpopulations of ratsnakes.
+\item Question: Is one of these three populations a hybrid of the other two?
+\end{itemize}
+\item Gene expression analysis
+\begin{itemize}
+\item Data: Measurements of disease status and how ``turned on'' or ``turned off'' many genes are for many individuals.
+\item Question: Which genes are more ``turned on'' when you have a disease?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Statistics}
+Statistics --- the field of answering questions using \alert{data}.
+
+Some more examples
+\begin{itemize}
+\item Google search
+\begin{itemize}
+\item Data: Billions of search queries and user satisfaction of the results.
+\item Question: What results does a user want from a query?
+\end{itemize}
+\item Fraud Detection
+\begin{itemize}
+\item Data: Collection of financial records for a large corporation.
+\item Question: Is there evidence for fraud?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Statistics}
+Three aspects:
+\begin{enumerate}
+\item \hid{-1}{Data Design}
+\item Data Description
+\item Data Inference \hid{3-}{--- informed by Probability}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Data Design}
+Where do we get data?
+
+\begin{itemize}
+\item What is the proper way to collect data?
+\item When can we claim a causal connection between variables? (e.g. Does smoking contribute to cancer? Does better self esteem make students learn better?)
+\item What are some sources of bias (unwanted systematic tendancies in the data collection)?
+\item Only touched on in this course.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Description}
+How do we describe the data we have?
+
+\begin{itemize}
+\item Numerical summaries --- use numbers to describe the data.
+\item Graphical summaries --- use pictures to describe the data.
+\item Exploratory data analysis --- play with the data to get a ``feel'' for it.
+\item Lots of R.
+\item First two weeks of the course.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Inference (Probability)}
+How can we tell if our conclusions from the exploratory data analysis are \alert{real}?
+
+\begin{itemize}
+\item Last eight weeks of the quarter.
+\item Probability --- subdiscipline of Mathematics that provides a foundation for modeling chance events.
+\item Inference --- describing a \alert{population} (probabilistically) by using information from \alert{sample}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Population}
+Statisticians (among others) are interested in characteristics of a large group of people/countries/objects
+\begin{itemize}
+\item Characterize/describe income of U.S. residents.
+\item Characterize/describe success rate of startups.
+\item Characterize/describe tastiness of burgers.
+\end{itemize}
+\begin{block}{population}
+A \alert{population} is a group of individuals/objects/locations for which you want information.
+\end{block}
+\end{frame}
+
+\begin{frame}{Sample}
+It is usually expensive/impossible to measure characteristics of every case in a population.
+\begin{block}{Sample}
+A \alert{sample} is a subgroup of individuals/objects/locations of the population.
+\end{block}
+\begin{itemize}
+\item Measure income from 50 US adults.
+\item Look up time to IPO of 100 startups.
+\item Eat 3 burgers.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Inference}
+From the \alert{sample}, describe the \alert{population} using \alert{probability}.
+
+\begin{itemize}
+\item ``Using a procedure that would capture the true average income of U.S. residents 95\% of the time, we say the mean income is somewhere between $51,502 and $52,498.''
+\item ``Using a procedure that is only wron 5\% of the time, we reject the hypothesis that startups are more likely to succeed than fail.''
+\item ``With overwhelming confidence ($p < 0.001$), we say burgers taste good.''
+\item \pause In this class, we will learn what these statements mean and how to make our own inference statements.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Books: Both are FREE}
+\begin{itemize}
+\item OpenIntro: \\
+{\footnotesize \textcolor{blue}{\url{https://www.openintro.org/stat/textbook.php?stat_book=os}}}
+\begin{itemize}
+\item For data description and data inference.
+\item Low level.
+\end{itemize}
+\item From Algorithms to Z-Scores: Probabilistic and Statistical Modeling in Computer Science: \\
+{\footnotesize \textcolor{blue}{\url{http://heather.cs.ucdavis.edu/probstatbook}}}
+\begin{itemize}
+\item For probability.
+\item Slightly higher level.
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Resources for learning R}
+YOU WILL NEED TO LEARN R ON YOUR OWN FOR THIS COURSE
+
+\begin{itemize}
+\item swirl: \textcolor{blue}{\url{http://swirlstats.com/}}.
+\begin{itemize}
+\item R package with nice interactive tutorials for learning R basics.
+\end{itemize}
+\item Code School: \textcolor{blue}{\url{http://tryr.codeschool.com/}}.
+\begin{itemize}
+\item Another interactive introduction to R.
+\end{itemize}
+\item R Cheat Sheets with important functions:\\
+\textcolor{blue}{\url{https://www.rstudio.com/resources/cheatsheets/}}.
+\item R Base Graphics Cheat Sheet:\\
+{\footnotesize \textcolor{blue}{\url{https://dcgerard.github.io/stat234/base_r_cheatsheet.html}}}.
+\end{itemize}
+\end{frame}
+
+\end{document}

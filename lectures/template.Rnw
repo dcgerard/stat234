@@ -7,9 +7,10 @@
 
 \providecommand{\code}[1]{}
 \renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
 
 
-\title{Describing Shapes of Quantitative Variables with Histograms}
+\title{}
 \author{David Gerard}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
