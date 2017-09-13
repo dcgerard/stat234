@@ -74,7 +74,9 @@ More formally, a \alert{random variable} is a function from the sample space to 
 \begin{itemize}
 \item Suppose $X$ is the number of heads on 4 flips of a fair coin. The domain of $X$ is $\{HHHH, HHHT, HHTH,\ldots, TTTT\}$.
 \item The range of $X$ is $\{0, 1, 2, 3, 4\}$. This is also the sample space of $X$.
-\item $X(HHHH) = \ $ , $X(HTTH) = \ $, $X(HTHT) = \ $ ?
+\item $X(HHHH) = $ \\
+$X(HTTH) = $\\
+$X(HTHT) = $
 \end{itemize}
 \end{frame}
 
@@ -202,7 +204,8 @@ The same way we try to describe the center and spread of data, we often want to 
 \begin{block}{Mean (Expected Value)}
 Suppose $X$ is a discrete random variable, then
 \begin{align*}
-  E[X] &= \sum_{\text{all } x}xP(X = x)\\
+  \text{\alert{mean} of } X &= E[X] \\
+  &= \sum_{\text{all } x}xP(X = x)\\
   &=\sum_{\text{all } x}xf(x)\\
   &=\mu
 \end{align*}
@@ -249,7 +252,26 @@ legend("topright", lty = 2, col = 2, "Mean", lwd = 2)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Mean Intuition IV: Average when simulate a lot of data}
+\begin{frame}{Mean Intuition IV: Average when simulate a lot of data}
+Suppose we chose 100 digits at random using the distribution from Benford's Law
+
+Then we would expect about
+30 1's, 18 2's, 13 3's, etc...
+
+If we take an average of the values we expect, we get:
+
+\begin{align*}
+&\frac{30\times 1 + 18\times 2 + 13\times 3 + \cdots + 5 \times 9}{100}\\
+&= \frac{30}{100}\times 1 + \frac{18}{100}\times 2 + \frac{13}{100}\times 3 + \cdots + \frac{5}{100}\times 9\\
+&= 0.3 \times 1 + 0.18 \times 1 + 0.13 \times 1 + \cdots + 0.05 \times 9\\
+&= \Sexpr{eben}.
+\end{align*}
+
+Notice that we empirically derived the formula for expected value that we used earlier.
+\end{frame}
+
+\begin{frame}[fragile]{Mean Intuition V: Average when simulate a lot of data}
+Recall: most samples of 100 digits won't be exactly equal to \Sexpr{eben}. But if we took a sample of MANY MANY digits, we could get pretty close:
 <<>>=
 ben <- c(0.301, 0.176, 0.125, 0.097,
          0.079, 0.067, 0.058, 0.051, 0.046)
@@ -258,6 +280,16 @@ sample_digits <- sample(x = 1:9, size = 10000,
 mean(sample_digits)
 @
 Recall that the mean is \Sexpr{eben}
+\end{frame}
+
+\begin{frame}[fragile]{Mean Intuition VI: Average when simulate a lot of data}
+<<echo = FALSE>>=
+mean_vec <- cumsum(sample_digits) / 1:length(sample_digits)
+plot(mean_vec, type = "l", xlab = "Number of Observations", ylab = "Sample Mean")
+abline(h = eben, lty = 2, col = 2, lwd = 2)
+legend("topright", "True Mean", lty = 2, lwd = 2, col = 2)
+@
+So $E[X] = $ average when we take a HUGE sample.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -273,7 +305,7 @@ is the \underline{average squared distance from the mean}.
 
 \begin{block}{Variance}
 $$
-\text{Variance of\ } X
+\text{\alert{Variance} of\ } X
 = Var(X)
 = \sigma^2
 = \text{\ ``sigma squared"\ }
@@ -714,6 +746,7 @@ MFFF & 3 & 1 & 1 & MMFF & 2 & 2 & 0 & MMMM & 0 & 4 & 0 \\
 \end{center}
 }
 
+{\small
 \begin{tabular}{r|ccccc}
 $x$ & 0&1&2&3&4\\
 \hline
@@ -735,7 +768,7 @@ $z$ & \hid{5-}{0}&\hid{6-}{1}\\
 \hline
 $f(z)$ & \hid{5-}{11/16}&\hid{6-}{5/16}\\
 \end{tabular}
-
+}
 \end{frame}
 %-------------------------------------------------------
 \begin{frame}{Probability Histograms}
@@ -778,89 +811,102 @@ barplot(fz, space=0, col="grey", xlab="z", ylab="f(z)=probability", ylim=c(0,11/
 
 \end{frame}
 %-------------------------------------------------
-\begin{frame}{Expected Value (Mean)}
-
-What is the average value for each random variable?
-\begin{align*}
-\mbox{Mean of\ } X &= \mu = ``\mbox{myoo}"\\
-&= \mbox{Expected value of\ } X = E(X)\\
-&= \mbox{Balancing point of the probability distribution of\ } X
-\end{align*}
-What is the expected value of $X?$
-%\begin{tabular}{r|ccccc}
-%$x$ & 0&1&2&3&4\\
-%\hline
-%$f(x)$ & 1/16&4/16&6/16&4/16&1/16\\
-%\end{tabular}
-
-<<echo=FALSE, fig.height=2.0>>=
-par(mfrow=c(1,1), oma=c(0,0,0,0)+0.01, mar=c(4,4,1,1)+0.01, cex=1.20)
-x <- 0:4;  fx <- c(1,4,6,4,1)/16
-names(fx) <- as.character(x)
-barplot(fx, space=0, col="grey", xlab="x", ylab="f(x)=probability", ylim=c(0,11/16))
-@
-\vskip-0.3cm
-$E(X) = \hid{2-}{2 \;\;\mbox{\ (by symmetry)}}$\qquad
-\hid{3-}{But $Y$ and $Z$ distns not symmetric.}
-\end{frame}
+% \begin{frame}{Expected Value (Mean)}
+%
+% What is the average value for each random variable?
+% \begin{align*}
+% \mbox{Mean of\ } X &= \mu = ``\mbox{myoo}"\\
+% &= \mbox{Expected value of\ } X = E(X)\\
+% &= \mbox{Balancing point of the probability distribution of\ } X
+% \end{align*}
+% What is the expected value of $X?$
+% %\begin{tabular}{r|ccccc}
+% %$x$ & 0&1&2&3&4\\
+% %\hline
+% %$f(x)$ & 1/16&4/16&6/16&4/16&1/16\\
+% %\end{tabular}
+%
+% <<echo=FALSE, fig.height=2.0>>=
+% par(mfrow=c(1,1), oma=c(0,0,0,0)+0.01, mar=c(4,4,1,1)+0.01, cex=1.20)
+% x <- 0:4;  fx <- c(1,4,6,4,1)/16
+% names(fx) <- as.character(x)
+% barplot(fx, space=0, col="grey", xlab="x", ylab="f(x)=probability", ylim=c(0,11/16))
+% @
+% \vskip-0.3cm
+% $E(X) = \hid{2-}{2 \;\;\mbox{\ (by symmetry)}}$\qquad
+% \hid{3-}{But $Y$ and $Z$ distns not symmetric.}
+% \end{frame}
+% %%%%%%%%%%%%%%%%
+% \begin{frame}{Expected Value (Mean of a r.v.)}
+%
+%
+% {\bf Developing a general formula for expected value:}\\
+% Suppose that 16, 4-child families are chosen at random.\\
+% \medskip
+% We would ``expect" to observe about\\
+% 1 family with all girls $(FFFF)$,\\
+% 4 families with 3 girls $(FFFM, FFMF, FMFF, MFFF)$,\\
+% 6 families with 2 girls,\\
+% 4 families with 1 girl, and\\
+% 1 family with 0 girls.
+% \begin{align*}
+% & \mbox{Average (in the ``long run" using counting theory)}\\
+% & =\frac{\mbox{total \# of girls}}{\mbox{total \# of families}}\\
+% &= \frac{4+3+3+3+3+2+2+2+2+2+2+1+1+1+1+0}{16}\\
+% &= 32/16 = 2
+% \end{align*}
+%
+% \end{frame}
+% %%%%%%%%%%%%%%%%
+% \begin{frame}{Expected Value (Mean of a r.v.)}
+%
+% Then, average number of girls per family (mean of $X$)\\
+% can be rewritten...
+% \begin{align*}
+% & \mbox{Average}\\
+% &= \frac{4 (1 \mbox{\ family}) + 3(4 \mbox{\ families}) + 2(6 \mbox{\ fam})
+%          + 1(4 \mbox{\ fam}) + 0(1 \mbox{\ fam})}{16}\\
+% &= 4\times\frac{1}{16} + 3\times\frac{4}{16} + 2\times\frac{6}{16}
+%    + 1\times\frac{4}{16} + 0\times\frac{1}{16}\\
+% &= \sum_{x=0}^4 x\; P(X=x)\\
+% &= \sum_{x=0}^4 x\; f(x)
+% \end{align*}
+%
+% \end{frame}
+% %%%%%%%%%%%%%%%%
+% \begin{frame}{Expected Value (Mean of a r.v.)}
+% \vspace{0.1cm}
+%
+% {\bf Definition of Expected Value:}
+% \begin{align*}
+% E(X) &= \text{weighted average of all possible outcomes $x$}\\\\
+% E(X) &= \sum_{\text{all\ } x}\; x\; P(X=x)\\[+0.3cm]
+% &= \sum_x\; x\; f(x)\\[+0.3cm]
+% &= \mu
+% \end{align*}
+%
+% This is a long-run average, the average of a random variable,\\
+% and the average for the probability model of the population (or process)
+% distribution from which the data come.
+%
+% \end{frame}
 %%%%%%%%%%%%%%%%
+
+\begin{frame}{Recall: Mean}
+\begin{block}{Mean (Expected Value)}
+Suppose $X$ is a discrete random variable, then
+\begin{align*}
+  \text{\alert{mean} of } X &= E[X] \\
+  &= \sum_{\text{all } x}xP(X = x)\\
+  &=\sum_{\text{all } x}xf(x)\\
+  &=\mu
+\end{align*}
+\end{block}
+\end{frame}
+
 \begin{frame}{Expected Value (Mean of a r.v.)}
 
-
-{\bf Developing a general formula for expected value:}\\
-Suppose that 16, 4-child families are chosen at random.\\
-\medskip
-We would ``expect" to observe about\\
-1 family with all girls $(FFFF)$,\\
-4 families with 3 girls $(FFFM, FFMF, FMFF, MFFF)$,\\
-6 families with 2 girls,\\
-4 families with 1 girl, and\\
-1 family with 0 girls.
-\begin{align*}
-& \mbox{Average (in the ``long run" using counting theory)}\\
-& =\frac{\mbox{total \# of girls}}{\mbox{total \# of families}}\\
-&= \frac{4+3+3+3+3+2+2+2+2+2+2+1+1+1+1+0}{16}\\
-&= 32/16 = 2
-\end{align*}
-
-\end{frame}
-%%%%%%%%%%%%%%%%
-\begin{frame}{Expected Value (Mean of a r.v.)}
-
-Then, average number of girls per family (mean of $X$)\\
-can be rewritten...
-\begin{align*}
-& \mbox{Average}\\
-&= \frac{4 (1 \mbox{\ family}) + 3(4 \mbox{\ families}) + 2(6 \mbox{\ fam})
-         + 1(4 \mbox{\ fam}) + 0(1 \mbox{\ fam})}{16}\\
-&= 4\times\frac{1}{16} + 3\times\frac{4}{16} + 2\times\frac{6}{16}
-   + 1\times\frac{4}{16} + 0\times\frac{1}{16}\\
-&= \sum_{x=0}^4 x\; P(X=x)\\
-&= \sum_{x=0}^4 x\; f(x)
-\end{align*}
-
-\end{frame}
-%%%%%%%%%%%%%%%%
-\begin{frame}{Expected Value (Mean of a r.v.)}
-\vspace{0.1cm}
-
-{\bf Definition of Expected Value:}
-\begin{align*}
-E(X) &= \text{weighted average of all possible outcomes $x$}\\\\
-E(X) &= \sum_{\text{all\ } x}\; x\; P(X=x)\\[+0.3cm]
-&= \sum_x\; x\; f(x)\\[+0.3cm]
-&= \mu
-\end{align*}
-
-This is a long-run average, the average of a random variable,\\
-and the average for the probability model of the population (or process)
-distribution from which the data come.
-
-\end{frame}
-%%%%%%%%%%%%%%%%
-\begin{frame}{Expected Value (Mean of a r.v.)}
-
-Find  expected value (mean) of random variable $Y$.\hfill Is $E(Y)=2?$
+Find  expected value (mean) of random variable $Y$.$
 
 
 $Y =$ \# of male children before the first female child is born
@@ -981,8 +1027,6 @@ For convenience, called ``success" and ``failure"
 The probability of a success ($p$) \\
 is the same for each observation.
 \end{enumerate}
-\vskip1cm
-See IPS page 322-323.
 
 \end{frame}
 %%%%%%%%%%%%%%%%
@@ -1054,8 +1098,6 @@ E(X) &= \sum_{\text{all } x}\; x\; f(x)\\
 &= \sum_{x=0}^n\;\; x\;\;{n\choose x}\; p^x\;(1-p)^{n-x}\\
 &= np
 \end{align*}
-
-Proof?\qquad See HW\#4 ...and easier methods next week.
 
 \end{frame}
 

@@ -348,13 +348,13 @@ What value of $w$ minimizes $SSD(w)$ for any $x_1,x_2,\ldots,x_n$?
 Minimize
 \begin{align*}
 f(w) &= SSD(w) = \sum (x_i - w)^2\\
-&=\sum (x_i^2 - 2wx_i + w^2)\\
-&=\sum x_i^2 - 2w\sum x_i + \sum w^2\\
-&=\sum x_i^2 - 2w\sum x_i + n w^2\\
+\hid{2-}{&=\sum (x_i^2 - 2wx_i + w^2)\\}
+\hid{3-}{&=\sum x_i^2 - 2w\sum x_i + \sum w^2\\}
+\hid{4-}{&=\sum x_i^2 - 2w\sum x_i + n w^2\\}
 \end{align*}
 So
 \begin{align*}
-\frac{d}{dw}f(w) &= -2\sum x_i + 2nw \overset{set}{=} 0 \Rightarrow w = \frac{1}{n}\sum x_i = \bar{x}
+\hid{5-}{\frac{d}{dw}f(w) &= -2\sum x_i + 2nw \overset{set}{=} 0 \Rightarrow w = \frac{1}{n}\sum x_i = \bar{x}}
 \end{align*}
 Second derivative = $2n > 0$, so min (convex so global min).
 \end{frame}
