@@ -149,8 +149,8 @@ A \alert{sample} is a subgroup of individuals/objects/locations of the populatio
 From the \alert{sample}, describe the \alert{population} using \alert{probability}.
 
 \begin{itemize}
-\item ``Using a procedure that would capture the true average income of U.S. residents 95\% of the time, we say the mean income is somewhere between $51,502 and $52,498.''
-\item ``Using a procedure that is only wron 5\% of the time, we reject the hypothesis that startups are more likely to succeed than fail.''
+\item ``Using a procedure that would capture the true average income of U.S. residents 95\% of the time, we say the mean income is somewhere between 51,502 and 52,498.''
+\item ``Using a procedure that is only wrong 5\% of the time, we reject the hypothesis that startups are more likely to succeed than fail.''
 \item ``With overwhelming confidence ($p < 0.001$), we say burgers taste good.''
 \item \pause In this class, we will learn what these statements mean and how to make our own inference statements.
 \end{itemize}
