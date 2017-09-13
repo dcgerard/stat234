@@ -2,7 +2,7 @@
 title: "Home"
 output:
   html_document:
-    toc: false
+    toc: true
 ---
 
 # Useful Links/Downloads
@@ -20,8 +20,25 @@ output:
 - In addition, I wrote up a brief cheat sheet for [R Base graphics](base_r_cheatsheet.html).
     
 
-# Lectures
+# Lectures (each lecture is a topic, not a day of class)
 
+1. Course Outline
+2. Data Basics
+3. Histograms
+4. Center/Spread
+5. Quantiles
+6. Categorical Variables
+7. Case Study: Trump's Tweets
+8. Densities
+9. Normal Density Calculations
+10. Sampling Distributions
+11. Probability and Sets
+12. Proofs from Axioms of Probability
+13. Conditional Probability and Independence
+14. Discrete Random Variables
+15. Continuous Random Variables
+16. Moment Generating Functions
+17. To be continued ...
 
 # Stat Comics That Made Me Laugh
 - SMBC:
