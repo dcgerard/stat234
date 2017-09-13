@@ -20,7 +20,9 @@ output:
 - In addition, I wrote up a brief cheat sheet for [R Base graphics](base_r_cheatsheet.html).
     
 
-# Lectures (each lecture is a topic, not a day of class)
+# Lectures 
+
+Note: Each lecture is a topic, not a day of class.
 
 1. Course Outline
 2. Data Basics
