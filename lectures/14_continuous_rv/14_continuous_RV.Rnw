@@ -10,10 +10,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%% Change the lecture information here %%%%%%%%%%%%%%%%
-\def\chapnum{Week \#3: Continuous Uniform Distribution}
-\title{Title}
-\author{Author Name}
-\date{Lecture Date}
+\def\chapnum{}
+\title{Continuous Random Variables}
+\author{David Gerard\\
+Many slides borrowed from Linda Collins}
+\date{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -151,6 +152,20 @@ trellis.par.set(fontsize=list(text=11,points=5))
 
 
 \begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Continuous random variables.
+\item Uniform distribution.
+\item Mean of continuous random variables.
+\item Variance of continuous random variables.
+\end{itemize}
+\end{frame}
+
 %%%%%%%%%%%%%%%%
 \begin{frame}[allowframebreaks, fragile]{ Continuous Random Variables}
 \vspace{0.2cm}

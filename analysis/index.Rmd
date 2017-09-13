@@ -22,3 +22,21 @@ output:
 
 # Lectures
 
+
+# Stat Comics That Made Me Laugh
+- SMBC:
+    - [Effect size](http://www.smbc-comics.com/comic/bacon-is-literally-cancer)
+    - [Allegorical Evidence](http://www.smbc-comics.com/comic/accuracy-in-kids39-shows)
+    - [Hypothesis Testing](http://www.smbc-comics.com/comic/i-object)
+    - [Bayesian Drinking](http://www.smbc-comics.com/comic/2014-05-23)
+    - [Small Sample Size](http://www.smbc-comics.com/comic/2014-09-17)
+    - [Type I Error Control](http://smbc-comics.com/comic/false-positives)
+- XKCD:
+    - [Outliers](https://xkcd.com/539/)
+    - [Correlation and Causation](https://xkcd.com/552/)
+    - [Extrapolation](https://xkcd.com/605/)
+    - [Bad Plots](https://xkcd.com/833/)
+    - [Publication Bias](https://xkcd.com/882/)
+    - [Usually Use Proportions, not Counts](https://www.xkcd.com/1138/)
+    - [p-values](https://www.xkcd.com/1478/)
+
