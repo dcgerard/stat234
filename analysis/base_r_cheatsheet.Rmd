@@ -26,25 +26,25 @@ data(mpg, package = "ggplot2")
 The main functions that I generally use for plotting are
 
 - Plotting Functions
-    - `plot`
-    - `lines`
-    - `par`
-    - `hist`
-    - `boxplot`
-    - `text`
-    - `legend`
-    - `mosaicplot`
-    - `barplot`
-    - `jitter`
-    - `rug`
-    - `polygon`
-    - `points`
-    - `mtext`
+    - `plot`: Makes scatterplots, line plots, among other plots.
+    - `lines`: Adds lines to an already-made plot.
+    - `par`: Change plotting options.
+    - `hist`: Makes a histogram.
+    - `boxplot`: Makes a boxplot.
+    - `text`: Adds text to an already-made plot.
+    - `legend`: Adds a legend to an already-made plot.
+    - `mosaicplot`: Makes a mosaic plot.
+    - `barplot`: Makes a bar plot.
+    - `jitter`: Adds a small value to data (so points don't overlap on a plot).
+    - `rug`: Adds a rugplot to an already-made plot.
+    - `polygon`: Adds a shape to an already-made plot.
+    - `points`: Adds a scatterplot to an already-made plot.
+    - `mtext`: Adds text on the edges of an already-made plot.
 - Sometimes needed to transform data (or make new data) to make appropriate plots:
-    - `table`
-    - `density`
-    - `loess`
-    - `predict`
+    - `table`: Builds frequency and two-way tables.
+    - `density`: Calculates the density.
+    - `loess`: Calculates a smooth line.
+    - `predict`: Predicts new values based on a model.
 
 All of the plotting functions have arguments that control the way the plot looks. You should read about these arguments. In particular, read carefully the help page `?plot.default`. Useful ones are:
 
