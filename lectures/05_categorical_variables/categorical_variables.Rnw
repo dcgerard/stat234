@@ -105,19 +105,19 @@ barplot(prop.table(table(email$number))) ## need table
 @
 \end{frame}
 
-\begin{frame}[fragile]{Using ggplot2}
-<<>>=
-qplot(email$number, geom = "bar")
-@
-\end{frame}
-
-\begin{frame}[fragile]{Barchart of proportions using ggplot2}
-<<>>=
-ggplot(email, aes(number)) +
-  geom_bar(aes(y=..count../sum(..count..))) +
-  ylab("proportion")
-@
-\end{frame}
+% \begin{frame}[fragile]{Using ggplot2}
+% <<>>=
+% qplot(email$number, geom = "bar")
+% @
+% \end{frame}
+%
+% \begin{frame}[fragile]{Barchart of proportions using ggplot2}
+% <<>>=
+% ggplot(email, aes(number)) +
+%   geom_bar(aes(y=..count../sum(..count..))) +
+%   ylab("proportion")
+% @
+% \end{frame}
 
 \begin{frame}[fragile]{Piecharts}
 <<>>=
@@ -125,17 +125,17 @@ pie(table(email$number))
 @
 \end{frame}
 
-\begin{frame}[fragile]{Piecharts in GGplot}
-<<>>=
-qplot(x = factor(1), fill = email$number,
-      geom = "bar", width = 1) +
-  coord_polar(theta = "y")
-@
-\end{frame}
+% \begin{frame}[fragile]{Piecharts in GGplot}
+% <<>>=
+% qplot(x = factor(1), fill = email$number,
+%       geom = "bar", width = 1) +
+%   coord_polar(theta = "y")
+% @
+% \end{frame}
 
 \begin{frame}{Never use picharts}
 \begin{itemize}
-\item It's hard to make a pichart in ggplot2 because \emph{they are bad plots}.
+% \item It's hard to make a pichart in ggplot2 because \emph{they are bad plots}.
 \item Humans find it easier to distinguish height rather than distinguish area.
 \item Which category has more emails: ``big'' or ``none''.
 \item In which plot is it easier to see which category has more emails?
@@ -327,21 +327,21 @@ Width proportional to the counts in each \code{number} category.\\
 What does the bottom left box represent?
 \end{frame}
 
-\begin{frame}[fragile]{Segmented barplot with ggplot2}
-<<>>=
-qplot(email$spam, fill = email$number,
-      geom = "bar")
-@
-\end{frame}
-
-\begin{frame}[fragile]{Mosaic plot with ggplot2 and ggmosaic}
-<<message=FALSE, warning = FALSE, fig.height = 3.5>>=
-library(ggmosaic)
-ggplot(data = email) +
-  geom_mosaic(aes(x = product(number, spam),
-                  fill = number))
-@
-\end{frame}
+% \begin{frame}[fragile]{Segmented barplot with ggplot2}
+% <<>>=
+% qplot(email$spam, fill = email$number,
+%       geom = "bar")
+% @
+% \end{frame}
+%
+% \begin{frame}[fragile]{Mosaic plot with ggplot2 and ggmosaic}
+% <<message=FALSE, warning = FALSE, fig.height = 3.5>>=
+% library(ggmosaic)
+% ggplot(data = email) +
+%   geom_mosaic(aes(x = product(number, spam),
+%                   fill = number))
+% @
+% \end{frame}
 
 \begin{frame}{What's important in a mosaic plot?}
 \begin{itemize}

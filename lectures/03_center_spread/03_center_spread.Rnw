@@ -66,7 +66,7 @@ opts_chunk$set(
 <<message=FALSE>>=
 library(tidyverse)
 data(satGPA, package = "openintro")
-qplot(satGPA$SATV, bins = 15, xlab = "SATV")
+hist(satGPA$SATV, breaks = 15, xlab = "SATV")
 @
 \end{frame}
 
@@ -83,17 +83,17 @@ $$
 \begin{frame}[fragile]{Mean makes sense here}
 <<>>=
 xbar <- mean(satGPA$SATV)
-qplot(satGPA$SATV, bins = 15, xlab = "SATV") +
-  geom_vline(xintercept = xbar, color = "red")
+hist(satGPA$SATV, breaks = 15, xlab = "SATV")
+abline(v = xbar, col = "red")
 @
 \end{frame}
 
 \begin{frame}[fragile]{But what about here?}
 <<message=FALSE, fig.height=3.5>>=
-trump <- read_csv("../../data/trump.csv")
+trump <- read.csv("../../data/trump.csv")
 xbar <- mean(trump$length)
-qplot(trump$length, bins = 30, xlab = "length") +
-  geom_vline(xintercept = xbar, color = "red")
+hist(trump$length, breaks = 30, xlab = "length")
+abline(v = xbar, col = "red")
 @
 \end{frame}
 
@@ -130,9 +130,9 @@ The \alert{median} is the midpoint of a distribution. Half of the observations a
 \begin{frame}[fragile]{Trump's Tweets}
 <<fig.height=3.5>>=
 M <- median(trump$length)
-qplot(trump$length, bins = 30, xlab = "length") +
-  geom_vline(xintercept = xbar, color = "red") +
-  geom_vline(xintercept = M, color = "blue")
+hist(trump$length, breaks = 30, xlab = "length")
+abline(v = xbar, col = "red")
+abline(v = M, col = "blue")
 @
 \end{frame}
 
@@ -253,8 +253,8 @@ sadvec <- rep(NA, length = length(pv))
 for (index in 1:length(pv)) {
   sadvec[index] <- SAD(pv[index])
 }
-qplot(pv, sadvec, geom = "line", xlab = "x", ylab = "SAD(x)") +
-  scale_x_continuous(breaks = x)
+plot(pv, sadvec, type = "l", xlab = "x", ylab = "SAD(x)", xaxt = "n")
+axis(side = 1, at = x)
 @
 
 Where is the function $SAD(w)$ smallest (minimized)?
@@ -273,9 +273,9 @@ sad_vec <- rep(NA, length(potential_length))
 for (index in 1:length(potential_length)) {
   sad_vec[index] <- SAD(potential_length[index])
 }
-qplot(potential_length, sad_vec, geom = "line", ylab = "SAD(w)", xlab = "w") +
-  geom_vline(xintercept = m, color = "red") +
-  annotate("text", label = "median", x = 114, y = 43480)
+plot(potential_length, sad_vec, type = "l", ylab = "SAD(w)", xlab = "w")
+abline(v = m, col = "red")
+text(x = 114, y = 43480, labels = "median")
 @
 \vskip-0.25cm
 Where is the function $SAD(w)$ smallest (minimized)?
@@ -315,8 +315,8 @@ sdvec <- rep(NA, length = length(pv))
 for (index in 1:length(pv)) {
   sdvec[index] <- SSD(pv[index])
 }
-qplot(pv, sdvec, geom = "line", xlab = "w", ylab = "SSD(w)") +
-  scale_x_continuous(breaks = x)
+plot(pv, sdvec, type = "l", xlab = "w", ylab = "SSD(w)", xaxt = "n")
+axis(side = 1, at = x)
 @
 In this case $SSD(w) = \Sexpr{a}w^2  - \Sexpr{b} w + \Sexpr{c}$
 \end{frame}

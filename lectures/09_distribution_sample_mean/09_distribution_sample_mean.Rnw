@@ -44,7 +44,6 @@ opts_chunk$set(
 
 \begin{frame}{Learning Objectives}
 \begin{itemize}
-\item Sample/population
 \item Statistics/parameters
 \item Sampling Distribution
 \item Sections 1.3.1, 1.3.2, 1.3.3, 4.1, 4.4 in DBC
@@ -53,7 +52,7 @@ opts_chunk$set(
 
 \section{Population and Sample}
 
-\begin{frame}{Population and Sample}
+\begin{frame}{Recall: Population and Sample}
 \begin{block}{population}
 A \alert{population} is a set of cases (observational units) about which information is wanted.
 \end{block}

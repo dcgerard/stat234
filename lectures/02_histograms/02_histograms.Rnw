@@ -148,21 +148,21 @@ qplot(x, geom = "histogram", main = "histogram of x",
 
 \begin{frame}[fragile]{Symmetric --- SAT scores}
 <<message=FALSE>>=
-qplot(satGPA$SATV, xlab="SAT Verbal", bins = 15)
+hist(satGPA$SATV, xlab="SAT Verbal", breaks = 15)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Skewed Right: Email Length}
 <<message=FALSE>>=
 data("email", package = "openintro")
-qplot(email$num_char)
+hist(email$num_char)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Skewed Left: Trump's Tweet Length}
 <<echo = FALSE, message = FALSE>>=
 trump <- read_csv("../../data/trump.csv")
-qplot(trump$length, bins = 20)
+hist(trump$length, breaks = 20)
 @
 \end{frame}
 
@@ -186,28 +186,28 @@ A \alert{mode} is a prominent peak in a distribution. A distribution with one mo
 \begin{frame}[fragile]{Unimodal}
 <<echo=FALSE, message=FALSE>>=
 x <- rnorm(1000)
-qplot(x)
+hist(x)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Unimodal}
 <<echo=FALSE, message=FALSE>>=
 x <- rgamma(1000, shape = 1, rate = 1)
-qplot(x)
+hist(x)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Bimodal}
 <<echo=FALSE, message=FALSE>>=
 x <- c(rnorm(500, mean = -1.5), rnorm(500, mean = 1.5))
-qplot(x)
+hist(x, breaks = 30)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Multimodal}
 <<echo=FALSE, message=FALSE>>=
 x <- c(rnorm(300, mean = -2), rnorm(300, mean = 2), rnorm(300, mean = 6))
-qplot(x)
+hist(x, breaks = 30)
 @
 \end{frame}
 
@@ -255,13 +255,13 @@ options(width = 60)
 
 \begin{frame}[fragile]{Metacritic Score: Mostly Symmetric?}
 <<>>=
-qplot(movie$meta, bins = 11)
+hist(movie$meta, breaks = 10)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Metacritic Score: Maybe some Modality?}
 <<>>=
-qplot(movie$meta, bins = 21)
+hist(movie$meta, breaks = 20)
 @
 \end{frame}
 

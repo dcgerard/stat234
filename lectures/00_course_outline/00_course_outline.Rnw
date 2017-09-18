@@ -43,8 +43,17 @@ opts_chunk$set(
   \titlepage
 \end{frame}
 
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Three aspects of Statistics
+\item Population/Sample
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Statistics}
 Statistics --- the field of answering questions using \alert{data}.
+
+Data --- Numerical or qualitative descriptions of people/places/things that we want to study.
 
 My own personal projects:
 \begin{itemize}
@@ -94,7 +103,7 @@ Where do we get data?
 \begin{itemize}
 \item What is the proper way to collect data?
 \item When can we claim a causal connection between variables? (e.g. Does smoking contribute to cancer? Does better self esteem make students learn better?)
-\item What are some sources of bias (unwanted systematic tendancies in the data collection)?
+\item What are some sources of bias (unwanted systematic tendencies in the data collection)?
 \item Only touched on in this course.
 \end{itemize}
 \end{frame}
@@ -190,6 +199,14 @@ YOU WILL NEED TO LEARN R ON YOUR OWN FOR THIS COURSE
 \textcolor{blue}{\url{https://www.rstudio.com/resources/cheatsheets/}}.
 \item R Base Graphics Cheat Sheet:\\
 {\footnotesize \textcolor{blue}{\url{https://dcgerard.github.io/stat234/base_r_cheatsheet.html}}}.
+\item R-tutorial: This Wednesday and Thursday from 6pm to 8pm in Eckhart 133. You should go to one if you can.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Administrative Slide}
+\begin{itemize}
+\item My office hours: Tuesdays 11:00 am -- 12:20 pm in Jones 226.\medskip
+\item Get everything else from the syllabus on Canvas.
 \end{itemize}
 \end{frame}
 

@@ -292,34 +292,57 @@ boxplot(movie[, 2:5])
 @
 \end{frame}
 
-\begin{frame}[fragile]{Using ggplot2}
-<<fig.height=3.5>>=
-movie_long <- gather(movie, key = "system",
-                     value = "score", rt:fan)
-ggplot(movie_long, aes(x = system, y = score)) +
-  geom_boxplot()
+% \begin{frame}[fragile]{Using ggplot2}
+% <<fig.height=3.5>>=
+% movie_long <- gather(movie, key = "system",
+%                      value = "score", rt:fan)
+% ggplot(movie_long, aes(x = system, y = score)) +
+%   geom_boxplot()
+% @
+% \end{frame}
+%
+% \begin{frame}[fragile]{What does movie\_long look like?}
+% <<>>=
+% movie_long
+% @
+% \end{frame}
+
+% \begin{frame}[fragile]{What do you notice?}
+% <<echo=FALSE>>=
+% ggplot(movie_long, aes(x = system, y = score)) +
+%   geom_boxplot()
+% @
+% \end{frame}
+
+\begin{frame}[fragile]{Another Option: stacked histograms}
+<<eval=FALSE>>=
+old_parameters <- par(mfrow = c(4, 1))
+hist(movie$rt, xlim = c(0, 5))
+hist(movie$meta, xlim = c(0, 5))
+hist(movie$imdb, xlim = c(0, 5))
+hist(movie$fan, xlim = c(0, 5))
+par(old_parameters)
+@
+IMPORTANT: Same $x$-limits for all plots when stacking vertically.
+\end{frame}
+
+\begin{frame}[fragile]{Another Option: stacked histograms}
+<<echo=FALSE, fig.height=5.5>>=
+old_parameters <- par(mfrow = c(4, 1), mar = c(4,4,0,0) + 0.1, mgp = c(1.2, 0.5, 0))
+hist(movie$rt, main = "", xlim = c(0, 5))
+hist(movie$meta, main = "", xlim = c(0, 5))
+hist(movie$imdb, main = "", xlim = c(0, 5))
+hist(movie$fan, main = "", xlim = c(0, 5))
+par(old_parameters)
 @
 \end{frame}
 
-\begin{frame}[fragile]{What does movie\_long look like?}
-<<>>=
-movie_long
-@
-\end{frame}
-
-\begin{frame}[fragile]{What do you notice?}
-<<echo=FALSE>>=
-ggplot(movie_long, aes(x = system, y = score)) +
-  geom_boxplot()
-@
-\end{frame}
-
-\begin{frame}[fragile]{Another option: stacked histograms}
-<<>>=
-ggplot(movie_long, aes(x = score)) +
-  geom_histogram(bins = 20) +
-  facet_grid(system ~ ., scales = "free_y")
-@
-\end{frame}
+% \begin{frame}[fragile]{Another option: stacked histograms}
+% <<>>=
+% ggplot(movie_long, aes(x = score)) +
+%   geom_histogram(bins = 20) +
+%   facet_grid(system ~ ., scales = "free_y")
+% @
+% \end{frame}
 
 \end{document}

@@ -128,13 +128,13 @@ lines(md$x, md$y)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Using ggplot2}
-<<>>=
-qplot(movie$meta, ..density.., geom="histogram",
-      bins = 15) +
-  geom_line(stat = "density")
-@
-\end{frame}
+% \begin{frame}[fragile]{Using ggplot2}
+% <<>>=
+% qplot(movie$meta, ..density.., geom="histogram",
+%       bins = 15) +
+%   geom_line(stat = "density")
+% @
+% \end{frame}
 
 \begin{frame}{Density example}
 <<echo = FALSE>>=
@@ -398,11 +398,11 @@ qqline(satGPA$SATV)
 @
 \end{frame}
 
-\begin{frame}[fragile]{qqplot in ggplot2}
-<<>>=
-qplot(sample = satGPA$SATV, geom = "qq")
-@
-\end{frame}
+% \begin{frame}[fragile]{qqplot in ggplot2}
+% <<>>=
+% qplot(sample = satGPA$SATV, geom = "qq")
+% @
+% \end{frame}
 
 \begin{frame}[fragile]{But what does a ``good'' qqplot look like?}
 <<echo=FALSE>>=
