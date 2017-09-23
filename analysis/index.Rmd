@@ -24,13 +24,13 @@ output:
 
 Note: Each lecture is a topic, not a day of class.
 
-1. Course Outline
-2. Data Basics
-3. Histograms
-4. Center/Spread
-5. Quantiles
-6. Categorical Variables
-7. Case Study: Trump's Tweets
+1. [Course Outline](00_course_outline.pdf)
+2. [Data Basics](01_data_basics.pdf)
+3. [Histograms](02_histograms.pdf)
+4. [Center/Spread](03_center_spread.pdf)
+5. [Quantiles](04_quantiles.pdf)
+6. [Categorical Variables](05_categorical_variables.pdf)
+7. [Case Study: Trump's Tweets](06_trump_case.pdf)
 8. Densities
 9. Normal Density Calculations
 10. Sampling Distributions

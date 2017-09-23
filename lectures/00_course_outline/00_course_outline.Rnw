@@ -176,6 +176,7 @@ From the \alert{sample}, describe the \alert{population} using \alert{probabilit
 \item From Algorithms to Z-Scores: Probabilistic and Statistical Modeling in Computer Science: \\
 {\footnotesize \textcolor{blue}{\url{http://heather.cs.ucdavis.edu/probstatbook}}}
 \begin{itemize}
+\item Haven't decided if we'll use it yet.
 \item For probability.
 \item Slightly higher level.
 \end{itemize}
@@ -205,6 +206,7 @@ YOU WILL NEED TO LEARN R ON YOUR OWN FOR THIS COURSE
 
 \begin{frame}{Administrative Slide}
 \begin{itemize}
+\item Math prerequisites: Read through Part 0 of math supplement. Do a few exercises.\medskip
 \item My office hours: Tuesdays 11:00 am -- 12:20 pm in Jones 226.\medskip
 \item Get everything else from the syllabus on Canvas.
 \end{itemize}
