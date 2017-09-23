@@ -131,11 +131,8 @@ hist(x, main = "histogram of x")
 @
 \end{frame}
 
-\begin{frame}[fragile]{histogram using ggplot2}
-<<>>=
-qplot(x, geom = "histogram", main = "histogram of x",
-      breaks = c(1, 2, 3, 4))
-@
+\begin{frame}[fragile]{Concerning Plots}
+\includegraphics[scale = 0.45]{xkcd_plots}
 \end{frame}
 
 \begin{frame}{Describing Distributions}
@@ -259,7 +256,7 @@ hist(movie$meta, breaks = 10)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Metacritic Score: Maybe some Modality?}
+\begin{frame}[fragile]{Metacritic Score: Maybe some Multimodality?}
 <<>>=
 hist(movie$meta, breaks = 20)
 @
