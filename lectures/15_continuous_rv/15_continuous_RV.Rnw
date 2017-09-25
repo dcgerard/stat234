@@ -13,7 +13,7 @@
 \def\chapnum{}
 \title{Continuous Random Variables}
 \author{David Gerard\\
-Many slides borrowed from Linda Collins}
+Most slides borrowed from Linda Collins}
 \date{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -54,27 +54,28 @@ Many slides borrowed from Linda Collins}
 %%%%%%%%%%%% End of shortcuts (macros) ##############
 
 %%%%%%%%% One way to hide answers until you want to show them %%%%%%%%%
-\def\Hide#1#2{\ul{~~~\onslide<#1>{\alert{#2}}~~~}}
-\def\hide#1#2{\ul{~~\onslide<#1>{\alert{#2}}~~}}
-\def\hid#1#2{\onslide<#1>{\alert{#2}}}
+\def\Hide#1#2{\ul{~~~\onslide<#1>{#2}~~~}}
+\def\hide#1#2{\ul{~~\onslide<#1>{#2}~~}}
+\def\hid#1#2{\onslide<#1>{#2}}
 % Choose the color of answers here too
 \setbeamercolor{alerted text}{fg=darkgray}
 %\setbeamercolor{alerted text}{fg=black}
 
-%------Centered Page Number Setup ------
-\defbeamertemplate{footline}{centered page number}
-{%
-  \hspace*{\fill}%
-  %\usebeamercolor[fg]{page number in head/foot}%
-  %\usebeamerfont{page number in head/foot}%
-  \tiny \chapnum: Page \insertframenumber\, of \inserttotalframenumber%
-  \hspace*{\fill}\vskip2pt%
-}
-%\setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
-\setbeamertemplate{footline}[centered page number]
-%--------------------------------
+% %------Centered Page Number Setup ------
+% \defbeamertemplate{footline}{centered page number}
+% {%
+%   \hspace*{\fill}%
+%   %\usebeamercolor[fg]{page number in head/foot}%
+%   %\usebeamerfont{page number in head/foot}%
+%   \tiny \chapnum: Page \insertframenumber\, of \inserttotalframenumber%
+%   \hspace*{\fill}\vskip2pt%
+% }
+% %\setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+% \setbeamertemplate{footline}[centered page number]
+% %--------------------------------
 
-%\usetheme{Copenhagen}
+\usetheme{metropolis}
+\metroset{block=fill}
 \setbeamertemplate{navigation symbols}{}
 \usepackage[english]{babel}
 \def\ul{\underline}
@@ -167,13 +168,12 @@ trellis.par.set(fontsize=list(text=11,points=5))
 \end{frame}
 
 %%%%%%%%%%%%%%%%
-\begin{frame}[allowframebreaks, fragile]{ Continuous Random Variables}
+\begin{frame}[fragile]{Continuous Random Variables i}
 \vspace{0.2cm}
 
 Let $X$ = the time it takes for a read/write head to locate a specific
 file header on a computer hard disk drive (once the head has been positioned over the
 correct track).
-\vskip1.0cm
 
 \begin{tikzpicture}
 \draw (0,0) circle (1.5cm);
@@ -200,12 +200,11 @@ correct track).
 \node [blue] at (1.06,-.25) {\textbullet};
 \node at (2.3,-0.3) {$x$=9.8ms};
 \end{tikzpicture}
-\vskip0.5cm
-
 
 The disk makes one complete revolution every 10 milliseconds.
+\end{frame}
 
-\newpage\phantom{X}\vskip0.1cm
+\begin{frame}[fragile]{Continuous Random Variables ii}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We want to answer questions like:
 \begin{enumerate}
@@ -220,9 +219,9 @@ What is the average wait time?\\
 (That is, the average time to locate the file.)
 \end{enumerate}
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\begin{frame}{Continuous Random Variables iii}
 $X$ is a random variable.
 
 \begin{itemize}
@@ -248,9 +247,9 @@ Sample Space = $S_X = \hid{2-}{[0,10)}$\hid{2-}{, which is an interval.}
 \vskip0.2cm
 \hid{3-}{That is, $X$ can take on any real number: $0\le x\le 10$.}
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\begin{frame}{Continuous Random Variables iv}
 Consider the following probabilities:
 \begin{itemize}
 \item $P(2\le X\le 4)$
@@ -288,42 +287,34 @@ more likely to be in one 2ms interval than another?
 \node at (2.3,-0.3) {$x$=9.8ms};
 \end{tikzpicture}
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{Continuous Random Variables v}
 Since all 2ms intervals within [0,10) are equally likely,  then
-\vskip0.2cm
 
 \begin{enumerate}[(A)]
-
-\item
-$P(2\le X\le 4)$ = $P(1\le X\le 3)$ = $P(5\le X\le 7)$
-\vskip0.2cm
-and we say that $X$ has a \textbf{Uniform distribution}\\
-
-\item
-...and for each $x$ in $S_X$, $P(X=x)=c>0.$
-
+\item $P(2\le X\le 4)$ = $P(1\le X\le 3)$ = $P(5\le X\le 7)$
+and we say that $X$ has a \alert{Uniform distribution}\\
+\item ...and for each $x$ in $S_X$, $P(X=x)=c>0.$
 \end{enumerate}
-\vskip0.2cm
 
 Wait!  (B) cannot be true! ...because then $P(S_X)=\infty \ne 1$.
-\vskip0.5cm
 
 The sample space $S_X = [0,10)$ is an interval,
-{\bf\em not} a discrete set.
-\vskip0.5cm
+\alert{\em not} a discrete set.
+
 $S_X$ is not countable, listable.
-\vskip0.2cm
+
 We cannot sum $P(X=x)=c$ for all $x$ in [0,10).
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{Continuous Random Variables iv}
 So, $X$ is not a discrete random variable.
-\vskip0.5cm
 
-We say that $X$ is a {\bf continuous Uniform random variable}, \\
+We say that $X$ is a \alert{continuous Uniform random variable}, \\
 since  the sample space is an interval.
 \vskip0.5cm
 
@@ -337,8 +328,10 @@ We know the  distribution is cannot be just\\
 a ``list" of  outcomes and their probabilities.
 \end{itemize}
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Continuous Random Variables vii}
 For discrete r.v., we have no worries.
 \vskip0.5cm
 
@@ -360,9 +353,10 @@ Here, $N=11$.
 \vskip0.3cm
 For a continuous r.v., we need a different definition of distribution.
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]{cdf of Discrete Random Variables i}
 Recall the cumulative distribution function (cdf)
 \vskip0.25cm
 
@@ -408,19 +402,18 @@ hist.binom.1sided <- function(n, p, ph, m=1, color=0, density=FALSE, varlabel="x
 hist.binom.1sided(n, p, ph, m, color, density=FALSE, varlabel="w")
 @
 
-\newpage\phantom{X}%\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{cdf of Discrete Random Variables ii}
 Probability density = probability per unit $x$.
-\vskip0.2cm
 
 The width of each bar = 2,
 
 so height of each bar = probability density = probability / 2.
-\vskip0.2cm
 
 Area of each bar = probability.
 Combined area of all bars = 1
-\vskip0.4cm
 
 <<echo=FALSE, fig.width=3.8, fig.height=2.8, out.width='0.49\\linewidth', fig.show='hold'>>=
 hist.binom.1sided(n, p, ph, m, color, density=FALSE, varlabel="w")
@@ -428,11 +421,10 @@ hist.binom.1sided(n, p, ph, m, color, density=TRUE, varlabel="w")
 @
 cdf is $F(w_0) = P(W\le w_0)$
 = sum of areas of all bars up to $w_0$.
-
-
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{cdf of Continuous Random Variables}
 {\bfseries Continuous Normal:}
 $f(z)$ is a {\bf probability density funcn} (pdf)
 \begin{align*}
@@ -465,8 +457,10 @@ The cdf is $F(z_0) = P(Z\le z_0)$
 = sum of area under pdf up to $z_0$.\\
 Total area under the pdf = 1.
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Relationship between cdf and pdf for Continuous RV's}
 
 By the Fundamental Theorem of Calculus,
 $$\text{pdf } = f(x)=\frac{d}{dx}\int_{-\infty}^x f(u)\; du
@@ -479,7 +473,9 @@ So, you can get back and forth between the pdf $f(x)$ and cdf $F(x)$.
 $$ \text{cdf } = F(x) = P(X\le x)
  = \int_{-\infty}^x f(u) du $$
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Uniform Distribution i}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Now, back to our hard disk file location situation:
@@ -500,7 +496,9 @@ $P(2\le X\le 4)$ = $P(1\le X\le 3)$ = $P(5\le X\le 7) =$ what value?
 In fact, \textbf{all} intervals of equal length contained in [0,10)\\
 have  the same probability.
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Uniform Distribution ii}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vskip0.25cm
 That is, the area under the curve is the same\\
@@ -527,7 +525,9 @@ axis(1, at=c(a, b))
 @
 What is the height, $H$?
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Uniform Distribution iii}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 How tall is this pdf? \quad
@@ -587,7 +587,9 @@ The width of the ``box" is  10, with height $H$, and area $1=10(H)$.
 
 Thus, $H = f(x) = 1/10 = 0.1$ for any $x$: $0\le x < 10$.
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Uniform Distribution iv}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Just to confirm the total area under the curve = 1...
 
@@ -595,15 +597,18 @@ Just to confirm the total area under the curve = 1...
 1 &= \int_{-\infty}^{\infty} f(x)\; dx = \int_{-\infty}^{\infty} H\; dx \\
 & = 0\;\; +\;\; \int_0^{10} H\; dx\;\; +\;\; 0\\
 & =  Hx \biggm\lvert_{x=0}^{x=10} \\
-& = H(10) - H(0)
- = H(10)
+& = 10\times H - 0\times H
+ = 10\times H
 \end{align*}
-Therefore, $H(10) = 1$,
+Therefore, $10\times H = 1$,
 \vskip0.2cm
 
 which implies $H = 1/10 = 0.10$,\;\; as before.
 
-\newpage\phantom{X}\vskip0.1cm
+
+\end{frame}
+
+\begin{frame}{Uniform Distribution v}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 OK.  We had some questions at the start about the wait time $X$.
 
@@ -631,15 +636,15 @@ $E(X) =\; ?$
 
 \end{enumerate}
 
+\end{frame}
 
-\newpage\phantom{X}\vskip0.1cm
+\begin{frame}{Uniform Distribution vi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 What is the chance of locating the file...
 in less than 2ms?
 \vskip0.3cm
 
-Educated guess: $P(X\le 2) = 2(0.10) = 0.2$
 \vskip0.3cm
 <<echo=FALSE, fig.width=4.2, fig.height=2.2, out.width='0.69\\linewidth'>>=
 a <- 0
@@ -671,7 +676,9 @@ P(X \le 2)
 = 0.20
 }$
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Uniform Distribution vi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 What is $P(5\le X \le 7) =\; ?$
@@ -688,56 +695,51 @@ P(a\le X\le b) &= \int_a^b f(x)\; dx\\
 \vskip0.5cm
 $P(5\le X \le 7) = F(7) - F(5) = 7(0.10) - 5(0.10) = 0.20$
 
-\newpage\phantom{X}\vskip0.1cm
+
+\end{frame}
+
+\begin{frame}{Continuous vs Discrete RV's}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Comments and cautions about $F(b) - F(a):$
-\vskip0.5cm
 
 \textbf{For continuous random variables,}
-\vskip0.3cm
+
 $P(a\le X\le b)=P(a< X\le b)=P(a\le X< b)=P(a< X< b)$
-\vskip0.2cm
 
 since $\displaystyle P(X=a) = \int_a^a f(x)\; dx = 0$\quad and\quad $P(X=b)=0.$
-\vskip0.5cm
 
 \textbf{Be careful!} \\
 \textbf{For discrete random variables,}
-\vskip0.3cm
 
 when $P(Y=k)>0$,
-\vskip0.2cm
+
 $P(Y \le k) = F(k),$
-\vskip0.2cm
+
 but...\;\; $P(Y < k) = P(Y \le k-1) = F(k-1).$
 
+\end{frame}
 
-\newpage\phantom{X}\vskip0.1cm
+\begin{frame}{What is the average wait time?}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Since the uniform distribution is symmetric and the mean is always
+the balancing point of the distribution, we must have $E[X] = 5$,
+the midpoint of the range of $X$.
 
-What is the average wait time?
-\vskip0.1cm
-
-Educated guess by symmetry and balance: $\mu=E(X)=5$.
-\vskip0.4cm
-
+\begin{block}{Expectation/Mean}
 \textbf{For discrete random variables,}
-
 $$\mu=E(X) = \sum_{\text{all } x}\; x\; P(X=x) = \sum_{\text{all } x}\; x\; f(x)$$
-\vskip0.4cm
-
-
 \textbf{For continuous random variables:}
-$\displaystyle{ \mu=E(X) = \int_{-\infty}^{\infty}\; x\; f(x)\; dx }$
-\vskip0.2cm
-
+$$\displaystyle{ \mu=E(X) = \int_{-\infty}^{\infty}\; x\; f(x)\; dx }$$
+\end{block}
+\vspace{-1cm}
 $$E(X) = \int_{-\infty}^{\infty}\; x\; f(x)\; dx
   = \int_0^{10} \frac{x}{10}\; dx
   = \left.\frac{x^2}{20}\right|_0^{10}
   = \frac{10^2}{20} = \frac{100}{20} = 5$$
+\end{frame}
 
-\newpage\phantom{X}\vskip0.1cm
+\begin{frame}{General Formula for Expectation of Uniform RV}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 If $X\sim \textsf{Uniform}(a,b),$ then you can show that
@@ -751,31 +753,29 @@ For $X=$ wait time, $a=0$ and $b=10$, so
 
 $$\mu=E(X)  = \frac{a+b}{2} = \frac{0+10}{2} = \frac{10}{2} = 5$$
 
-\newpage\phantom{X}\vskip0.1cm
+\end{frame}
+
+\begin{frame}{Variance for Continuous RV's}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 What about variance and standard deviation?
-\vskip0.2cm
+
 \textbf{Variance (as always) = average squared distance from mean}
-\vskip0.2cm
 
 $\sigma^2 = Var(X) = E[ (X-\mu)^2]$
-\vskip0.4cm
 
 Simple guess for $X=$ wait time standard deviation: $\sigma \approx 2.5$
-\vskip0.4cm
 
 \textbf{For discrete random variables,}
 
 $$Var(X) = \sum_{\text{all } x}\; (x-\mu)^2\; P(X=x) = \sum_{\text{all } x}\; (x-\mu)^2\; f(x)$$
 \vskip0.2cm
 
-
 \textbf{For continuous random variables:}
-\vskip0.3cm
 
-$\displaystyle{ Var(X) = \int_{-\infty}^{\infty}\; (x-\mu)^2\; f(x)\; dx }$
+$$\displaystyle{ Var(X) = \int_{-\infty}^{\infty}\; (x-\mu)^2\; f(x)\; dx }$$
+\end{frame}
 
-\newpage\phantom{X}\vskip0.1cm
+\begin{frame}{Variance of Uniform RV}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 If $X\sim \textsf{Uniform}(a,b),$ then you can show that
 $$ \sigma^2=E[(X-\mu)^2] = \frac{(b-a)^2}{12}$$
@@ -788,9 +788,6 @@ $$\sigma^2=Var(X)  = \frac{(b-a)^2}{12} = \frac{(10-0)^2}{12} = \frac{100}{12} =
 
 Standard deviation: $\sigma=SD(X)=\sqrt{8.333} = \Sexpr{round(sqrt(100/12),3)}$
 \vskip0.3cm
-
-My guess was $\sigma=2.5$, \\
-just the simple median of possible distances from $\mu=5$.
 
 \end{frame}
 
