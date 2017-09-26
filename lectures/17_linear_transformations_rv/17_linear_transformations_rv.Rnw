@@ -1,0 +1,52 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Linear Transformations of Random Variables}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Expectations/Variances of Linear Combinations of Random Variables.
+\end{itemize}
+\end{frame}
+
+\end{document}

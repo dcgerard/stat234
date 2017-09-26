@@ -31,9 +31,9 @@ Note: Each lecture is a topic, not a day of class.
 5. [Quantiles](04_quantiles.pdf)
 6. [Categorical Variables](05_categorical_variables.pdf)
 7. [Case Study: Trump's Tweets](06_trump_case.pdf)
-8. Densities
-9. Normal Density Calculations
-10. Sampling Distributions
+8. [Densities](07_densities.pdf)
+9. [Normal Density Calculations](08_normal_calculations.pdf)
+10. [Sampling Distributions](09_distribution_sample_mean.pdf)
 11. Probability and Sets
 12. Proofs from Axioms of Probability
 13. Conditional Probability and Independence
