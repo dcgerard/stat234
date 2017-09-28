@@ -10,7 +10,7 @@
 \def\hid#1#2{\onslide<#1>{#2}}
 
 
-\title{Linear Transformations of Random Variables}
+\title{Demonstration of Central Limit Theorem}
 \author{David Gerard}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
@@ -45,7 +45,8 @@ opts_chunk$set(
 
 \begin{frame}{Learning Objectives}
 \begin{itemize}
-\item Expectations/Variances of Linear Combinations of Random Variables.
+\item Sample Means/Sample Proportions converge to Normal Distribution.
+\item Section 3.4.2, 3.4.3, 4.4 of DBC
 \end{itemize}
 \end{frame}
 

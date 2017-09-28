@@ -51,8 +51,7 @@ opts_chunk$set(
 \item Means of discrete random variables.
 \item Means of functions of random variables.
 \item Variances of discrete random variables.
-\item Sections 3.2, 3.3, 3.5, in Matoff
-\item Sections 3.3.1, 3.4 in DBC
+\item Sections 2.4, 3.3.1, 3.4 in DBC
 \end{itemize}
 \end{frame}
 

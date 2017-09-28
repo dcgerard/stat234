@@ -1,0 +1,21 @@
+\frametitle{Properties of sample average}
+
+We draw with replacement form a box $N$ times and record the number on
+each draw as $X_1,X_2, \ldots, X_N$. Because we draw with replacement we
+can {\it assume} that the variables $X_n$ are independent.
+
+Let $\mu_B$ be the {\it average of the box} and  let $\si^2_B$ be the mean square deviation
+(MSD) of the box.
+
+\medskip
+
+Recall that $E X_n = \mu_B$ and $Var X_n = \s_i^2_B$ for each $n$.
+
+Denote the  sample average as$ \overline{X} = \frac{1}{N} \sum_{n=1}^N X_n$.
+
+\begin{align*}
+E \overline{X} =  & \frac{1}{N} E \sum_{n=1}^N X_n \\
+\mbox{Why?}  \ = &\frac{1}{N} \sum_{n=1}^N E X_n \\
+\mbox{Why?}  \ = &\mu_B.
+\end{align*}
+

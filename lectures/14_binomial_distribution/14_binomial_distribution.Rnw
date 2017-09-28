@@ -48,6 +48,7 @@ opts_chunk$set(
 \begin{itemize}
 \item Bernoulli Random Variables
 \item Binomial Random Variables
+\item Sections 3.3.1 and 3.4 of DBC
 \end{itemize}
 \end{frame}
 

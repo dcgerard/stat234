@@ -428,7 +428,7 @@ ggplot(data = dftot, mapping = aes(x = x, y = y)) +
 Top left is real data, rest are simulated from $N(\bar{x}, s^2)$ --- looks good to me!
 \end{frame}
 
-\begin{frame}[fragile]{Problem: Skewed left}
+\begin{frame}[fragile]{Problem: Skewed right}
 <<echo=FALSE>>=
 x <- rgamma(100, 2, 2)
 op <- par(mfrow = c(1,2))
@@ -439,7 +439,7 @@ par(op)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Problem: Skewed right}
+\begin{frame}[fragile]{Problem: Skewed left}
 <<echo=FALSE>>=
 op <- par(mfrow = c(1,2))
 hist(-x)

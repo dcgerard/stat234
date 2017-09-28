@@ -346,190 +346,176 @@ This entire discussion on multiple random variables holds for continuous random 
 \item $E[X + Y] = E[X] + E[Y]$
 \item $E[XY] = E[X]E[Y]$ \alert{ if $X$ and $Y$ are independent}
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Variance of a Random Variable}
+
+\bigskip
+
+Variance of a random variable $X$ with mean $\mu_X$  take $g(x) = (x-\mu_X)^2$.
+
+$Var(X) = E g(X).$
+
+\bigskip
+Show that (on the chalk board):
+
+\medskip
+$Var(X) = EX^2 - \mu_X^2$
+
+$E(aX+b) = aE(X)+b.$
+
+$Var(aX+b) = a^2 Var(X).$
+
+\end{frame}
+
+\begin{frame}[fragile]{Covariance of two random variables}
+\bigskip
+{\bf Covariance} of two random variables $X,Y$ with means $\mu_X, \mu_Y$.
+
+Take $g(x,y) = (x-\mu_X) \cdot (y-\mu_Y).$
+
+$Cov(X,Y) = E g(X,Y)$ - A measure of how the variables 'covary'.
+\bigskip
+$Cov(X,Y)>0 \  \longrightarrow$ when $X$ increases $Y$ tends to increase.
+
+$Cov(X,Y)<0 \ \longrightarrow$ when $X$ increases $Y$ tends to decrease.
+\bigskip
+Show that $Cov(aX,bY) = a\cdot b Cov(X,Y).$
+
+Changing the units of a measurement will change covariance.
+\end{frame}
+
+\begin{frame}[fragile]{Correlation of two random variables}
+Correlation $\rho(X,Y)$ does not depend on units of measurement:
+
+$\rho(X,Y) = \frac{Cov(X,Y)}{\sqrt{Var(X)Var(Y)}}$
+
+Show that: $\rho(aX,bY) = \rho(X,Y).$
+
+\end{frame}
+
+\begin{frame}{Independence}
+\parbox[t]{0pt}{}
+
+\bigskip
+
+{\bf Independence:}
+
+
+\bigskip
+Show that $Cov(X,Y) = EXY - \mu_X \mu_Y.$
+
+Conclude: If $X,Y$ are independent $Cov(X,Y)=0$. (Converse is not true.)
 
 
 \end{frame}
 
-% \begin{frame}
-% \parbox[t]{0pt}{}
-%
-% \bigskip
-%
-% Variance of a random variable $X$ with mean $\mu_X$  take $g(x) = (x-\mu_X)^2$.
-%
-% $Var(X) = E g(X).$
-%
-% \bigskip
-% Show that:
-%
-% \medskip
-% $Var(X) = EX^2 - \mu_X^2$
-%
-% $E(aX+b) = aE(X)+b.$
-%
-% $Var(aX+b) = a^2 Var(X).$
-%
-%
-% \end{frame}
-%
-% \begin{frame}[allowframebreaks, fragile]{Covariance of two random variables}
-%
-% \bigskip
-% {\bf Covariance} of two random variables $X,Y$ with means $\mu_X, \mu_Y$.
-%
-%
-%
-% Take $g(x,y) = (x-\mu_X) \cdot (y-\mu_Y).$
-%
-% $\Cov(X,Y) = E g(X,Y)$ - A measure of how the variables 'covary'.
-%
-% \bigskip
-% $Cov(X,Y)>0 \  \longrightarrow$ when $X$ increases $Y$ tends to increase.
-%
-% $Cov(X,Y)<0 \ \longrightarrow$ when $X$ increases $Y$ tends to decrease.
-%
-% \bigskip
-% Show that $\Cov(aX,bY) = a\cdot b Cov(X,Y).$
-%
-% Changing the units of a measurement will change covariance.
-%
-% \bigskip
-% Correlation $\rho(X,Y)$ does not depend on units of measurement:
-%
-% $\rho(X,Y) = \frac{Cov(X,Y)}{\sqrt{Var(X)Var(Y)}}$
-%
-% Show that: $\rho(aX,bY) = \rho(X,Y).$
-%
-% \newpage
-%
-% \parbox[t]{0pt}{}
-%
-% \bigskip
-%
-% {\bf Independence:}
-%
-%
-% \bigskip
-% Show that $\Cov(X,Y) = EXY - \mu_X \mu_Y.$
-%
-% Conclude: If $X,Y$ are independent $\Cov(X,Y)=0$. (Converse is not true.)
-%
-%
-% \end{frame}
-%
-%
-% \begin{frame}[allowframebreaks, fragile]{Variance of a sum of random variables}
-%
-%
-% \begin{align*}
-% Var(X+Y) =  & E[(X+Y)^2] - [E(X+Y)]^2 \\
-%  =  & E[X^2 +2XY + Y^2] - [E(X)]^2-2E(X)E(Y) - [E(Y)]^2 \\
-% =  & E(X^2) - [E(X)]^2 + E(Y^2) - [E(Y)]^2  \\
-% & + 2E(XY) - 2 E(X) E(Y) \\
-% =  &Var(X)+Var(Y) + 2 Cov(X,Y)
-% \end{align*}
-%
-% \medskip
-% Conclude: If $X,Y$ independent: $Var(X+Y) = Var(X) + Var(Y).$
-%
-% \medskip
-% More generally, if $X_1,\ldots,X_N$ are independent then
-%
-% \medskip
-% $Var(\sum_{n=1}^N X_n) = \sum_{n=1}^N Var(X_n)$.
-% \end{frame}
-%
-% \begin{frame}[allowframebreaks, fragile]{Properties of sample average}
-%
-% We draw with replacement form a box $N$ times and record the number on
-% each draw as $X_1,X_2, \ldots, X_N$. Because we draw with replacement we
-% can {\it assume} that the variables $X_n$ are independent.
-%
-% Let $\mu_B$ be the {\it average of the box} and  let $\si^2_B$ be the mean square deviation
-% (MSD) of the box.
-%
-% \medskip
-%
-% Recall that $E X_n = \mu_B$ and $Var X_n = \si^2_B$ for each $n$.
-%
-% Denote the  sample average as$ \overline{X} = \frac{1}{N} \sum_{n=1}^N X_n$.
-%
-% \begin{align*}
-% E \overline{X} =  & \frac{1}{N} E \sum_{n=1}^N X_n \\
-% \mbox{Why?}  \ = &\frac{1}{N} \sum_{n=1}^N E X_n \\
-% \mbox{Why?}  \ = &\mu_B.
-% \end{align*}
-%
-%
-%
-%
-% \bigskip
-%
-% The variance of the sample average
-%
-% \begin{align*}
-% Var( \overline{X}) = & Var( \frac{1}{N} \sum_{n=1}^N X_n) \\
-% = & \frac{1}{N^2} Var (\sum_{n=1}^N X_n) \\
-% \mbox{Independence:} \ = & \frac{1}{N^2} \sum_{n=1}^N Var (X_n) \\
-% = & \frac{\si^2_N}{N}
-% \end{align*}
-%
-% So the expected value of the average of the sample is the average of the box no matter how
-% large the sample.
-%
-% The variance of the sample average {\it decreases} as the sample size $N$ increases.
-%
-%
-% \newpage
-% \parbox[t]{0pt}{}
-%
-% \bigskip
-%
-% Example: $X_1,\ldots,X_N$ are draws from a box of 0's and 1's with replacement. Assume
-% fraction of 1's in the box is $p$.
-%
-% \medskip
-% Each $X_n$ is Ber(p), i.e. $EX_n=p, Var(X_n)=p(1-p)$.
-%
-% \medskip
-% Since the draws are with replacement we can assume they are independent and
-% so writing
-% $S= \sum_{n=1}^N X_n$ we have that $S$ is Binomial(N,p).
-%
-% \bigskip
-% $f_S(n) = \binom{N}{n} p^n (1-p)^{N-n}.$
-%
-% \bigskip
-% We can compute $ES$ using the definition $\sum_{n=1}^N n \binom{N}{n} p^n (1-p)^{N-n}$
-% but that requires some complicated algebra.
-%
-% \newpage
-% Instead we use the rules for mean and variance of a sum:
-%
-% $E(S) = \sum_{n=1}^N EX_n = Np.$
-%
-% \bigskip
-% And since $X_n$ are independent:
-%
-% $Var(S) = \sum_{n=1}^N Var(X_n) = Np(1-p).$
-%
-% \bigskip
-% And for the sample average:
-%
-% $E \overline{X} = E \frac{S}{N} = \frac{1}{N} ES = p.$
-%
-% \bigskip
-%
-% $Var(\overline{X}) = Var(\frac{S}{N}) = \frac{1}{N^2} Np(1-p) = \frac{p(1-p)}{N}.$
-%
-% \medskip
-% The expected value of the sample average is $p$ - the proportion of 1's in the box:
-% it is centered in the `right' place.
-%
-% The variance of the sample average decreases with sample size.
-%
-% \end{frame}
-%
+
+\begin{frame}[fragile]{Variance of a sum of random variables}
+
+
+\begin{align*}
+Var(X+Y) =  & E[(X+Y)^2] - [E(X+Y)]^2 \\
+ =  & E[X^2 +2XY + Y^2] - [E(X)]^2-2E(X)E(Y) - [E(Y)]^2 \\
+=  & E(X^2) - [E(X)]^2 + E(Y^2) - [E(Y)]^2  \\
+& + 2E(XY) - 2 E(X) E(Y) \\
+=  &Var(X)+Var(Y) + 2 Cov(X,Y)
+\end{align*}
+
+\medskip
+Conclude: If $X,Y$ independent: $Var(X+Y) = Var(X) + Var(Y).$
+
+\medskip
+More generally, if $X_1,\ldots,X_N$ are independent then
+
+\medskip
+$Var(\sum_{n=1}^N X_n) = \sum_{n=1}^N Var(X_n)$.
+\end{frame}
+
+\begin{frame}[fragile]{Properties of sample average: Set up}
+
+We draw with replacement from a box containing tickets of numbers $N$ times and record the number on
+each draw as $X_1,X_2, \ldots, X_N$. Because we draw with replacement we
+can {\it assume} that the variables $X_n$ are independent.
+
+Let $\mu_B$ be the {\it average of the box} and  let $\sigma^2_B$ be the mean square deviation
+(MSD) of the box.
+
+\medskip
+
+Recall that $E X_n = \mu_B$ and $Var X_n = \sigma^2_B$ for each $n$.
+
+Denote the  sample average as $\overline{X} = \frac{1}{N} \sum_{n=1}^N X_n$.
+\end{frame}
+
+\begin{frame} {Mean of Sample Average}
+\begin{align*}
+E \overline{X} =  & \frac{1}{N} E \sum_{n=1}^N X_n \\
+\mbox{Why?}  \ = &\frac{1}{N} \sum_{n=1}^N E X_n \\
+\mbox{Why?}  \ = &\mu_B.
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Variance of Sample Average}
+
+The variance of the sample average
+
+\begin{align*}
+Var( \overline{X}) = & Var( \frac{1}{N} \sum_{n=1}^N X_n) \\
+= & \frac{1}{N^2} Var (\sum_{n=1}^N X_n) \\
+\mbox{Independence:} \ = & \frac{1}{N^2} \sum_{n=1}^N Var (X_n) \\
+= & \frac{\sigma^2_N}{N}
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+So the expected value of the average of the sample is the average of the box no matter how
+large the sample.
+
+The variance of the sample average {\it decreases} as the sample size $N$ increases.
+\end{frame}
+
+\begin{frame}{Set up: Proportions}
+
+Example: $X_1,\ldots,X_N$ are draws from a box of 0's and 1's with replacement. Assume
+fraction of 1's in the box is $p$.
+
+Each $X_n$ is Ber(p), i.e. $EX_n=p, Var(X_n)=p(1-p)$.
+
+Since the draws are with replacement we can assume they are independent and
+so writing
+$S= \sum_{n=1}^N X_n$ we have that $S$ is Binomial(N,p).
+
+$f_S(n) = \binom{N}{n} p^n (1-p)^{N-n}.$
+
+We can compute $ES$ using the definition $\sum_{n=1}^N n \binom{N}{n} p^n (1-p)^{N-n}$
+but that requires some complicated algebra.
+\end{frame}
+
+\begin{frame}{Mean and variance of Sample Proportion}
+Instead we use the rules for mean and variance of a sum:
+
+$E(S) = \sum_{n=1}^N EX_n = Np.$
+
+And since $X_n$ are independent:
+
+$Var(S) = \sum_{n=1}^N Var(X_n) = Np(1-p).$
+
+And for the sample average:
+
+$E \overline{X} = E \frac{S}{N} = \frac{1}{N} ES = p.$
+
+$Var(\overline{X}) = Var(\frac{S}{N}) = \frac{1}{N^2} Np(1-p) = \frac{p(1-p)}{N}.$
+
+The expected value of the sample average is $p$ - the proportion of 1's in the box:
+it is centered in the `right' place.
+
+The variance of the sample average decreases with sample size.
+
+\end{frame}
+
 % \begin{frame}[allowframebreaks, fragile]{Moment generating function}
 %
 % For any random variable $X$ and for any $t$ we write:

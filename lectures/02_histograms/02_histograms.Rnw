@@ -194,6 +194,13 @@ hist(x)
 @
 \end{frame}
 
+\begin{frame}[fragile]{Uniform Shape}
+<<echo = FALSE>>=
+x <- runif(1000)
+hist(x)
+@
+\end{frame}
+
 \begin{frame}[fragile]{Bimodal}
 <<echo=FALSE, message=FALSE>>=
 x <- c(rnorm(500, mean = -1.5), rnorm(500, mean = 1.5))

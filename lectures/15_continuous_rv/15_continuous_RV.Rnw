@@ -164,6 +164,7 @@ trellis.par.set(fontsize=list(text=11,points=5))
 \item Uniform distribution.
 \item Mean of continuous random variables.
 \item Variance of continuous random variables.
+\item Sections 2.5
 \end{itemize}
 \end{frame}
 

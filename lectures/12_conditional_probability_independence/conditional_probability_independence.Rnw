@@ -48,7 +48,7 @@ opts_chunk$set(
 \begin{itemize}
 \item Conditional Probability
 \item Independence
-\item Section 2.2 in DBC
+\item Sections 2.1.6 and 2.2 in DBC
 \end{itemize}
 \end{frame}
 
