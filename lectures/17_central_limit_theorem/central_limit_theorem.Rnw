@@ -50,4 +50,178 @@ opts_chunk$set(
 \end{itemize}
 \end{frame}
 
+\section{Means of of Bernoulli's}
+
+\begin{frame}{Recall: Bernoulli distribution}
+Recall that $X$ is Bernoulli if its pmf is
+\begin{align*}
+f_X(X) =
+\begin{cases}
+p^x(1 - p)^{1 - x}  & \text{ if } x \in \{0, 1\}\\
+0 & \text{ otherwise},
+\end{cases}
+\end{align*}
+for some $p \in [0, 1]$. That is, $X$ is 1 with probability $p$ and $0$ with probability $1 - p$.
+
+E.g., have a box with six 1's and two 0's and we draw a number, then $p = 6 / 8 = 3/ 4$.
+\end{frame}
+
+\begin{frame}{Sample}
+Suppose we sample 100 numbers from this box with six 1's and two 0's \emph{with} replacement. We can do this multiple times (say 5000):
+<<>>=
+p <- 3/4
+
+samp <- replicate(n = 5000, sample(c(0, 1), 100, TRUE, c(1 - p, p)))
+@
+
+<<echo=FALSE, message=FALSE, fig.height=2.5>>=
+set.seed(1)
+library(tidyverse)
+colnames(samp) <- paste0("Sim", 1:ncol(samp))
+dfdat <- gather(as_data_frame(samp[, 1:5]), value = "sample", key = "sim")
+ggplot(dfdat, aes(x = sample)) +
+  geom_histogram(bins = 30) +
+  facet_grid(.~sim) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  xlab("X")
+@
+
+\end{frame}
+
+\begin{frame}{CTL Visual}
+Now draw 5000 samples of size 900, 2500. Compute the means
+\scriptsize
+<<>>=
+samp900 <- replicate(n = 5000,
+                     sample(c(0, 1), 900, TRUE, c(1 - p, p)))
+
+samp2500 <- replicate(n = 5000,
+                      sample(c(0, 1), 2500, TRUE, c(1 - p, p)))
+
+sum100 <- colSums(samp)
+
+sum900 <- colSums(samp900)
+
+sum2500 <- colSums(samp2500)
+@
+\normalsize
+Same as drawing from a binomial
+\footnotesize
+<<>>=
+b100 <- rbinom(5000, 100, 3/4)
+
+b900 <- rbinom(5000, 900, 3/4)
+
+b2500 <- rbinom(5000, 2500, 3/4)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}
+Dividing sums or binomials by number of samples (100, 900, or 2500), we get the following histograms:
+<<echo=FALSE>>=
+dfdatn <- data_frame("n100" = sum100 / 100, "n900" = sum900 / 900, "n2500" = sum2500 / 2500) %>%
+  gather(key = "n", value = "sim")
+dfdatn$condition <- "sum"
+
+dfdatb <- data_frame("n100" = b100 / 100, "n900" = b900 / 900, "n2500" = b2500 / 2500) %>%
+  gather(key = "n", value = "sim")
+dfdatb$condition <- "binomial"
+
+dfdat <- bind_rows(dfdatn, dfdatb)
+dfdat$n <- stringr::str_replace(dfdat$n, "n", "")
+dfdat$n <- stringr::str_replace(dfdat$n, "b", "")
+dfdat$n <- as.numeric(dfdat$n)
+
+ggplot(data = dfdat, mapping = aes(x = sim)) +
+  facet_grid(condition ~ n) +
+  geom_histogram(bins = 17) +
+  theme_bw()
+@
+
+Look the same because they are from the same distribution.
+
+\end{frame}
+
+
+\begin{frame}{Center and Scale}
+Let's subtract the means ($np$ for $n = 100, 900, 2500$) and divide by the standard deviations ($n\sqrt{p(1 - p)}$) and replot the histograms
+<<echo=FALSE, fig.height=3>>=
+dfdat %>%
+  filter(condition == "binomial") ->
+  dfdat2
+
+dfdat2$z <- c(scale(filter(dfdat2, n == 100)$sim),
+  scale(filter(dfdat2, n == 900)$sim),
+  scale(filter(dfdat2, n == 2500)$sim))
+
+ggplot(dfdat2, aes(x = z)) +
+  facet_grid(.~n) +
+  geom_histogram(bins = 20) +
+  theme_bw()
+@
+
+Now the histograms all have the same spread and are centered at
+zero, but they are looking more and more like the normal
+distribution.
+\end{frame}
+
+\begin{frame}{$n = 5$}
+<<>>=
+x <- scale(rbinom(n = 5000, size = 5, prob = p))
+qqnorm(x)
+qqline(x)
+@
+\end{frame}
+
+\begin{frame}{$n = 10$}
+<<>>=
+x <- scale(rbinom(n = 5000, size = 10, prob = p))
+qqnorm(x)
+qqline(x)
+@
+\end{frame}
+
+\begin{frame}{$n = 20$}
+<<>>=
+x <- scale(rbinom(n = 5000, size = 20, prob = p))
+qqnorm(x)
+qqline(x)
+@
+\end{frame}
+
+\begin{frame}{$n = 50$}
+<<>>=
+x <- scale(rbinom(n = 5000, size = 50, prob = p))
+qqnorm(x)
+qqline(x)
+@
+\end{frame}
+
+\begin{frame}{$n = 100$}
+<<>>=
+qqnorm(sum100)
+qqline(sum100)
+@
+\end{frame}
+
+\begin{frame}{$n = 900$}
+<<>>=
+qqnorm(sum900)
+qqline(sum900)
+@
+\end{frame}
+
+\begin{frame}{$n = 2500$}
+<<>>=
+qqnorm(sum2500)
+qqline(sum2500)
+@
+\end{frame}
+
+\begin{frame}{Central Limit Theorem}
+That sums/means of a large number of random variables are well approximated by the normal distribution is a general result that we will prove using the chalk board.
+\end{frame}
+
 \end{document}

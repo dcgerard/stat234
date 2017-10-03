@@ -11,3 +11,4 @@ analysis/*_cache
 *.svg
 /lectures/01_z5_data_sources/
 /administrative
+lectures/17_central_limit_theorem/cache/

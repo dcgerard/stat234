@@ -1,0 +1,700 @@
+%<<echo=FALSE>>=
+%OLD <- options(width=90)
+%@
+%<<echo=FALSE>>=
+%options(OLD)
+%@
+
+\documentclass{beamer}% regular slides (with pauses)
+%\documentclass[handout]{beamer}% handout (no pauses)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Change the lecture information here %%%%%%%%%%%%%%%%
+\def\chapnum{Week \#2: Is Yawning Contagious?}
+\title{Title}
+\author{Author Name}
+\date{Lecture Date}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%% Start of suggested definitions and packages %%%%%%%%%%%%
+%%%%%% Do not change unless you really know what you are doing %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{enumerate}
+\usepackage{amsmath, bbm}
+\usepackage[misc]{ifsym} % for the dice symbol \Cube{}
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+
+%\usepackage{comment}
+%\usepackage{pstricks}
+%\usepackage{graphicx}
+%\usepackage{booktabs}
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[a4paper,border shrink=3mm]
+%\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=3mm
+
+\usepackage{setspace}
+\ifdefined\knitrout
+  \renewenvironment{knitrout}{\begin{spacing}{0.75}\begin{tiny}}{\end{tiny}\end{spacing}}
+\else
+\fi
+
+%%%%%%%%%%%%%%% Defined Shortcuts (macros) %%%%%%%%%%%%%
+% parameters and statistics
+\newcommand{\xbar}{\overline{x}}
+\newcommand{\Xbar}{\overline{X}}
+\newcommand{\ybar}{\overline{y}}
+\newcommand{\Ybar}{\overline{Y}}
+\newcommand{\dbar}{\overline{d}}
+\newcommand{\Dbar}{\overline{D}}
+\newcommand{\zbar}{\overline{z}}
+\newcommand{\Zbar}{\overline{Z}}
+\newcommand{\ehat}{\widehat{\epsilon}}
+\newcommand{\yhat}{\widehat{y}}
+\newcommand{\Yhat}{\widehat{Y}}
+\newcommand{\betaa}{{\beta_0}}
+\newcommand{\betab}{{\beta_1}}
+\newcommand{\betac}{{\beta_2}}
+\newcommand{\betad}{{\beta_3}}
+\newcommand{\BETA}{{\boldsymbol\beta}}
+\newcommand{\betahata}{\widehat{\beta_0}}
+\newcommand{\betahatb}{\widehat{\beta_1}}
+\newcommand{\betahatc}{\widehat{\beta_2}}
+\newcommand{\betahatd}{\widehat{\beta_3}}
+\newcommand{\bhat}{\widehat{b}}
+\newcommand{\btilde}{\widetilde{b}}
+\newcommand{\ahat}{\widehat{a}}
+\newcommand{\atilde}{\widetilde{a}}
+\newcommand{\rss}{\mathit{SSE}}
+\newcommand{\sigmahat}{\widehat{\sigma}}
+\newcommand{\betahat}{\widehat{\beta}}
+\newcommand{\thetahat}{\widehat{\theta}}
+\newcommand{\phat}{\widehat{p}}
+\newcommand{\pihat}{\widehat{\pi}}
+\newcommand{\muhat}{\widehat{\mu}}
+% real numbers and integers
+\newcommand{\reals}{\mathbbm{R}}
+\newcommand{\integers}{\mathbbm{N}}
+%distributions
+\newcommand{\normal}{\textsf{Norm}}
+\newcommand{\Bin}{\textsf{Binom}}
+\newcommand{\Uni}{\textsf{Unif}}
+\newcommand{\Poisson}{\textsf{Pois}}
+\newcommand{\Exp}{\textsf{Exp}}
+\newcommand{\Beta}{\textsf{Beta}}
+\newcommand{\iid}{\stackrel{\mathrm{iid}}{\sim}}
+% probability and expected value
+\newcommand{\rv}{r.v.\ }
+\newcommand{\prob}{{\rm P}}
+\newcommand{\mean}{\mathrm{E}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\corr}{\mathop{\mathrm{Corr}}}
+% measures of spread
+\newcommand{\IQR}{\textit{IQR}}
+\newcommand{\SAD}{\textit{SAD}}
+\newcommand{\MAD}{\textit{MAD}}
+\newcommand{\SSD}{\textit{SSD}}
+\newcommand{\MSD}{\textit{MSD}}
+\newcommand{\RMSD}{\textit{RMSD}}
+\newcommand{\MSE}{\textit{MSE}}
+\newcommand{\MSR}{\textit{MSR}}
+% formatting code and such
+\providecommand{\variable}[1]{}
+\renewcommand{\variable}[1]{{\color{green!50!black}\texttt{#1}}}
+\providecommand{\function}[1]{}
+\renewcommand{\function}[1]{{\color{purple!75!blue}\texttt{\StrSubstitute{#1}{()}{}()}}}
+\providecommand{\option}[1]{}
+\renewcommand{\option}[1]{{\color{brown!80!black}\texttt{#1}}}
+\providecommand{\pkg}[1]{}
+\renewcommand{\pkg}[1]{{\color{red!80!black}\texttt{#1}}}
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+
+%%%%%%%%%
+% Changed by Linda Collins, University of Chicago
+%\providecommand{\file}[1]{}
+%\renewcommand{\file}[1]{{\tt #1}}
+\providecommand{\file}[1]{}
+\renewcommand{\file}[1]{{\color{orange!80!black}\texttt{#1}}}
+%\providecommand{\dataframe}[1]{}
+%\renewcommand{\dataframe}[1]{{\color{blue!80!black}\texttt{#1}}}
+\providecommand{\dataframe}[1]{}
+\renewcommand{\dataframe}[1]{{\color{cyan!80!black}\texttt{#1}}}
+%%%%%%%%%
+
+% other
+\def\Sum{\sum\nolimits}
+\def\b#1{\fboxsep=0pt\colorbox{black}{\color{white}\Cube{#1}}}
+\def\w#1{\Cube{#1}}
+%%%%%%%%%%%% End of shortcuts (macros) ##############
+
+%%%%%%%%% One way to hide answers until you want to show them %%%%%%%%%
+\def\Hide#1#2{\ul{~~~\onslide<#1>{\alert{#2}}~~~}}
+\def\hide#1#2{\ul{~~\onslide<#1>{\alert{#2}}~~}}
+\def\hid#1#2{\onslide<#1>{\alert{#2}}}
+% Choose the color of answers here too
+\setbeamercolor{alerted text}{fg=darkgray}
+%\setbeamercolor{alerted text}{fg=black}
+
+%------Centered Page Number Setup ------
+\defbeamertemplate{footline}{centered page number}
+{%
+  \hspace*{\fill}%
+  %\usebeamercolor[fg]{page number in head/foot}%
+  %\usebeamerfont{page number in head/foot}%
+  \tiny \chapnum: Page \insertframenumber\, of \inserttotalframenumber%
+  \hspace*{\fill}\vskip2pt%
+}
+%\setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{footline}[centered page number]
+%--------------------------------
+
+%\usetheme{Copenhagen}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[english]{babel}
+\def\ul{\underline}
+\linespread{1.1}
+% or whatever
+
+
+
+%\parskip=0pt
+
+\begin{document}%large
+
+%<<setup, include=FALSE, cache=FALSE>>=
+%options(replace.assign=TRUE,width=90, digits=4)
+%opts_chunk$set(fig.path='figure/graphics-', cache.path='cache/graphics-', fig.align='center', fig.width=8, fig.height=5.5, fig.show='as.is', out.width='0.9\\linewidth', cache=FALSE, par=TRUE, size = 'tiny', tidy=TRUE, cache.extra=rand_seed)
+%knit_hooks$set(par=function(before, options, envir){
+%if (before && options$fig.show!='none') par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+%}, document = function(x) {
+%  gsub('\\\\(begin|end)\\{kframe\\}', '', x)
+%}, crop=hook_pdfcrop)
+%@
+%<<setup2, include=FALSE, cache=FALSE>>=
+%knit_theme$set("print")
+%@
+
+<<setup, include=FALSE, cache=FALSE>>=
+require(xtable)
+# require(mosaic)
+require(Hmisc)
+require(fastR)
+require(Lock5Data)
+options(format.R.blank=FALSE)
+options(width=50)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  fig.path='figure/graphics-',
+  cache.path='cache/graphics-',
+  dev="pdf",
+  fig.align='center',
+  fig.width=8,
+  fig.height=5.5,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  size = 'small',
+  tidy=FALSE,
+  prompt=FALSE,
+  comment=NA
+)
+# Tighten the spacing within R output from knitr
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(
+  crop=hook_pdfcrop,
+  document = hook1,
+  par=function(before, options, envir){
+    if (before) {
+    ## load packages before a chunk is executed
+    for (p in options$packages) library(p, character.only = TRUE)
+    }
+    if (before && options$fig.show!='none') par(oma=c(0,0,0,0)+0.01, mar=c(4,4,0,0)+0.01, cex=0.9, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+  }
+)
+opts_knit$set(concordance=TRUE)
+# For printing code blocks in black and white
+knit_theme$set("greyscale0")
+
+# trellis.par.set(theme=col.mosaic(bw=FALSE))
+#uchicago.lattice.theme=col.fastR(bw=TRUE)
+#uchicago.lattice.theme$box.dot$pch=20
+#uchicago.lattice.theme$dot.symbol$pch=20
+#uchicago.lattice.theme$plot.symbol$pch=20
+#trellis.par.set(theme=uchicago.lattice.theme, warn=FALSE)
+#trellis.par.set(fontsize=list(text=18,points=10))
+@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% End of suggested definitions and packages %%%%%%%%%%%%
+
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+
+%%%%%%%%%% Title frame (optional) %%%%%%%%%%%%%
+%\begin{frame}{}
+%\maketitle
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%% Begin slides here %%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks, fragile]{Joint, Conditional, and Marginal Proportions\;\;}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vskip0.25cm
+
+The data from the MythBusters experiment:
+<<echo=FALSE>>=
+par(oma=c(0,0,1,1)+0.01, mar=c(4,4,0,0)+0.01, pch=20)
+options(scipen=7, digits=3)
+set.seed(1234555)
+
+
+yawn.data <- matrix(c(10,4,24,12), nrow=2, byrow=TRUE,
+                dimnames = list(c("Yawned", "No Yawn"),
+                                c("Yawn Seed", "No Seed")))
+yawn.data
+@
+\vskip0.75cm
+...and again with the totals written in the \textbf{margins}
+<<echo=FALSE>>=
+thetable <-  addmargins(yawn.data, FUN=list(Total=sum), quiet=TRUE)
+thetable
+@
+\vskip0.5cm
+
+See the YouTube video for an intro to the data collection process at\\
+\url{https://www.youtube.com/watch?v=pO2xWSAKWJM}
+
+\newpage \phantom{X} \vskip0.1cm
+The \textbf{joint distribution} of two variables  \\
+
+<<echo=FALSE>>=
+prop.table(yawn.data)
+@
+\textbf{Joint proportions:}
+
+proportions of subjects in each combination of the two variables
+\vskip0.5cm
+The joint proportions must sum up to 1.
+\vskip0.1cm
+Why?
+
+\newpage \phantom{X} \vskip0.1cm
+$x=$ explanatory variable\\
+$y=$ response variable
+\vskip0.5cm
+\textbf{Joint proportions}
+\vskip0.1cm
+
+\begin{tabular}{r|rr|r}
+& $x_1$ & $x_2$ & Total\\
+\hline
+$y_1$ & $a$ & $b$ & $a+b$\\
+$y_2$ & $c$ & $d$ & $c+d$\\
+\hline
+Total & $a+c$ & $b+d$ & $a+b+c+d$
+\end{tabular}
+\vskip1cm
+
+\begin{tabular}{ll}
+joint proportions &= $\displaystyle{\frac{a}{a+b+c+d}}$
+\; and \;
+$\displaystyle{\frac{d}{a+b+c+d}}$
+\; and ...
+\end{tabular}
+
+
+\newpage \phantom{X} \vskip0.1cm
+%<<echo=FALSE>>=
+%thetable
+%@
+%\vskip0.4m
+\textbf{Conditional proportions}
+\vskip0.2cm
+
+\textbf{By rows:}\\
+``Given that the subject yawned..."\\
+``Given that the subject did NOT yawn..."
+<<echo=FALSE>>=
+prop.table(yawn.data, margin=1)
+@
+
+\textbf{By columns:}\\
+``Given that the subject was yawned at..."\\
+``Given that the subject was NOT yawned at..."
+<<echo=FALSE>>=
+prop.table(yawn.data, margin=2)
+@
+\vskip0.2cm
+Which should we use as evidence yawning is contagious?
+
+\newpage
+<<echo=FALSE>>=
+thetable
+@
+\textbf{Conditional proportions by row:}
+<<echo=FALSE>>=
+addmargins(prop.table(yawn.data, 1), 2)
+@
+Why do the row proportions add to one?
+\vskip0.6cm
+\textbf{Conditional proportions by column:}
+<<echo=FALSE>>=
+addmargins(prop.table(yawn.data, 2), 1)
+@
+Why do the column proportions add to one?
+
+\newpage \phantom{X} \vskip0.1cm
+$x=$ explanatory variable\\
+$y=$ response variable
+\vskip0.5cm
+\textbf{Conditional proportions}
+\vskip0.1cm
+
+\begin{tabular}{r|rr|r}
+& $x_1$ & $x_2$ & Total\\
+\hline
+$y_1$ & $a$ & $b$ & $a+b$\\
+$y_2$ & $c$ & $d$ & $c+d$\\
+\hline
+Total & $a+c$ & $b+d$ & $a+b+c+d$
+\end{tabular}
+\vskip1cm
+\begin{tabular}{ll}
+conditional proportions &= $\displaystyle{\frac{a}{a+c}}$
+\quad and \quad
+$\displaystyle{\frac{b}{a+b}}$
+\quad and ...
+\end{tabular}
+
+\newpage \phantom{X} \vskip0.1cm
+\textbf{Marginal proportions}
+\vskip0.2cm
+
+\textbf{By rows:}
+``Among all those in the study..."
+<<echo=FALSE>>=
+prop.table(addmargins(yawn.data, 2, FUN=list(Overall=sum)), 2)
+@
+
+\textbf{By columns:} ``Among all those in the study..."
+<<echo=FALSE>>=
+prop.table(addmargins(yawn.data, 1, FUN=list(Overall=sum)), 1)
+@
+\vskip0.2cm
+Which marginal proportion estimates the proportion
+in the population who yawn (at this particular
+time/location of study)?
+
+\newpage \phantom{X} \vskip0.1cm
+$x=$ explanatory variable\\
+$y=$ response variable
+\vskip0.5cm
+\textbf{Marginal proportions}
+\vskip0.1cm
+
+\begin{tabular}{r|rr|r}
+& $x_1$ & $x_2$ & Total\\
+\hline
+$y_1$ & $a$ & $b$ & $a+b$\\
+$y_2$ & $c$ & $d$ & $c+d$\\
+\hline
+Total & $a+c$ & $b+d$ & $a+b+c+d$
+\end{tabular}
+\vskip1cm
+\begin{tabular}{ll}
+marginal proportions &= $\displaystyle{\frac{a+c}{a+b+c+d}}$
+\; and \;
+$\displaystyle{\frac{a+b}{a+b+c+d}}$
+\; and ...
+\end{tabular}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks, fragile]{Testing the Researchers' Hypothesis\;\;}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vskip0.25cm
+
+Researchers' hypothesis: Yawning is contagious.
+\vskip0.2cm
+Can't really conclude that directly, but MythBusters did anyway!
+\vskip0.2cm
+Need an objective starting point: \\
+\textbf{Null Hypothesis:} There is no effect of yawning.
+\vskip0.2cm
+
+If no association between yawn seed and yawning, \\
+then these 14 yawners were just tired people\\
+and would have yawned anyway, \\
+no matter which group they were assigned to.
+\vskip0.5cm
+
+In that case (null hypothesis, no effect):\\
+the only source of variability in the number who yawn (or not)\\
+in this study comes from the experimenters' intervention: \\
+randomizing people to one group (yawn seed) or another (no seed).
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+If actually no effect of yawning (null hypothesis true),\\
+then how many yawners should we expect be in treatment group?
+\vskip0.25cm
+That is, what rate of yawners do we expect in treatment group?
+
+\vskip0.5cm
+<<echo=FALSE, results='asis'>>=
+require(xtable, warn.conflicts=FALSE)
+print(xtable(thetable, digits=0, align="r|r|r|r", caption="Observed Data"), size='\\small', hline.after=c(0,1,2), table.placement="H")
+@
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+If actually no effect of yawning (null hypothesis true),\\
+then how many yawners should we expect be in treatment group?
+\vskip0.25cm
+That is, what rate of yawners do we expect in treatment group?
+
+\vskip0.5cm
+\begin{table}[H]
+\centering
+\begingroup\small
+\begin{tabular}{r|r|r|r}
+  & Yawn Seed & No Seed & Total \\
+  \hline
+Yawned & $34(14/50)=9.5$ & $16(14/50)=4.5$  & 14 \\
+   \hline
+No Yawn &  &  & 36 \\
+   \hline
+Total & 34 & 16 & 50 \\
+  \end{tabular}
+\endgroup
+\caption{Treatment yawning rate matches \emph{observed overall rate}}
+\end{table}
+\vskip0.3cm
+
+Expected count = (sample size) $x$ (observed overall rate)
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+If actually no effect of yawning (null hypothesis true)...
+<<echo=FALSE, results='asis'>>=
+require(xtable, warn.conflicts=FALSE)
+print(xtable(thetable, digits=0, align="r|r|r|r", caption="Observed Data"), size='\\small', hline.after=c(0,1,2), table.placement="H")
+@
+\begin{table}[H]
+\centering
+\begingroup\small
+\begin{tabular}{r|r|r|r}
+  & Yawn Seed & No Seed & Total \\
+  \hline
+Yawned & 9.5 & 4.5  & 14 \\
+   \hline
+No Yawn & 24.5  & 11.5 & 36 \\
+   \hline
+Total & 34 & 16 & 50 \\
+  \end{tabular}
+\endgroup
+\caption{Expected Data: When ``No Effect"}
+\end{table}
+\vskip0.3cm
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+So, if actually no effect of yawn seed on yawning,
+
+then what MythBusters observed is close to what's expected.
+\vskip0.75cm
+But they ``Confirmed" that Yawning is contagious\\
+
+Perhaps the MythBusters team was a bit na\"ive.
+
+\vskip0.75cm
+Is there a principled way we can convince the MythBuster's team?
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We will use...
+\begin{itemize}
+\item
+a permutation test,  also called
+\item
+a randomization test,  also called
+\item
+a re-randomization test
+\end{itemize}
+\vskip0.1cm
+
+The procedure uses only
+\begin{itemize}
+\item
+the observed data
+\item
+randomization\\
+(randomize ``people" to treat/control like the experiment)
+\item
+one assumption (null hypothesis).
+\end{itemize}
+\vskip0.2cm
+
+\textbf{Reampling:}\\
+We will resample from the observed data (\textbf{without} replacement).
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+Steps for a permutation test:
+\begin{enumerate}
+\item
+Set up "cards" to represent \\
+the 14 yawners (red) and 36 non-yawners (black)
+
+\item
+Shuffle (resample) 34 cards to represent  the randomization\\
+of people  into the yawn seed treatment group
+
+\item
+Count how many red cards (yawners) \\
+end up in the treatment group  by chance alone.
+
+\item
+Compare the simulation result with the observed
+outcome:\\
+\Sexpr{yawn.data[1,1]} yawners in the treatment group.
+
+\item
+Repeat!
+\end{enumerate}
+\vskip0.5cm
+
+%I brought some cards.  Let's try it!
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+The idea of \textbf{resampling} is to
+\begin{itemize}
+\item use only the  observed data (not a statistical model)
+\item \textbf{resample} (sample from the sample)
+\item with or without replacement (depends on the null hypothesis)
+\item create different realizations of
+possible experimental results\\
+(if the null hypothesis were actually true).
+\item compare many, many resampled experimental results
+with the observed experimental results
+\item decide if observed result is common
+or rare to occur by chance
+\end{itemize}
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{itemize}
+\item If observed data are rare compared to resampled results: \\
+the data may point to something interesting (an effect)
+\item If observed data are common within resampled results:\\
+maybe result just occurred by chance \\
+(no evidence of an effect)
+\end{itemize}
+\vskip0.5cm
+
+Applet simulation:
+
+{\footnotesize{ \url{http://www.rossmanchance.com/applets/ChiSqShuffle.html?yawning=1}}}
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+Computer simulation:\\
+Use the computer to ``shuffle cards" for us:
+\vskip0.5cm
+
+Set up "cards" to represent the\\
+14 yawners (red) and 36 non-yawners (black)
+<<>>=
+cards <- c(rep("red", 14), rep("black", 36))
+cards
+@
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Shuffle (resample, without replacement) 34 cards to represent randomization of people
+into the yawn seed treatment group
+<<echo=FALSE>>=
+set.seed(123477)
+@
+<<>>=
+shuffle.ttt <- sample(cards, 34)
+shuffle.ttt
+@
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Count how many red cards (``yawners") show up \\
+in the treatment group by chance alone.
+<<>>=
+shuffle.ttt == "red"
+sum(shuffle.ttt == "red")
+ttt.count <- sum(shuffle.ttt == "red")
+ttt.count
+@
+
+\newpage \phantom{X} \vskip0.1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%
+Repeat this \textbf{simulation} (shuffle) 20 times
+<<echo=FALSE>>=
+set.seed(12345)
+@
+<<>>=
+ttt.count.20 <- replicate(20, sum(sample(cards, 34)=="red"))
+ttt.count.20
+@
+How often did we get the same result as in the Mythbusters' data?
+<<>>=
+sum(ttt.count.20 == 10)
+sum(ttt.count.20 == 10) / 20
+@
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%
+Repeat simulation 10,000 times!
+<<echo=FALSE>>=
+set.seed(12345)
+@
+<<echo=FALSE>>=
+ttt.count.10000 <- replicate(10000, sum(sample(cards, 34)=="red"))
+hist(ttt.count.10000, labels=TRUE, breaks=seq(0,14,1), right=FALSE, main="", xlab="Number of red cards (yawners) in treatment group after shuffle")
+abline(v=10, lwd=5, lty=2)
+@
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%
+How statisticians measure ``evidence" against the null hypothesis:
+\vskip0.25cm
+
+How often would we expect to observe data as (or more) ``extreme" \\
+than the data we actually observed?
+
+\vskip0.25cm
+``As extreme" means \\
+``as far as observed away from what we expected" \\
+(we expected 9.5)
+<<>>=
+sum(ttt.count.10000 >= 10)
+sum(ttt.count.10000 >= 10) / 10000
+@
+
+
+
+\end{frame}
+
+\end{document}
+
