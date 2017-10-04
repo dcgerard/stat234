@@ -1,0 +1,152 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Demonstrating $\left(1 + \frac{u}{n}\right)^n \approx e^u$ for any $u$}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Claim}
+Here, we demonstrate the well-known result that
+\begin{align*}
+\left(1 + \frac{u}{n}\right)^n \underset{n \rightarrow \infty}{\longrightarrow} e^u.
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 1
+fn <- function(x, n) {
+  exp(n * log(1 + x / n))
+}
+
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 5
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 10
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 20
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 50
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 100
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Demonstration}
+<<echo = FALSE>>=
+n <- 1000
+x <- seq(0, 5, length = 100)
+y <- fn(x, n)
+z <- exp(x)
+
+plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
+lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+@
+\end{frame}
+
+\end{document}
+
+
