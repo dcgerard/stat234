@@ -35,7 +35,7 @@ Note: Each lecture is a topic, not a day of class.
 9. [Normal Density Calculations](08_normal_calculations.pdf)
 10. [Sampling Distributions](09_distribution_sample_mean.pdf)
 11. [Probability and Sets](10_probability_and_sets.pdf)
-12. Proofs from Axioms of Probability
+12. [Proofs from Axioms of Probability](11_proofs_from_axioms.pdf)
 13. Conditional Probability and Independence
 14. Discrete Random Variables
 15. Continuous Random Variables
