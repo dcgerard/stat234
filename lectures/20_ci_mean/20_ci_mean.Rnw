@@ -1,0 +1,408 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Confidence Intervals for a Mean}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Inference for a population mean.
+\item Confidence intervals for a population mean.
+\item Interpreting confidence intervals.
+\item Sections 4.1 and 4.2 of DBC.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Review: Statistics vs Probability}
+\begin{itemize}
+\item {\bf Statistics (Inference):}
+\begin{itemize}
+\item Just observe a sample. What can we conclude (probabilistically) about the population?
+\item Sample $\longrightarrow$ Population?
+\item Messy and more of an art.
+\item No correct answers. Lots of wrong answers. Some ``good enough'' answers.
+\end{itemize}
+\item {\bf Probability (from the viewpoint of Statisticians):}
+\begin{itemize}
+\item Logically self-contained, a subset of Mathematics.
+\item One correct answer.
+\item We know the population. What is the probability of the sample?
+\item Population $\longrightarrow$ Sample?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Speed of Light}
+In 1879, \href{https://en.wikipedia.org/wiki/Albert_A._Michelson#Early_measurements}{Albert Michaelson} ran an experiment to estimate the speed of light. Let's use his data. (Different from the famous Michaelson-Morley experiment.)
+<<message=FALSE>>=
+library(tidyverse)
+data("morley")
+glimpse(morley)
+@
+\texttt{Speed} is in units km/s with 299,000 subtracted.
+\end{frame}
+
+\begin{frame}[fragile]{A histogram}
+<<fig.height=3.5>>=
+hist(morley$Speed, xlab = "Speed",
+     main = "Histogram of Speed Measurements", xlim = c(600, 1100))
+abline(v = mean(morley$Speed), col = 2,
+       lty = 2, lwd = 2)
+@
+\end{frame}
+
+\begin{frame}{What can we say}
+If this experiment were done with no bias, then:
+\begin{itemize}
+\item $E[\bar{X}] = \mu$
+\item $SD(\bar{X}) = \sigma / \sqrt{n}$
+\item $\bar{X} \underset{n\rightarrow \infty}{\longrightarrow} \mu$ (Law of Large Numbers)
+\item $\bar{X} \sim N(\mu, \sigma^2 / n)$, approximately (Central Limit Theorem).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Point Estimate}
+\begin{itemize}
+\item Right now, our best guess for the value of $\mu$ is $\bar{X} = \Sexpr{mean(morley$Speed)}$.
+\item However, point estimates are not exact.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A different sample}
+<<echo=FALSE>>=
+boot_samp <- sample(morley$Speed, replace = TRUE)
+hist(boot_samp, xlab = "Speed",
+     main = "Histogram of Speed Measurements", xlim = c(600, 1100))
+abline(v = mean(boot_samp), col = 2,
+       lty = 2, lwd = 2)
+@
+
+$\bar{X} = \Sexpr{mean(boot_samp)}$
+\end{frame}
+
+\begin{frame}[fragile]{A different sample}
+<<echo=FALSE>>=
+boot_samp <- sample(morley$Speed, replace = TRUE)
+hist(boot_samp, xlab = "Speed",
+     main = "Histogram of Speed Measurements", xlim = c(600, 1100))
+abline(v = mean(boot_samp), col = 2,
+       lty = 2, lwd = 2)
+@
+
+$\bar{X} = \Sexpr{mean(boot_samp)}$
+\end{frame}
+
+\begin{frame}[fragile]{A different sample}
+<<echo=FALSE>>=
+boot_samp <- sample(morley$Speed, replace = TRUE)
+hist(boot_samp, xlab = "Speed",
+     main = "Histogram of Speed Measurements", xlim = c(600, 1100))
+abline(v = mean(boot_samp), col = 2,
+       lty = 2, lwd = 2)
+@
+
+$\bar{X} = \Sexpr{mean(boot_samp)}$
+\end{frame}
+
+\begin{frame}[fragile]{A different sample}
+<<echo=FALSE>>=
+boot_samp <- sample(morley$Speed, replace = TRUE)
+hist(boot_samp, xlab = "Speed",
+     main = "Histogram of Speed Measurements", xlim = c(600, 1100))
+abline(v = mean(boot_samp), col = 2,
+       lty = 2, lwd = 2)
+@
+
+$\bar{X} = \Sexpr{mean(boot_samp)}$
+\end{frame}
+
+
+\begin{frame}
+\begin{itemize}
+\item Unfortunately, we never actually observe other values of $\bar{X}$.
+\item Luckily, we have theory that says that for most random variables, we know the distribution of $\bar{X}$.
+\item $\bar{X} \sim N(\mu, \sigma^2 / n)$.
+\item So we know on average how far away $\bar{X}$ will be from $\mu$ on average.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Recall: 68-95-99.7 rule}
+\begin{block}{68-95-99.7 rule}
+In the Normal distribution with mean $\mu$ and standard deviation $\sigma$
+\begin{itemize}
+\item Approximately 68\% of the observations fall within $\sigma$ of $\mu$
+\item Approximately 95\% of the observations fall within $2\sigma$ of $\mu$
+\item Approximately 99.7\% of the observations fall within $3\sigma$ of $\mu$
+\end{itemize}
+This rule does not depend on the values of $\mu$ and $\sigma$.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Recall: 68-95-99.7 rule}
+<<echo = FALSE>>=
+x <- seq(-3.5, 3.5, length = 500)
+y <- dnorm(x)
+dat <- data_frame(x = x, y = y)
+poly1 <- data.frame(x = c(-1, x[x <= 1 & x >= -1], 1, -1),
+                    y = c(0, y[x <= 1 & x >= -1], 0, 0))
+poly2 <- data.frame(x = c(-2, x[x <= 2 & x >= -2], 2, -2),
+                    y = c(0, y[x <= 2 & x >= -2], 0, 0))
+poly3 <- data.frame(x = c(-3, x[x <= 3 & x >= -3], 3, -3),
+                    y = c(0, y[x <= 3 & x >= -3], 0, 0))
+ggplot(data = dat, aes(x = x, y = y)) +
+  geom_line() +
+  geom_polygon(data = poly1, aes(x, y), alpha = 0.2, fill = "red") +
+  geom_polygon(data = poly2, aes(x, y), alpha = 0.2, fill = "blue") +
+  geom_polygon(data = poly3, aes(x, y), alpha = 0.2, fill = "green") +
+  ylab("density") +
+  ggtitle("68-95-99.7 rule") +
+  annotate("text", x = 0.85, y = 0.35, label = "68%") +
+  annotate("text", x = 1.8, y = 0.15, label = "95%") +
+  annotate("text", x = 2.8, y = 0.04, label = "99.7%") +
+  scale_x_continuous(breaks = -3:3) +
+  theme_bw()
+@
+\end{frame}
+
+\begin{frame}{A random interval}
+Applying this rule to $\bar{X}$
+\begin{align*}
+P\left(\mu - 2 \sigma/\sqrt{n} \leq \bar{X} \leq \mu + 2\sigma/\sqrt{n} \right) = 0.95
+\end{align*}
+Rearranging terms we get
+\begin{align*}
+P\left(\bar{X} - 2\sigma / \sqrt{n}) \leq \mu \leq \bar{X} + 2\sigma/\sqrt{n}\right) = 0.95.
+\end{align*}
+That is, the \emph{random interval} $(\bar{X} - 2 \sigma / \sqrt{n}, \bar{X} + 2\sigma / \sqrt{n})$ covers the mean $\mu$ in 95\% of all samples.
+\end{frame}
+
+\begin{frame}{What about $\sigma$?}
+\begin{itemize}
+\item $\sigma$ is a population parameter, that we generally don't know.
+\item Recall that we use $s$, the sample standard deviation, as a point estimate of $\sigma$.
+\item For large $n$, using $s$ instead of $\sigma$ doesn't matter.
+\item For small $n$ (e.g. $n \leq 30$), intervals are too small (more on this later).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Calculating 95\% Confidence Intervals for Mean}
+\begin{enumerate}
+\item Take a random sample of size $n$ calculate the sample mean $\bar{X}$
+\item If $n$ is large enough, then can assume $\bar{X} \sim N(\mu, \sigma^2 / n)$
+\item The \alert{95\% confidence interval} is given by
+\begin{align*}
+\left(\bar{X} - 1.96 \frac{s}{\sqrt{n}}, \bar{X} + 1.96 \frac{s}{\sqrt{n}}\right)
+\end{align*}
+\end{enumerate}
+
+1.96 is slightly more accurate than 2. In practice this doesn't matter too much.
+\end{frame}
+
+\begin{frame}{Intuition of CI}
+What if we repeat the following over and over again:
+\begin{enumerate}
+\item Draw a sample of size $n$.
+\item Calculate a 95\% confidence interval.
+\end{enumerate}
+
+Then 95\% of these intervals will cover the true parameter.
+\end{frame}
+
+\begin{frame}[fragile]{Visual}
+<<echo=FALSE>>=
+set.seed(5)
+@
+
+<<>>=
+mu        <- 10
+sigma     <- 1
+n         <- 100
+simout    <- replicate(20, rnorm(n = n, mean = mu, sd = sigma))
+xbar_vec  <- colMeans(simout)
+s_vec     <- apply(simout, 2, sd)
+lower_vec <- xbar_vec - 1.96 * s_vec / sqrt(n)
+upper_vec <- xbar_vec + 1.96 * s_vec / sqrt(n)
+@
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]{Covering True Mean}
+<<echo=FALSE, fig.height=4.5>>=
+for (plot_index in 1:length(xbar_vec)) {
+  which_miss <- upper_vec < mu | lower_vec > mu
+  plot(c(0), xlim = c(1, length(xbar_vec)),
+       ylim = c(min(lower_vec), max(upper_vec)),
+       type = "n", xlab = "sample", ylab = "value",
+       main = "95% Confidence Intervals")
+  arrows(x0 = 1:plot_index, y0 = lower_vec[1:plot_index],
+         x1 = 1:plot_index, y1 = upper_vec[1:plot_index],
+         length = 0, col = which_miss + 1, lwd = 4)
+  abline(h = mu, lty = 2, col = 4)
+}
+@
+\end{frame}
+
+\begin{frame}{Michaelson Experiment}
+\begin{itemize}
+\item Using this procedure, a 95\% confidence interval for the speed of light is
+$(\Sexpr{round(mean(morley$Speed) - 1.96 * sd(morley$Speed) / sqrt(nrow(morley)) + 299000)}, \Sexpr{round(mean(morley$Speed) + 1.96 * sd(morley$Speed) / sqrt(nrow(morley)) + 299000)})$ km/s.
+\item The actual speed of light is 299,792 km/s.
+\item Is this one of the 5\% of times or is it due to bias?
+\pause \item Probably bias since this our observed $\bar{X} = \Sexpr{mean(morley$Speed)}$ correponds to the 99.999999999999th percentile of a $N(792, s^2)$ distribution.
+\item But pretty close for 1879!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correct/Incorrect Descriptions of CI}
+Let $l$ and $u$ be the lower and upper bounds, respectively, of a 95\% confidence interval.
+
+What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpretations are correct/incorrect?
+
+\begin{itemize}
+\item The probability of $\mu$ being between $l$ and $u$ is 95\%.
+\item Prior to sampling, the probability of $\mu$ being between $l$ and $u$ is 95\%.
+\item 95\% of the population's distribution is between $l$ and $u$.
+\item If we were to draw another sample, the new $\bar{X}$ would be between $l$ and $u$ with 95\% probability.
+\item 95\% of new $\bar{X}$'s would lie between $l$ and $u$.
+\item We used a procedure that captures the true $\mu$ 95\% of the time in repeated samples.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[allowframebreaks,fragile]{General form of a confidence interval}
+
+  In general, a CI for a parameter has the form
+    \[ \mbox{estimate} \pm \mbox{margin of error} \]
+    where the margin of error is determined by the confidence level
+    $(1-\alpha)$, the population SD $\sigma$, and the sample size $n$.
+
+\medskip
+    A $(1-\alpha)$ confidence interval for a parameter $\theta$ is an
+    interval computed from a SRS by a method with probability
+    $(1-\alpha)$ of containing the true $\theta$.
+
+\medskip
+    For a random sample of size $n$ drawn from a population of unknown
+    mean $\mu$ and known SD $\sigma$, a $(1-\alpha)$ CI for $\mu$ is
+    \[ \bar{x} \pm z^{*}\frac{\sigma}{\sqrt{n}} \]
+
+
+\end{frame}
+
+\begin{frame}
+
+\parbox[t]{0pt}{}
+
+\bigskip
+    Here $z^{*}$ is the \textbf{critical value}, selected so that a
+    standard Normal density has area $(1-\alpha)$ between $-z^{*}$ and
+    $z^{*}$.
+
+    \medskip
+    The quantity $z^{*} \sigma /\sqrt{n}$, then, is the
+    \textbf{margin error}.
+
+    \medskip
+    If the population distribution is normal, the interval is
+    \textit{exact}. Otherwise, it is \textit{approximately correct for
+      large $n$}.
+
+\end{frame}
+
+\begin{frame}
+
+\parbox[t]{0pt}{}
+
+\bigskip
+
+{\bf Some cautions on using the formula}
+
+\bigskip
+\begin{itemize}
+\item Any formula for inference is correct only in specific circumstances.
+\item The data must be a SRS from the population.
+\item Because $\bar{x}$ is not resistant, outliers can have a large effect
+on the confidence interval.
+\item If the sample size is small and the population is not Normal, the
+true confidence level will be different.
+\item You need to know the standard deviation $\sigma$ of the population.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+{\bf Finding $z^*$}
+
+    For a given confidence level $(1-\alpha)$, how do we find $z^*$?
+
+    Let $Z \sim N(0,1)$:
+
+    DRAW NORMAL HERE
+
+    \begin{align*}
+      P(-z^{*} \leq Z \leq z^{*}) = (1-\alpha)
+      &\iff P( Z < -z^{*}) = \frac{\alpha}{2}
+    \end{align*}
+
+\end{frame}
+
+\begin{frame}
+    Thus, for a given confidence level $(1-\alpha)$, we can look up the
+    corresponding $z^*$ value on the Normal table.
+
+\vspace{0.1cm}
+ {\bf Common $z^{*}$ values:}
+    \begin{center}
+      \begin{tabular}{c|ccc}
+        Confidence Level& 90\% & 95\% & 99\% \\
+        \hline
+        $z^{*}$ & 1.645 & 1.96 & 2.576
+      \end{tabular}
+    \end{center}
+
+
+\end{frame}
+
+
+\end{document}
