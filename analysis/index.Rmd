@@ -37,8 +37,9 @@ Note: Each lecture is a topic, not a day of class.
 11. [Probability and Sets](10_probability_and_sets.pdf)
 12. [Proofs from Axioms of Probability](11_proofs_from_axioms.pdf)
 13. [Conditional Probability and Independence](12_conditional_probability_independence.pdf)
-14. Discrete Random Variables
-15. Continuous Random Variables
+13. [Bayes Rule](12_z1_bayes_theorem.pdf)
+14. [Discrete Random Variables](13_discrete_rv.pdf)
+15. [Continuous Random Variables](15_continuous_RV.pdf)
 16. Moment Generating Functions
 17. To be continued ...
 

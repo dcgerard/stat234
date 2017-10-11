@@ -1,0 +1,207 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Bayes Theorem}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Bayes Rule
+\item Section 2.2.7 of DBC
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Motivation}
+\begin{itemize}
+\item There are many times that we want $P(B|A)$.
+\item However, we might only have information on $P(A|B)$.
+\item E.g. from medical tests, we often have a lot of knowledge of the probability of a test resulting positive given an patient has a disease, or the probability of a test resulting positive given a patient does not have a disease.
+\item But when a test is run, we want the probability that a patient has a disease given that a test is positive or negative.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Motivation}
+Data from OpenIntro p98. Breast cancer for women in Canada.
+\begin{align*}
+P(\text{positive} | \text{cancer}) &= 0.89 \text{ so } P(\text{negative} | \text{cancer}) = 0.11.\\
+P(\text{positive} | \text{not cancer}) &= 0.07 \text{ so } P(\text{negative} | \text{not cancer}) = 0.93.\\
+P(\text{cancer}) &= 0.0035 \text{ so } P(\text{not cancer}) = 0.9965
+\end{align*}
+\begin{itemize}
+\item But we want to know $P(\text{cancer} | \text{positive})$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Bayes Rule}
+Recall Multiplication Rule:
+\begin{align*}
+P(B|A)P(A) &= P(A \cap B) \hid{2-}{= P(A|B)P(B)}\\
+\hid{3-}{P(B|A)P(A) &= P(A|B)P(B)\\}
+\hid{4-}{P(B|A) &= \frac{P(A|B)P(B)}{P(A)}}
+\end{align*}
+\visible<5->{ This is known as Bayes rule.
+\begin{block}{Bayes Rule}
+\begin{align*}
+P(B|A) &= \frac{P(A|B)P(B)}{P(A)}
+\end{align*}
+\end{block}
+}
+\end{frame}
+
+\begin{frame}{Law of Total Probability}
+You almost always get $P(A)$ by using the law of total probablity:
+\begin{block}{Law of total probability (more general form)}
+Suppose $B_1,B_2,\ldots,B_K$ is a partition of the sample space $S$. I.e. $B_1 \cup B_2 \cup \cdots \cup B_K = S$ and $B_i \cap B_j = \emptyset$ for all $i \neq j$, then
+\begin{align*}
+P(A) &= P(A \cap B_1) + P(A\cap B_2) + \cdots + P(A\cap B_K)\\
+&= P(A | B_1)P(B_1) + P(A| B_2)P(B_2) + \cdots + P(A| B_K)P(B_K).
+\end{align*}
+\end{block}
+We previously defined this law using $K = 2$:
+\begin{align*}
+P(A) = P(A|B)P(B) + P(A|B^c)P(B^c).
+\end{align*}
+\end{frame}
+
+\begin{frame}{Our Cancer Example}
+\begin{align*}
+P(\text{positive} | \text{cancer}) &= 0.89 \text{ so } P(\text{negative} | \text{cancer}) = 0.11.\\
+P(\text{positive} | \text{not cancer}) &= 0.07 \text{ so } P(\text{negative} | \text{not cancer}) = 0.93.\\
+P(\text{cancer}) &= 0.0035 \text{ so } P(\text{not cancer}) = 0.9965
+\end{align*}
+
+$P(\text{cancer}|\text{positive}) = \frac{P(\text{positive}|\text{cancer}) P(\text{cancer})}{P(\text{positive})}$.
+
+We need
+\begin{align*}
+P(\text{positive}) &= P(\text{positive}|\text{cancer})P(\text{cancer}) \\
+&~~~+P(\text{positive}|\text{not cancer})P(\text{not cancer})\\
+&= 0.89 * 0.0035 + 0.07 * 0.9965 = 0.07287
+\end{align*}
+\end{frame}
+
+
+\begin{frame}{Our Cancer Example}
+\begin{align*}
+P(\text{positive} | \text{cancer}) &= 0.89 \text{ so } P(\text{negative} | \text{cancer}) = 0.11.\\
+P(\text{positive} | \text{not cancer}) &= 0.07 \text{ so } P(\text{negative} | \text{not cancer}) = 0.93.\\
+P(\text{cancer}) &= 0.0035 \text{ so } P(\text{not cancer}) = 0.9965\\
+P(\text{positive}) &= 0.07287
+\end{align*}
+
+\begin{align*}
+P(\text{cancer}|\text{positive}) &= \frac{P(\text{positive}|\text{cancer}) P(\text{cancer})}{P(\text{positive})}\\
+& = \frac{0.89 * 0.0035}{0.07287}\\
+&= 0.04275
+\end{align*}
+\end{frame}
+
+\begin{frame}{Intuition}
+\begin{itemize}
+\item So the probability you have cancer given a positive test is only about 4\%!
+\item Even though the test is fairly accurate, because there are so many more people who do not have cancer than who have cancer, they make up a majority of the population who have a positive test result.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Graphical Example}
+<<echo=FALSE>>=
+set.seed(1)
+n <- 10000
+x <- jitter(sample(c(0, 1), size = n, replace = TRUE, prob = c(0.0035, 0.9965)))
+y <- runif(n = n)
+z <- rep(NA, length = n)
+z[round(x) == 0] <- sample(c(2, 4), size = sum(round(x) == 0), replace = TRUE, prob = c(0.89, 0.11))
+z[round(x) == 1] <- sample(c(2, 4), size = sum(round(x) == 1), replace = TRUE, prob = c(0.07, 0.93))
+
+plot(x, y, col = z, pch = 16, cex = 0.7, xaxt = "n", yaxt = "n", main = "Graphical Example", xlab = "", ylab = "")
+axis(side = 1, at = c(0, 1), labels = c("Cancer", "Not Cancer"))
+legend("bottom", legend = c("Positive", "Negative"), col = c(2, 4), pt.cex = 0.7, pch = 16)
+@
+\end{frame}
+
+\begin{frame}{Graphical Example}
+<<echo=FALSE>>=
+xsmall <- x[z == 2]
+ysmall <- y[z == 2]
+plot(xsmall, ysmall, col = 2, pch = 16, cex = 0.7, xaxt = "n", yaxt = "n", main = "Graphical Example", xlab = "", ylab = "")
+axis(side = 1, at = c(0, 1), labels = c("Cancer", "Not Cancer"))
+legend("bottom", legend = c("Positive", "Negative"), col = c(2, 4), pt.cex = 0.7, pch = 16)
+@
+\end{frame}
+
+\begin{frame}{Graphical Example}
+<<echo=FALSE>>=
+tabdat <- table(round(x), z)
+dimnames(tabdat) <- list(cancer = c("Cancer", "No Cancer"), test = c("Positive", "Negative"))
+barplot(t(tabdat), legend.text = c("Positive", "Negative"), args.legend = list(x = "topleft"))
+@
+\end{frame}
+
+\begin{frame}{Zooming In}
+<<echo=FALSE>>=
+tabdat <- table(round(x), z)
+dimnames(tabdat) <- list(cancer = c("Cancer", "No Cancer"), test = c("Positive", "Negative"))
+barplot(t(tabdat), legend.text = c("Positive", "Negative"), args.legend = list(x = "topleft"), ylim = c(0, 700))
+@
+\end{frame}
+
+\begin{frame}{Another Example}
+From \texttt{email} dataset, we get
+\begin{align*}
+P(\text{no number}|\text{spam}) &= 0.4062\\
+P(\text{small number}|\text{not spam}) &= 0.7482\\
+P(\text{big number}|\text{not spam}) &= 0.1393\\
+P(\text{spam}) &= 0.0936
+\end{align*}
+
+What proportion of emails with no number are spam?
+
+(on chalk board)
+
+\end{frame}
+
+
+
+\end{document}
+
