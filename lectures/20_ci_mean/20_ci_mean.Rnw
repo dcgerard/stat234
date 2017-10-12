@@ -258,7 +258,8 @@ set.seed(5)
 mu        <- 10
 sigma     <- 1
 n         <- 100
-simout    <- replicate(20, rnorm(n = n, mean = mu, sd = sigma))
+simout    <- replicate(20, rnorm(n = n, mean = mu,
+                                 sd = sigma))
 xbar_vec  <- colMeans(simout)
 s_vec     <- apply(simout, 2, sd)
 lower_vec <- xbar_vec - 1.96 * s_vec / sqrt(n)
@@ -309,7 +310,7 @@ What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpre
 \end{frame}
 
 
-\begin{frame}[allowframebreaks,fragile]{General form of a confidence interval}
+\begin{frame}[fragile]{General form of a confidence interval}
 
   In general, a CI for a parameter has the form
     \[ \mbox{estimate} \pm \mbox{margin of error} \]
@@ -329,7 +330,7 @@ What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpre
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{General form of a confidence interval}
 
 \parbox[t]{0pt}{}
 
@@ -349,7 +350,7 @@ What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpre
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{General form of a confidence interval}
 
 \parbox[t]{0pt}{}
 
@@ -365,12 +366,12 @@ What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpre
 on the confidence interval.
 \item If the sample size is small and the population is not Normal, the
 true confidence level will be different.
-\item You need to know the standard deviation $\sigma$ of the population.
+\item You need to know the standard deviation $\sigma$ of the population (or have a large enough sample where $s \approx \sigma$.
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]{General form of a confidence interval}
 
 {\bf Finding $z^*$}
 
@@ -378,7 +379,33 @@ true confidence level will be different.
 
     Let $Z \sim N(0,1)$:
 
-    DRAW NORMAL HERE
+<<echo=FALSE, fig.height=2.5>>=
+alpha <- 0.1
+lower <- qnorm(alpha / 2)
+upper <- qnorm(1 - alpha / 2)
+x <- seq(-3.5, 3.5, length = 500)
+y <- dnorm(x)
+dat <- data_frame(x = x, y = y)
+poly1 <- data.frame(x = c(min(x), x[x <= lower], lower, min(x)),
+                    y = c(0, y[x <= lower], 0, 0))
+poly2 <- data.frame(x = c(upper, x[x >= upper], max(x), upper),
+                    y = c(0, y[x >= upper], 0, 0))
+poly3 <- data.frame(x = c(lower, x[x >= lower & x <= upper], upper, lower),
+                    y = c(0, y[x >= lower & x <= upper], 0, 0))
+ggplot(data = dat, aes(x = x, y = y)) +
+  geom_line() +
+  geom_polygon(data = poly1, aes(x, y), alpha = 0.2, fill = "blue") +
+  geom_polygon(data = poly2, aes(x, y), alpha = 0.2, fill = "blue") +
+  geom_polygon(data = poly3, aes(x, y), alpha = 0.2, fill = "red") +
+  ylab("density") +
+  annotate("text", x = 2.8, y = 0.04, label = "alpha/2", parse = TRUE) +
+  annotate("text", x = -2.8, y = 0.04, label = "alpha/2", parse = TRUE) +
+  annotate("text", x = 0, y = 0.15, label = "1 - alpha", parse = TRUE) +
+  scale_x_continuous(breaks = -3:3) +
+  theme_bw()
+
+@
+
 
     \begin{align*}
       P(-z^{*} \leq Z \leq z^{*}) = (1-\alpha)
@@ -387,7 +414,7 @@ true confidence level will be different.
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{General form of a confidence interval}
     Thus, for a given confidence level $(1-\alpha)$, we can look up the
     corresponding $z^*$ value on the Normal table.
 

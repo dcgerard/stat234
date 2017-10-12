@@ -39,9 +39,10 @@ Note: Each lecture is a topic, not a day of class.
 13. [Conditional Probability and Independence](12_conditional_probability_independence.pdf)
 13. [Bayes Rule](12_z1_bayes_theorem.pdf)
 14. [Discrete Random Variables](13_discrete_rv.pdf)
-15. [Continuous Random Variables](15_continuous_RV.pdf)
-16. Moment Generating Functions
-17. To be continued ...
+15. [Binomial Distribution](14_binomial_distribution.pdf)
+16. [Continuous Random Variables](15_continuous_RV.pdf)
+17. Moment Generating Functions
+18. To be continued ...
 
 # Stat Comics That Made Me Laugh
 - SMBC:

@@ -10,7 +10,7 @@
 \def\hid#1#2{\onslide<#1>{#2}}
 
 
-\title{}
+\title{Hypothesis Testing}
 \author{David Gerard}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
@@ -42,6 +42,19 @@ opts_chunk$set(
 \begin{frame}[fragile]
   \titlepage
 \end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Hypothesis tests.
+\item Connection to confidence intervals.
+\item Section 4.3 of DBC
+\end{itemize}
+\end{frame}
+
+
+
+
+
 
 
 \end{document}
