@@ -51,7 +51,16 @@ opts_chunk$set(
 \end{itemize}
 \end{frame}
 
-
+\begin{frame}[fragile]{Motivation}
+\begin{itemize}
+\item Often, scientists want to test for binary decisions.
+\item E.g. Does this gene impact height (Yes/No)
+\item E.g. Does broccoli cause cancer (Yes/No)
+\item E.g. Is Trump's phone source associated with negative words (Yes/No)?
+\item
+\item Today, we'll talk about making binary decisions in the context of estimating a mean:
+\end{itemize}
+\end{frame}
 
 
 

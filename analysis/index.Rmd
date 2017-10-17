@@ -41,8 +41,11 @@ Note: Each lecture is a topic, not a day of class.
 14. [Discrete Random Variables](13_discrete_rv.pdf)
 15. [Binomial Distribution](14_binomial_distribution.pdf)
 16. [Continuous Random Variables](15_continuous_RV.pdf)
-17. Moment Generating Functions
-18. To be continued ...
+17. [Multiple Random Variables](16_multiple_rvs.pdf)
+18. Moment Generating Functions
+19. Interval Estimates for Means
+20. Hypothesis Testing for Means
+21. And more ...
 
 # Stat Comics That Made Me Laugh
 - SMBC:
