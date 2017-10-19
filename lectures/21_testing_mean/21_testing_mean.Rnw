@@ -58,11 +58,596 @@ opts_chunk$set(
 \item E.g. Does broccoli cause cancer (Yes/No)
 \item E.g. Is Trump's phone source associated with negative words (Yes/No)?
 \item
-\item Today, we'll talk about making binary decisions in the context of estimating a mean:
+\item Today, we'll talk about making binary decisions in the context of estimating.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hypothesis test}
+\begin{itemize}
+\item A hypothesis test is an assessment of the evidence provided by
+the data in favor of (or against) some claim about the population.
+\item For example, suppose we perform a randomized experiment or take
+a random sample and calculate some sample statistic, say the
+sample mean.
+\item We want to decide if the observed value of the sample statistic is
+consistent with some hypothesized value of the corresponding
+population parameter.
+\item If the observed and hypothesized value differ (as they almost
+certainly will), is the difference due to an incorrect hypothesis or
+merely due to chance variation?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Old Faithful}
+\begin{itemize}
+\item Old Faithful is a geyser in Yellowstone National Park that is known for erupting approximately once every hour.
+\item That is, the lore is that the average eruption time for Old Faithful is 60 minutes.
+\item We want to see if data corroborate this lore.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Old Faithful Dataset}
+Waiting time between eruptions and the duration of the eruption for the Old Faithful geyser in Yellowstone National Park, Wyoming, USA.
+
+Data consist of two variables
+\begin{itemize}
+\item \texttt{duration} Eruption time in mins.
+\item \texttt{waiting} Waiting time to this eruption (in mins).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Old Faithful Dataset}
+<<message=FALSE>>=
+library(tidyverse) ## for glimpse() function
+library(MASS) ## contains geyser dataset
+data("geyser")
+glimpse(geyser)
+waiting <- geyser$waiting
+@
+\end{frame}
+
+\begin{frame}{Hypotheses}
+Using these data, we wish to decide between one of two hypotheses:
+\begin{itemize}
+\item $H_0$ The mean eruption time $\mu$ for Old Faithful is 60 minutes.
+\item $H_A$ The mean eruption time $\mu$ for Old Faithful is \alert{not} 60 minutes.
+\item Formulating different hypotheses is the first step in any testing scenario.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{General Form of Hypotheses}
+\begin{itemize}
+\item The \alert{null hypothesis} $H_0$ is the statement being tested.
+Usually it states that the difference between the observed
+value and the hypothesized value is only due to chance
+variation. For example, $\mu = 60$.
+\item The \alert{alternative hypothesis} $H_A$ is the statement we will favor
+if we find evidence that the null hypothesis is false. It usually
+states that there is a real difference between the observed and
+hypothesized values.
+For example, $\mu \neq 60$, $\mu > 60$, or $\mu < 60$.
+\item A test is called
+\begin{itemize}
+\item two-sided if $H_A$ is of the form $\mu \neq 60$.
+\item one-sided if $H_A$ is of the form $\mu < 60$ or $\mu > 60$.
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 
+\begin{frame}[fragile, allowframebreaks]{Some EDA}
+<<fig.height=3.5>>=
+hist(waiting)
+boxplot(waiting, ylab = "waiting time")
+summary(waiting)
+@
+\end{frame}
+
+\begin{frame}{Conclusion from EDA}
+\begin{itemize}
+\item EDA suggests $\mu \neq 60$, but again, this might be due to random variation.
+\item We need some formal way to evaluate the unlikeliness of the data we observe under $H_0$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Confidence Intervals}
+Recall for large enough $n$
+\begin{align*}
+\bar{x} \sim N(\mu, \sigma^2 / n).
+\end{align*}
+\begin{itemize}
+\item We used this result in the previous lecture to come up with 95\% confidence intervals.
+\item That is, $\bar{x}$ is will only deviate from $\mu$ by more than 2 standard deviations in approximately 5\% of repeated samples.
+\item So $\mu$ is between $\bar{x} - 2 \sigma / \sqrt{n}$ and $\bar{x} + 2 \sigma / \sqrt{n}$ in about 95\% of repeated samples.
+\item So if our hypothesized $\mu$ (60 minutes) is outside of this interval, it is unlikely that $\mu = 60$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Calculating CI}
+<<echo=FALSE>>=
+xbar <- mean(waiting)
+s    <- sd(waiting)
+z    <- abs(qnorm(0.025))
+lower <- xbar - z * s / sqrt(length(waiting))
+upper <- xbar + z * s / sqrt(length(waiting))
+@
+
+\begin{itemize}
+\item $\bar{x} = \Sexpr{round(xbar, digits = 2)}$.
+\item $s = \Sexpr{round(s, digits = 2)}$.
+\item CI: $(\Sexpr{round(lower, digits = 2)},\Sexpr{round(upper, digits = 2)})$.
+\item Since $60 \notin (\Sexpr{round(lower, digits = 2)},\Sexpr{round(upper, digits = 2)})$, we are left with one of two conclusions:
+\begin{enumerate}
+\item $H_0$ is true (so $\mu = 60$) and what we observed is an extremely rare event.
+\item $H_A$ is true and $\mu \neq 60$.
+\end{enumerate}
+\item Since the data are unlikely to have been observed if $H_0$ were true, we \alert{reject} $H_0$ and conclude that $\mu \neq 60$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Type I Error}
+\begin{itemize}
+\item What if $H_0$ were actually true?
+\item Recall that a 95\% CI only covers the true $\mu$ in 95\% of repeated samples.
+\item So the sample we actually observed could be one of the 5\% of samples that misses the true $\mu$ and we incorrectly rejected $H_0$.
+\item When we incorrectly reject $H_0$ this is called (rather stupidly) a \alert{Type I error}.
+\item Some call this, more intuitively, a \alert{false discovery} or a \alert{false positive}.
+\item If we used, instead of a 95\% CI, a (1 - $\alpha$)\% CI, in what proportion of repeated samples would we make a Type I error?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Type II Error}
+\begin{itemize}
+\item We could also have \alert{failed to reject} $H_0$ when in fact $H_0$ is false.
+\item This is called a \alert{Type II Error}, or a \alert{false negative}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Subtle Language}
+\begin{itemize}
+\item We say ``reject $H_0$'' when we have evidence against $H_0$.
+\item We say ``fail to reject $H_0$'' when we do not have enough evidence against $H_0$.
+\item We generally never say ``accept $H_0$''.
+\item There are philosophical reasons for this: lack of evidence against a hypothesis is not the same as evidence for a hypothesis --- e.g.~a ``not guilty'' verdict in court does not mean ``innocent''.
+\item There are practical reasons for this: If a scientist wanted to publish a result, he could make his desired hypothesis $H_0$ and then collect a very small sample size. He would usually fail to reject $H_0$ and could publish a lot of bad papers.
+\end{itemize}
+\end{frame}
+
+\section{More Formal Testing}
+
+\begin{frame}[fragile]{Motivation}
+The CI approach to hypothesis testing is too course.
+\begin{itemize}
+\item If a hypothesized $\mu$ is just inside a 95\% confidence interval, we want to say that we fail to reject $H_0$, but it was a close call.
+\end{itemize}
+<<echo=FALSE>>=
+x <- seq(60 - 3 * s / sqrt(length(waiting)), 60 + 3 * s / sqrt(length(waiting)), length = 500)
+y <- dnorm(x, mean = 60, sd = s / sqrt(length(waiting)))
+
+xpol <- c(min(x), x, max(x), min(x))
+ypol <- c(0, y, 0, 0)
+
+xline <- c(60 - 1.96 * s / sqrt(length(waiting)), 60 + 1.96 * s / sqrt(length(waiting)))
+
+dfdat <- data_frame(xpol, ypol)
+ggplot(data = dfdat, mapping = aes(x = xpol, y = ypol)) +
+  geom_polygon(fill = "blue", alpha = 1/2) +
+  geom_line(data = data_frame(x, y), mapping = aes(x = x, y = y), lwd = 1) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true") +
+  geom_errorbarh(data = data_frame(x1 = 60, y1 = 0), mapping = aes(x = x1, y = y1, xmin = xline[1], xmax = xline[2], height = 0.1), lwd = 1) +
+  annotate(geom = "point", x = 61.4, y = 0, size = 5) +
+  annotate(geom = "text", x = 61.2, y = 0.05, label = "Close Call")
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Motivation}
+The CI approach to hypothesis testing is too course.
+\begin{itemize}
+\item If a $\mu$ so so far away from the boundary of the 95\% CI, we want to say that $H_0$ is super super unlikely to be true.
+\end{itemize}
+<<echo=FALSE>>=
+x <- seq(60 - 3 * s / sqrt(length(waiting)), xbar + 1, length = 500)
+y <- dnorm(x, mean = 60, sd = s / sqrt(length(waiting)))
+
+xpol <- c(min(x), x, max(x), min(x))
+ypol <- c(0, y, 0, 0)
+
+xline <- c(60 - 1.96 * s / sqrt(length(waiting)), 60 + 1.96 * s / sqrt(length(waiting)))
+
+dfdat <- data_frame(xpol, ypol)
+ggplot(data = dfdat, mapping = aes(x = xpol, y = ypol)) +
+  geom_polygon(fill = "blue", alpha = 1/2) +
+  geom_line(data = data_frame(x, y), mapping = aes(x = x, y = y), lwd = 1) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true") +
+  geom_errorbarh(data = data_frame(x1 = 60, y1 = 0), mapping = aes(x = x1, y = y1, xmin = xline[1], xmax = xline[2], height = 0.1), lwd = 1) +
+  annotate(geom = "point", x = xbar, y = 0, size = 5) +
+  annotate(geom = "text", x = xbar, y = 0.05, label = "Not Close")
+@
+\end{frame}
+
+\begin{frame}{$p$-value}
+\begin{block}{$p$-value}
+The \alert{$p$-value} is the probability of observing data at least as favorable to the alternative hypothesis as our current data set, \emph{if the null hypothesis were true}.
+\end{block}
+\begin{itemize}
+\item A small $p$-value (close to 0) means that the data would be very unlikely under $H_0$, providing evidence for $H_A$.
+\item A large $p$-value (not close to 0) means that the data would be likely under $H_0$, \emph{not} providing evidence for $H_A$.
+\item Generally, we reject $H_0$ if the $p$-value is below some level $\alpha$. In this case, $\alpha$ is called the \alert{significance level} of a test.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{How do we caluclate a $p$-value?}
+We know the distribution of $\bar{x}$ under $H_0$, so we can calculate the probability of seeing data as extreme or more extreme than $\bar{x}$ under $H_0$ using normal probabilities.
+
+E.g.~If $\bar{x} = 61.4$, we would calculate these probabilities.
+<<echo = FALSE, fig.height=3.5>>=
+x <- seq(60 - 3 * s / sqrt(length(waiting)), 60 + 3 * s / sqrt(length(waiting)), length = 500)
+y <- dnorm(x, mean = 60, sd = s / sqrt(length(waiting)))
+
+xlook <- 61.4
+xupp <- c(xlook, seq(xlook, max(x), length = 300), max(x), xlook)
+yupp <- c(0, dnorm(seq(xlook, max(x), length = 300), mean = 60, sd = s / sqrt(length(waiting))), 0, 0)
+
+xlook2 <- 2 * 60 - xlook
+xlow <- c(min(x), seq(min(x), xlook2, length = 300), xlook2, min(x))
+ylow <- c(0, dnorm(seq(min(x), xlook2, length = 300), mean = 60, sd = s / sqrt(length(waiting))), 0, 0)
+
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xlow, ylow), mapping = aes(x = xlow, y = ylow), fill = "blue", alpha = 1/2) +
+  geom_polygon(data = data_frame(xupp, yupp), mapping = aes(x = xupp, y = yupp), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true")
+@
+
+\end{frame}
+
+\begin{frame}{Why both tails?}
+\begin{itemize}
+\item Recall that $H_A: \mu \neq 60$.
+\item The definition of a $p$-value is the probability of seeing something \emph{as extremem or more extreme} (under the null) than what we saw.
+\item Since $-\bar{x}$ is as extreme as $\bar{x}$, we have to include this in our $p$-value calculation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{One sided hypothesis}
+If $H_A: \mu > 60$ and $\bar{x} = 61.4$.
+<<echo=FALSE>>=
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xupp, yupp), mapping = aes(x = xupp, y = yupp), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true")
+@
+\end{frame}
+
+\begin{frame}[fragile]{One sided hypothesis}
+If $H_A: \mu < 60$ and $\bar{x} = 61.4$.
+<<echo=FALSE>>=
+xlow2 <- c(min(x), seq(min(x), xlook, length = 500), xlook, min(x))
+ylow2 <- c(0, dnorm(seq(min(x), xlook, length = 500), mean = 60, sd = s / sqrt(length(waiting))), 0, 0)
+
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xlow2, ylow2), mapping = aes(x = xlow2, y = ylow2), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true")
+@
+\end{frame}
+
+\begin{frame}[fragile]{But we are in this case}
+How do we calculate these probabilities?
+<<echo=FALSE>>=
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xlow, ylow), mapping = aes(x = xlow, y = ylow), fill = "blue", alpha = 1/2) +
+  geom_polygon(data = data_frame(xupp, yupp), mapping = aes(x = xupp, y = yupp), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("waiting time") +
+  ylab("density") +
+  ggtitle("Distribution of sample mean if H0 true")
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]{How do we calculate these probablities}
+\begin{itemize}
+\item We have, under the null $\bar{X} \sim N(\mu, \sigma^2 / n)$
+\item We want $Pr(\bar{X} > 61.4 \text{ or } \bar{X} < 58.6)$ (since 58.6 is 1.4 away from 60, as is our (pretend) observed statistics 61.4).
+\item This is equal to $2Pr(\bar{X} > 61.4)$.
+\item We will insert $s = \Sexpr{s}$ for $\sigma$ here.
+\end{itemize}
+<<>>=
+2 * pnorm(q = 61.4, mean = 60, sd = 13.89 / sqrt(299),
+          lower.tail = FALSE)
+@
+\end{frame}
+
+\begin{frame}{Another way}
+We could also use this fact
+\begin{block}{Standard Normal}
+Let $X \sim N(\mu, \sigma^2)$. Let $Z = \frac{X - \mu}{\sigma}$. Then $Z \sim N(0, 1)$. The normal distribution with mean 0 and standard deviation 1 is sometimes called the \alert{standard normal} distribution.
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Using Standard Normal}
+In which case,
+\begin{align*}
+Pr(|\bar{X} - 60| > 1.4) &= Pr\left(\left|\frac{\bar{X} - 60}{13.89/\sqrt{299}}\right| > 1.743\right)\\
+&= Pr(|Z| > 1.743),
+\end{align*}
+where $Z \sim N(0, 1)$.
+<<>>=
+2 * pnorm(-1.743)
+@
+\end{frame}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item 61.4 is a made-up value. But if it were real, we might choose a significance level of $\alpha = 0.05$.
+\item In which case, since \Sexpr{2 * pnorm(-1.743)} $>$ 0.05, we would \emph{fail to reject} $H_0$ and say that we do not have enough evidence to conclude that Old Faithful erupts differently than once every hour.
+\item Why $\alpha = 0.05$? \textbf{NO REASON}. But everyone in the entire world uses $\alpha = 0.05$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Real data}
+The value 61.4 was made up. Let's calculate the $p$-value given our real observation of \Sexpr{round(xbar, digits = 2)}.
+
+<<>>=
+xbar <- mean(waiting)
+s    <- sd(waiting)
+n    <- length(waiting)
+z    <- (xbar - 60) / (s / sqrt(n))
+2 * pnorm(-abs(z))
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Conclusion}
+\begin{itemize}
+\item Since $\Sexpr{2 * pnorm(-abs(z))} << 0.05$, we strongly reject $H_0$ and conclude that Old Faithful does not on average erupt once an hour.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to interpret the significance level}
+\begin{itemize}
+\item Suppose $P$ is the $p$-value we obtain. Then $P$ is itself a random variable that has a distribution.
+\item Given a significance level, $\alpha$, then one can show that, under the $H_0$, $Pr(P\leq \alpha) = \alpha$.
+\item That is, if we reject $H_0$ whenever $P<\alpha$, then we would expect a Type I error rate of $\alpha$ under the null.
+\item A larger significance level $\alpha$ means that we have a larger Type I error rate, but a smaller Type II error rate.
+\item A smaller $\alpha$ means that we have a smaller Type I error rate but a larger Type II error rate.
+\item We generally only control for Type I error rate (by setting $\alpha$).
+\end{itemize}
+\end{frame}
+
+\section{Summary of $p$-value for means and further thoughts}
+
+\begin{frame}{Step 1}
+Formulate the null hypothesis and the alternative hypothesis
+  \begin{itemize}
+  \item The \textbf{null hypothesis} $H_0$ is the statement being
+    tested.  Usually it states that the difference between the
+    observed value and the hypothesized value is only due to chance
+    variation.
+    For example, $\mu =69$ oz.
+
+  \item The \textbf{alternative hypothesis} $H_a$ is the statement we
+    will favor if we find evidence that the null hypothesis is false.
+    It usually states that there is a real difference between the
+    observed and hypothesized values.
+
+    For example, $\mu \ne 60$, $\mu > 60$, or $\mu < 60$.
+  \end{itemize}
+
+  A test is called
+  \begin{itemize}
+  \item \textbf{two-sided} if $H_A$ is of the form $\mu \ne 60$.
+  \item \textbf{one-sided} if $H_A$ is of the form $\mu > 60$, or $\mu
+    < 60$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2}
+Calculate the \textbf{test statistic} on which the test will be
+  based.
+
+  The test statistic measures the difference between the observed data
+  and what would be expected \textit{if} the null hypothesis were
+  true.
+
+  Our goal is to answer the question, ``How many standard errors is
+  the observed sample value from the hypothesized value (under the
+  null hypothesis)?''
+
+  For the Coke example, the test statistic is
+  \[ z = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{\Sexpr{round(xbar, digits = 2)} - 60}{\Sexpr{round(s, digits = 2)} /\sqrt{\Sexpr{length(waiting)}}} = \Sexpr{z} \]
+
+\end{frame}
+
+\begin{frame}{Step 3}
+Find the \textbf{$p$-value} of the observed result
+
+  \begin{itemize}
+  \item The $p$-value is the probability of observing a test statistic
+    \textit{as extreme or more extreme than actually observed},
+    assuming the null hypothesis $H_0$ is true.
+  \item The smaller the p-value, the stronger the evidence
+    \textit{against} the null hypothesis.
+  \item if the $p$-value is as small or smaller than some number
+    $\alpha$ (e.g. 0.01, 0.05), we say that the result is
+    \textbf{statistically significant} at level $\alpha$.
+  \item $\alpha $ is called the \textbf{significance level} of the
+    test.
+  \end{itemize}
+
+  In the case of the Old Faithful example, $p=\Sexpr{2 * pnorm(-abs(z))}$ for a two-sided test.
+\end{frame}
+
+\begin{frame}{How to calculate $p$-values}
+For $Z \sim N(0, 1)$, the $p$-values for different alternative hypotheses:
+    \begin{itemize}
+    \item $H_A: \mu > \mu_0$ -- $p$-value is $P(Z \ge z)$ (area of
+      right-hand tail)
+    \item $H_A: \mu < \mu_0$ -- $p$-value is $P(Z \le z)$ (area of
+      left-hand tail)
+    \item $H_A: \mu \ne \mu_0$ -- $p$-value is $2P(Z \ge |z|)$ (area
+      of both tails)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{How to interpret $p$-values}
+\begin{center}
+\includegraphics[scale = 0.7]{./p_values_xkcd}
+\end{center}
+\end{frame}
+
+\begin{frame}{Test interpretations}
+Saying that a result is statistically significant does not signify that
+it is large or necessarily important. That decision depends on the
+particulars of the problem. A statistically significant result only
+says that there is substantial evidence that $H_0$ is false.
+Failure to reject $H_0$ does not imply that $H_0$ is correct. It only
+implies that we have insufficient evidence to conclude that $H_0$ is
+incorrect.
+\end{frame}
+
+\section{Proportions}
+
+\begin{frame}{Proportions}
+What if we have $0/1$ (Bernoulli) data? E.g. the CLOUDS variable from the Bob Ross dataset.
+\begin{align*}
+Z_i =
+\begin{cases}
+1 & \text{ if a cloud is in the painting}\\
+0 & \text{ if a cloud is not in the painting}.
+\end{cases}
+\end{align*}
+<<echo=FALSE, message=FALSE>>=
+bob <- read_csv("../../data/bob.csv")
+clouds <- bob$CLOUDS
+@
+
+Then the proportion of clouds is itself a mean
+\begin{align*}
+\hat{p} = \bar{x} = \frac{1}{n}\sum_{i}z_i = \Sexpr{mean(clouds)}
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Using CLT}
+Say we wanted to test the hypothesis that Bob uses clouds more than 50\% of the time. So $H_0: p = 0.5$ vs $H_A: p < 0.5$.
+
+By the central limit theorem, even this sample average is approximately normal. So we could use the techniques for sample means to calculate this $p$-value.
+
+<<>>=
+xbar   <- mean(clouds)
+s      <- sd(clouds)
+n      <- length(clouds)
+z      <- (xbar - 0.5) / (s / sqrt(n))
+pvalue <- pnorm(z)
+pvalue
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Exact Calculation}
+But we know the sampling distribution of $\hat{p}$ under $H_0$ exactly.
+\begin{align*}
+n\hat{p} = \sum_i Z_i \sim Binomial(n, 0.5)
+\end{align*}
+So we can calculate how extreme our observed $n\hat{p} = \Sexpr{sum(clouds)}$ out of $n = \Sexpr{length(clouds)}$ is using the binomial distribution.
+
+<<>>=
+nphat <- sum(clouds)
+pbinom(q = nphat, size = n, prob = 0.5)
+@
+
+This is fairly close to the $p$-value using the normal approximation \Sexpr{pvalue}.
+
+\end{frame}
+
+
+\section{Formal Connection Between Hypothesis Tests and CI's}
+
+\begin{frame}{Critical Value $z_\alpha$}
+\begin{itemize}
+\item If the P-value is less than $\alpha$ we reject $H_0$.\medskip
+\item For a two sided test This requires
+computing $P(|Z| \ge z)$, for the observed test statistic $z$,
+and comparing it to $\alpha$.\medskip
+\item Alternatively we can find the critical value $z_\alpha$ such
+that $P(|Z| \ge z_\alpha) = \alpha$ and check if $|z|>z_\alpha$.\medskip
+\item For a one-sided test we find $z_\alpha$ such that
+$P(Z>z_\alpha)=\alpha$
+and check if $z>z_\alpha$.\medskip
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Hypothesis tests and CI's}
+
+  A level $\alpha$ two-sided test rejects a hypothesis
+    $H_0:\mu=\mu_0$ exactly when the value of $\mu_0$ falls outside a
+    $(1-\alpha)$ confidence interval for $\mu$.
+
+    For example, consider a two-sided test of the following hypotheses
+    \begin{align*}
+      H_0&:\mu=\mu_0\\
+      H_a&:\mu\neq\mu_0
+    \end{align*}
+    at the significance level $\alpha=.05$.
+
+Assume the test statistic is $z$ and $2P(Z>|z|)=2P(Z>z)=p<\alpha$. Let $z_{\alpha}$ be the critical value for level $\alpha$.
+Assume the population SD is $\sigma_0$.
+
+\end{frame}
+
+\begin{frame}[fragile]{Hypothesis tests and CI's}
+\small{
+\begin{align*}
+p < & \alpha \\
+& \Updownarrow \\
+z > z_{\alpha}  \mbox{\quad or} & \quad  z<-z_{\alpha} \\
+& \Updownarrow \\
+\frac{\bar x-\mu_0}{\sigma_0/\sqrt{n}} > z_{\alpha} \mbox{\quad or} & \quad
+\frac{\bar x-\mu_0}{\sigma_0/\sqrt{n}} < -z_{\alpha} \\
+& \Updownarrow \\
+\mu_0 < \bar x - z_{\alpha} \cdot \frac{\sigma_0}{\sqrt{n}} \mbox{\quad or} & \quad
+\mu_0 > \bar x + z_{\alpha} \cdot \frac{\sigma_0}{\sqrt{n}} \\
+& \Updownarrow \\
+\mu_0  \notin & [\bar x - z_{\alpha} \cdot \frac{\sigma_0}{\sqrt{n}} ,\bar x + z_{\alpha} \cdot \frac{\sigma_0}{\sqrt{n}}]
+\end{align*}
+}
+$\mu_0$ is not in the $\alpha$ confidence interval if and only if
+the null hypothesis is rejected at the $\alpha$ level.
+
+\end{frame}
+
+\begin{frame}[fragile]{Hypothesis tests and CI's}
+    \begin{itemize}
+    \item If $\mu_0$ is a value inside the 95\% confidence interval
+      for $\mu$, then this test will have a $p$-value greater than
+      .05, and therefore will not reject $H_0$.
+    \item If $\mu_0$ is a value outside the 95\% confidence interval
+      for $\mu$, then this test will have a $p$-value smaller than
+      .05, and therefore will reject $H_0$.
+   \end{itemize}
+\end{frame}
 
 
 

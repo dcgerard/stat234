@@ -64,7 +64,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -78,7 +78,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -91,7 +91,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -104,7 +104,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -117,7 +117,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -130,7 +130,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 
@@ -143,7 +143,7 @@ z <- exp(x)
 
 plot(x, y, type = "l", xlab = "u", ylab = "function value", ylim = c(0, max(c(z, y))), col = 2, lty = 2, lwd = 2, main = paste("n =", n))
 lines(x, z, xlab = "u", ylab = "function value", col = 1, lty = 1, lwd = 2)
-legend("topleft", c(expression(e^u), expression((1 + u/n^n))), lty = c(1, 2), col = c(1,2), lwd = 2)
+legend("topleft", c(expression(e^u), expression((1 + u/n)^n)), lty = c(1, 2), col = c(1,2), lwd = 2)
 @
 \end{frame}
 

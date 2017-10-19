@@ -42,10 +42,14 @@ Note: Each lecture is a topic, not a day of class.
 15. [Binomial Distribution](14_binomial_distribution.pdf)
 16. [Continuous Random Variables](15_continuous_RV.pdf)
 17. [Multiple Random Variables](16_multiple_rvs.pdf)
-18. Moment Generating Functions
-19. Interval Estimates for Means
-20. Hypothesis Testing for Means
-21. And more ...
+18. [Moment Generating Functions](16_z1_mgfs.pdf)
+19. [Central Limit Theorem Motivation](17_central_limit_theorem.pdf)
+20. [Central Limit Theorem Proof](17_z1_central_limit_theorem_proof.pdf)
+21. [Linear Approximation to Exponential](18_exp_approx.pdf)
+22. [Exponential Approximation](19_exp_def_approx.pdf)
+23. Interval Estimates for Means
+24. Hypothesis Testing for Means
+25. And more ...
 
 # Stat Comics That Made Me Laugh
 - SMBC:
