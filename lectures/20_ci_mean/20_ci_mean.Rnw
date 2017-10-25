@@ -297,16 +297,164 @@ $(\Sexpr{round(mean(morley$Speed) - 1.96 * sd(morley$Speed) / sqrt(nrow(morley))
 \begin{frame}{Correct/Incorrect Descriptions of CI}
 Let $l$ and $u$ be the lower and upper bounds, respectively, of a 95\% confidence interval.
 
-What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpretations are correct/incorrect?
+What does ``With 95\% Confidence, $\mu$ is between $(l, u)$'' mean? Which interpretations are correct/incorrect?
 
-\begin{itemize}
+\begin{enumerate}
 \item The probability of $\mu$ being between $l$ and $u$ is 95\%.
 \item Prior to sampling, the probability of $\mu$ being between $l$ and $u$ is 95\%.
 \item 95\% of the population's distribution is between $l$ and $u$.
 \item If we were to draw another sample, the new $\bar{X}$ would be between $l$ and $u$ with 95\% probability.
 \item 95\% of new $\bar{X}$'s would lie between $l$ and $u$.
 \item We used a procedure that captures the true $\mu$ 95\% of the time in repeated samples.
-\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{1 is wrong}
+Given that we observed an interval, $\mu$ is either in the interval or it's not in the interval. Thus, the probability of $\mu$ being between $l$ and $u$ is either 0 or 1, but we don't know which.
+\end{frame}
+
+\begin{frame}{2 is correct}
+``Prior to sampling'' makes the statement correct because we haven't yet made our interval and it is the interval that is random.
+\end{frame}
+
+\begin{frame}[fragile]{3 is wrong}
+
+\only<1> {
+Distribution of population:
+<<echo=FALSE>>=
+set.seed(2)
+x <- seq(-3, 3, length = 500)
+y <- dnorm(x)
+dfdat <- data_frame(x, y)
+pl <- ggplot(dfdat, aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  geom_vline(xintercept = 0, lty = 2, col = 2, lwd = 1) +
+  xlab("x") +
+  ylab("density")
+print(pl)
+@
+}
+
+\only<2> {
+Obtain a sample
+<<echo=FALSE>>=
+z <- rnorm(n = 30)
+vlinedat <- data_frame(number = c("Population Mean", "Sample Mean"), value = c(0, mean(z)))
+ggplot(data = data_frame(z = z), mapping = aes(x = z, y = ..density..)) +
+  geom_histogram(bins = 15, color = "black", fill = "blue", alpha = 1/9) +
+  geom_line(data = dfdat, mapping = aes(x = x, y = y)) +
+  theme_bw() +
+  geom_vline(data = vlinedat, mapping = aes(xintercept = value, color = number), lty = 2, lwd = 1) +
+  xlab("x") +
+  ylab("density")
+@
+}
+
+\only<3> {
+Calculate confidence interval
+<<echo=FALSE>>=
+lower <- mean(z) - 1.96 * sd(z) / sqrt(length(z))
+upper <- mean(z) + 1.96 * sd(z) / sqrt(length(z))
+vlinedat <- data_frame(number = c("Population Mean", "Sample Mean", "Lower Bound", "Upper Bound"),
+                       value = c(0, mean(z), lower, upper))
+ggplot(data = data_frame(z = z), mapping = aes(x = z, y = ..density..)) +
+  geom_histogram(bins = 15, color = "black", fill = "blue", alpha = 1/9) +
+  geom_line(data = dfdat, mapping = aes(x = x, y = y)) +
+  theme_bw() +
+  geom_vline(data = vlinedat, mapping = aes(xintercept = value, color = number), lty = 2, lwd = 1) +
+  xlab("x") +
+  ylab("density")
+@
+}
+
+\only<4>{
+95\% of population is \alert{NOT} within the bounds of the CI.
+<<echo=FALSE>>=
+vlinedat <- data_frame(number = c("Lower Bound", "Upper Bound"),
+                       value = c(lower, upper))
+
+xpoly <- c(lower, seq(lower, upper, length = 100), upper, lower)
+ypoly <- c(0, dnorm(seq(lower, upper, length = 100)), 0, 0)
+
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  geom_vline(data = vlinedat, mapping = aes(xintercept = value, color = number), lty = 2, lwd = 1) +
+  xlab("x") +
+  ylab("density") +
+  geom_polygon(data = data_frame(xpoly = xpoly, ypoly = ypoly), mapping = aes(x = xpoly, y = ypoly), fill = "red", alpha = 1/2)
+@
+}
+\end{frame}
+
+\begin{frame}{4 and 5 are wrong}
+<<echo=FALSE>>=
+x <- seq(-3, 3, length = 300)
+y <- dnorm(x)
+dfdat <- data_frame(x = x, y = y)
+
+n <- 30
+xbar <- seq(-4 / sqrt(n), 4 / sqrt(n), length = 300)
+ybar <- dnorm(xbar, sd = 1 / sqrt(n))
+bardat <- data_frame(xbar = xbar, ybar = ybar)
+@
+
+\only<1> {
+Distribution of Population
+<<echo=FALSE>>=
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  ylab("density")
+@
+}
+
+\only<2> {
+Distribution of $\bar{X}$ when $n = 30$
+<<echo=FALSE>>=
+ggplot(data = bardat, mapping = aes(x = xbar, y = ybar)) +
+  geom_line() +
+  theme_bw() +
+  ylab("density")
+@
+}
+
+\only<3> {
+What if we observed this $\bar{x}$
+<<echo=FALSE>>=
+obs_xbar <- 0.3
+lower <- obs_xbar - 1.96 / sqrt(n)
+upper <- obs_xbar + 1.96 / sqrt(n)
+
+vlinedat <- data_frame(number = c("Observed Xbar", "Lower", "Upper"), value = c(obs_xbar, lower, upper))
+ggplot(data = bardat, mapping = aes(x = xbar, y = ybar)) +
+  geom_line() +
+  geom_vline(data = vlinedat, mapping = aes(xintercept = value, color = number), lty = 2, lwd = 1) +
+  theme_bw() +
+  ylab("density")
+@
+}
+
+\only<4> {
+Then 95\% of future $\bar{x}$'s are not within CI bounds.
+<<echo=FALSE>>=
+xpoly <- c(lower, seq(lower, upper, length = 100), upper, lower)
+ypoly <- c(0, dnorm(seq(lower, upper, length = 100), sd = 1/sqrt(n)), 0, 0)
+
+vlinedat <- data_frame(number = c("Lower", "Upper"), value = c(lower, upper))
+ggplot(data = bardat, mapping = aes(x = xbar, y = ybar)) +
+  geom_line() +
+  geom_vline(data = vlinedat, mapping = aes(xintercept = value, color = number), lty = 2, lwd = 1) +
+  theme_bw() +
+  geom_polygon(data = data_frame(xpoly = xpoly, ypoly = ypoly), mapping = aes(x = xpoly, y = ypoly), fill = "blue", alpha = 1/2) +
+  ylab("density")
+@
+}
+\end{frame}
+
+\begin{frame}{6 is correct}
+If we used this procedure over and over again, then 95\% of the resulting CI's would capture $\mu$.
 \end{frame}
 
 
@@ -350,26 +498,15 @@ What does "With 95\% Confidence, $\mu$ is between $(l, u)$" mean? Which interpre
 
 \end{frame}
 
-\begin{frame}{General form of a confidence interval}
-
-\parbox[t]{0pt}{}
-
-\bigskip
-
-{\bf Some cautions on using the formula}
-
-\bigskip
+\begin{frame}{Intuition}
 \begin{itemize}
-\item Any formula for inference is correct only in specific circumstances.
-\item The data must be a SRS from the population.
-\item Because $\bar{x}$ is not resistant, outliers can have a large effect
-on the confidence interval.
-\item If the sample size is small and the population is not Normal, the
-true confidence level will be different.
-\item You need to know the standard deviation $\sigma$ of the population (or have a large enough sample where $s \approx \sigma$.
+\item We knew from normal theory that about 95\% of $\bar{x}$'s would be within 2 standard deviations of $\mu$.\medskip
+\item Suppose we want to capture $\mu$ more often (99\%) or are willing to capture it less often (90\%). Then we need to find how many standard deviations make it so that $\bar{x}$ is away from $\mu$ 99\% of the time or 90\% of the time.\medskip
+\item In general, we need to find the number of standard deviations so that $\bar{x}$ is away from $\mu$ about $1 - \alpha$ of the time.
 \end{itemize}
-
 \end{frame}
+
+
 
 \begin{frame}[fragile]{General form of a confidence interval}
 
@@ -428,6 +565,27 @@ ggplot(data = dat, aes(x = x, y = y)) +
       \end{tabular}
     \end{center}
 
+
+\end{frame}
+
+\begin{frame}{General form of a confidence interval}
+
+\parbox[t]{0pt}{}
+
+\bigskip
+
+{\bf Some cautions on using the formula}
+
+\bigskip
+\begin{itemize}
+\item Any formula for inference is correct only in specific circumstances.
+\item The data must be a SRS from the population.
+\item Because $\bar{x}$ is not resistant, outliers can have a large effect
+on the confidence interval.
+\item If the sample size is small and the population is not Normal, the
+true confidence level will be different.
+\item You need to know the standard deviation $\sigma$ of the population (or have a large enough sample where $s \approx \sigma$).
+\end{itemize}
 
 \end{frame}
 

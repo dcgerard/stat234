@@ -66,7 +66,7 @@ opts_chunk$set(
 
 \begin{frame}{joint pmf}
 \begin{block}{joint pmf}
-Let $X$ and $Y$ be two discrete bivariate random variables. Then the function $f(x, y): \mathbb{R}^2 \rightarrow \mathbb{R}$ defined by $P(X = x \text{ and } Y = y)$ is called the \alert{joint probability mass function} of $X$ and $Y$.
+Let $X$ and $Y$ be two discrete random variables. Then the function $f(x, y): \mathbb{R}^2 \rightarrow \mathbb{R}$ defined by $P(X = x \text{ and } Y = y)$ is called the \alert{joint probability mass function} of $X$ and $Y$.
 \end{block}
 \end{frame}
 

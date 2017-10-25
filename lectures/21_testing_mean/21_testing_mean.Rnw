@@ -57,7 +57,6 @@ opts_chunk$set(
 \item E.g. Does this gene impact height (Yes/No)
 \item E.g. Does broccoli cause cancer (Yes/No)
 \item E.g. Is Trump's phone source associated with negative words (Yes/No)?
-\item
 \item Today, we'll talk about making binary decisions in the context of estimating.
 \end{itemize}
 \end{frame}
@@ -314,7 +313,7 @@ ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
 \begin{frame}{Why both tails?}
 \begin{itemize}
 \item Recall that $H_A: \mu \neq 60$.
-\item The definition of a $p$-value is the probability of seeing something \emph{as extremem or more extreme} (under the null) than what we saw.
+\item The definition of a $p$-value is the probability of seeing something \emph{as extreme or more extreme} (under the null) than what we saw.
 \item Since $-\bar{x}$ is as extreme as $\bar{x}$, we have to include this in our $p$-value calculation.
 \end{itemize}
 \end{frame}
@@ -474,7 +473,7 @@ Calculate the \textbf{test statistic} on which the test will be
   the observed sample value from the hypothesized value (under the
   null hypothesis)?''
 
-  For the Coke example, the test statistic is
+  For the Old Faithful example, the test statistic is
   \[ z = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{\Sexpr{round(xbar, digits = 2)} - 60}{\Sexpr{round(s, digits = 2)} /\sqrt{\Sexpr{length(waiting)}}} = \Sexpr{z} \]
 
 \end{frame}
@@ -549,7 +548,7 @@ Then the proportion of clouds is itself a mean
 \end{frame}
 
 \begin{frame}[fragile]{Using CLT}
-Say we wanted to test the hypothesis that Bob uses clouds more than 50\% of the time. So $H_0: p = 0.5$ vs $H_A: p < 0.5$.
+Say we wanted to test the hypothesis that Bob uses clouds less than 50\% of the time. So $H_0: p = 0.5$ vs $H_A: p < 0.5$.
 
 By the central limit theorem, even this sample average is approximately normal. So we could use the techniques for sample means to calculate this $p$-value.
 
