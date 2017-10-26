@@ -1,0 +1,472 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+\DeclareMathOperator{\var}{var}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Inference for Means in Small Samples}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Introduce $t$-distribution.
+\item CI's and testing using the $t$-distribution.
+\item Section 5.1 of DBC.
+\end{itemize}
+\end{frame}
+
+\section{Review Normal-based Confidence Intervals}
+
+\begin{frame}{Normal CI}
+When we wanted a $(1 - \alpha)$ confidence interval for a mean, and we had a sample $X_1,X_2,\ldots,X_n$ such that $E[X_i] = \mu$ and $\var(X_i) = \sigma^2$, we used the fact that for large $n$
+\begin{align*}
+\bar{X} \approx N(\mu, \sigma^2 / n).
+\end{align*}
+i.e. that
+\begin{align*}
+\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \approx N(0, 1).
+\end{align*}
+\end{frame}
+
+\begin{frame}{Normal CI}
+Based on $\alpha$, we found a $z_{\alpha}$ such that
+\begin{align*}
+P\left(\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \in [-z_{\alpha}, z_{\alpha}]\right) = 1-\alpha
+\end{align*}
+Rearranging terms, we got
+\begin{align*}
+P(\bar{X} - z_{\alpha}\sigma / \sqrt{n} \leq \mu \leq \bar{x} + z_{\alpha}\sigma / \sqrt{n}) = 1 - \alpha.
+\end{align*}
+And so if we know the population standard deviation ($\sigma$), our $(1 - \alpha)$ confidence interval was
+\begin{align*}
+\bar{X} - z_{\alpha}\sigma / \sqrt{n} \leq \mu \leq \bar{x} + z_{\alpha}\sigma / \sqrt{n}
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Finding $z_{\alpha}$}
+<<echo=FALSE, message=FALSE>>=
+library(tidyverse)
+x <- seq(-3, 3, length = 500)
+y <- dnorm(x)
+
+lower <- -1.5
+upper <- 1.5
+
+xpoly1 <- c(-3, seq(-3, lower, length = 100), lower, -3)
+ypoly1 <- c(0, dnorm(seq(-3, lower, length = 100)), 0, 0)
+xpoly2 <- c(upper, seq(upper, 3, length = 100), 3, upper)
+ypoly2 <- c(0, dnorm(seq(upper, 3, length = 100)), 0, 0)
+
+polydat <- data_frame(xpoly1, ypoly1, xpoly2, ypoly2)
+dfdat   <- data_frame(x, y)
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  ylab("density") +
+  theme_bw() +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly1, y = ypoly1), fill = "blue", alpha = 1/2) +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly2, y = ypoly2), fill = "blue", alpha = 1/2) +
+  annotate(geom = "text", x = 2.1, y = 0.08, label = "alpha/2", parse = TRUE) +
+  annotate(geom = "text", x = -2.1, y = 0.08, label = "alpha/2", parse = TRUE) +
+  geom_vline(xintercept = lower, lty = 2, lwd = 1) +
+  geom_vline(xintercept = upper, lty = 2, lwd = 1) +
+  annotate(geom = "text", x = -1.7, y = 0.35, label = "-z[alpha]", parse = TRUE) +
+  annotate(geom = "text", x = 1.7, y = 0.35, label = "z[alpha]", parse = TRUE)
+@
+
+You can use \texttt{qnorm} to find $z_{\alpha}$.
+\end{frame}
+
+\begin{frame}{Variance Unkown}
+This CI is valid only if the variance $\sigma^2$ is \alert{known}.
+
+Most of the time, $\sigma^2$ is not known.
+
+If $n$ is large enough, we can replace $\sigma$ with $s$ and the CI is still approximately correct. Mainly because of the Law of the Large Numbers
+\begin{align*}
+s^2 = \frac{1}{n-1}\sum_{i = 1}^n (X_i - \bar{X})^2 \underset{n\rightarrow \infty}{\longrightarrow} \sigma^2
+\end{align*}
+\end{frame}
+
+\begin{frame}{Variance Unknown}
+
+That is, for large $n$, we have
+\begin{align*}
+\frac{\bar{X} - \mu}{s/\sqrt{n}} \approx N(0, 1).
+\end{align*}
+and so we find a $z_{\alpha}$ such that
+\begin{align*}
+P\left(\frac{\bar{X} - \mu}{s/\sqrt{n}} \in [-z_{\alpha}, z_{\alpha}]\right) = 1-\alpha
+\end{align*}
+Rearranging terms, we got
+\begin{align*}
+P(\bar{X} - z_{\alpha}s / \sqrt{n} \leq \mu \leq \bar{x} + z_{\alpha}s / \sqrt{n}) = 1 - \alpha.
+\end{align*}
+\end{frame}
+
+\section{$t$-based Confidence Intervals}
+
+\begin{frame}{Problem}
+However, for \alert{small} $n$ (rule of thumb $n \leq 30$), this approximation is not accurate! Not even when the $X_1,X_2,\ldots,X_n$ are exactly $N(\mu,\sigma^2)$!
+
+\begin{block}{Note:}
+To perform inference with small $n$, we will require that the $X_i$'s are well approximated by a normal distribution.
+\end{block}
+
+Recall that for $X_1,X_2,\ldots,X_n$, independent with $X_i \sim N(\mu, \sigma^2)$, we have \alert{exactly}
+\begin{align*}
+\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1).
+\end{align*}
+
+But we want the distribution of
+\begin{align*}
+\frac{\bar{X} - \mu}{s/\sqrt{n}}.
+\end{align*}
+\end{frame}
+
+\begin{frame}{$t$-distribution}
+\begin{theorem}
+$X_1,X_2,\ldots,X_n$, independent with $X_i \sim N(\mu, \sigma^2)$, then
+\begin{align*}
+\frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{\nu},
+\end{align*}
+where $t_{df}$ represents the $t$-distribution with $\nu$ \alert{degrees of freedom}. Here, $\nu = n - 1$, one minus the sample size.
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Properties of $t$}
+(Unlike the Normal or Binomial distributions, each of which has
+two parameters, the $t$-distribution has only one parameter, called
+the degrees of freedom.)
+
+\begin{itemize}
+\item Symmetric about zero
+\item Bell-shaped - similar to normal distribution
+\item More spread out than normal - heavier tails
+\item Exact shape depends on the degrees of freedom
+\item As the number of degrees of freedom ($\nu$) increases, the $t$-distribution converges to the Normal distribution.
+\item $\nu$ must be greater than 0.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{$t$-shape}
+<<echo=FALSE, message=FALSE>>=
+library(ggthemes)
+x <- seq(-5, 5, length = 500)
+tdf <- data_frame(x = x, infinity = dnorm(x),
+                  twenty = dt(x, 20), five = dt(x, 5),
+                  two = dt(x, 2), one = dt(x, 1)) %>%
+  gather(key = "df", value = density, infinity:one)
+tdf$df[tdf$df == "infinity"] <- "inf"
+tdf$df[tdf$df == "twenty"]   <- "20"
+tdf$df[tdf$df == "five"]     <- "5"
+tdf$df[tdf$df == "two"]      <- "2"
+tdf$df[tdf$df == "one"]      <- "1"
+tdf$df <- factor(tdf$df, levels = c("1", "2", "5", "20", "inf"))
+
+ggplot(data = tdf, mapping = aes(x = x, y = density, lty = df, color = df)) +
+  geom_line(lwd = 1) +
+  theme_bw() +
+  scale_color_colorblind() +
+  ggtitle("t-densities")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Empirical Example}
+<<echo=FALSE>>=
+set.seed(2)
+@
+
+<<>>=
+x_matrix <- replicate(1000, rnorm(10))
+xbar     <- colMeans(x_matrix)
+s        <- apply(x_matrix, 2, sd)
+tstat    <- xbar / (s / sqrt(10))
+@
+\end{frame}
+
+\begin{frame}{qq-plot using normal quantiles}
+See heavier tails than expected under normal model
+<<>>=
+qqnorm(tstat)
+
+qqline(tstat)
+@
+\end{frame}
+
+\begin{frame}{Histogram of $t$-statistics}
+$t$-distribution fits better in the tails
+<<echo=FALSE>>=
+hist(tstat, freq = FALSE, breaks = 30)
+lines(seq(-4, 4, length = 200), dnorm(seq(-4, 4, length = 200)))
+lines(seq(-4, 4, length = 200), dt(seq(-4, 4, length = 200), df = 9), col = 2, lwd = 2)
+legend("topright", legend = c("normal", "t with 10 df"), col = c(1, 2), lty = 1)
+@
+\end{frame}
+
+\begin{frame}{Confidence intervals with unknown $\sigma$}
+The goal is to find a confidence interval for $\mu$ when $\sigma$ is unknown.
+
+That is, we want a random interval that captures $\mu$ in $(1 - \alpha)$ of repeated samples.
+
+Since
+\begin{align*}
+\frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1},
+\end{align*}
+we need to find a $t^*$ such that
+\begin{align*}
+P\left(\frac{\bar{X} - \mu}{s/\sqrt{n}} \in [-t^*, t^*]\right) = 1-\alpha,
+\end{align*}
+\end{frame}
+
+\begin{frame}{Confidence intervals with unknown $\sigma$}
+\begin{itemize}
+\item Rearranging terms, we have
+\begin{align*}
+P\left(\bar{X} - t^* s / \sqrt{n}, \bar{X} + t^* s / \sqrt{n}\right) = 1 - \alpha.
+\end{align*}
+\item So $(\bar{X} - t^* s / \sqrt{n}, \bar{X} + t^* s / \sqrt{n})$ is a $(1 - \alpha)$ confidence interval for the mean when $\sigma$ is not known.
+\item You can use this for any sample size $n$, not just when $n$ is small.
+\item But it will approximately equal the normal-based CI when $n$ is large.
+\item These confidence intervals are again random. In addition to having a
+random center $\bar{X}$, they have a random width $t^*S / \sqrt{n}$.
+\item The $t$ intervals are wider than the normal intervals because the $t$ distribution has larger tails. This corrects for uncertainty in estimating $\sigma$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{How do you get $t^*$?}
+The critical value, $t^* = t_{n - 1, \alpha}$ is chosen such that $(100(1 - \alpha)\%$ of the
+area under the $t_{n-1}$ density lies between $-t^*$ and $t^*$.
+<<echo=FALSE, message=FALSE>>=
+x <- seq(-5, 5, length = 500)
+y <- dt(x, 2)
+
+lower <- -1.5
+upper <- 1.5
+
+xpoly1 <- c(min(x), seq(min(x), lower, length = 100), lower, min(x))
+ypoly1 <- c(0, dt(seq(min(x), lower, length = 100), 2), 0, 0)
+xpoly2 <- c(upper, seq(upper, max(x), length = 100), max(x), upper)
+ypoly2 <- c(0, dt(seq(upper, max(x), length = 100), 2), 0, 0)
+
+polydat <- data_frame(xpoly1, ypoly1, xpoly2, ypoly2)
+dfdat   <- data_frame(x, y)
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  ylab("density") +
+  theme_bw() +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly1, y = ypoly1), fill = "blue", alpha = 1/2) +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly2, y = ypoly2), fill = "blue", alpha = 1/2) +
+  annotate(geom = "text", x = 2.4, y = 0.08, label = "alpha/2", parse = TRUE) +
+  annotate(geom = "text", x = -2.4, y = 0.08, label = "alpha/2", parse = TRUE) +
+  geom_vline(xintercept = lower, lty = 2, lwd = 1) +
+  geom_vline(xintercept = upper, lty = 2, lwd = 1) +
+  annotate(geom = "text", x = -1.8, y = 0.25, label = "-t", parse = TRUE) +
+  annotate(geom = "text", x = 1.8, y = 0.25, label = "t", parse = TRUE)
+@
+You can use the R function \texttt{qt} to find $t^*$.
+\end{frame}
+
+
+\begin{frame}{Some notes on Approximation}
+\begin{enumerate}
+\item If the underlying population is Normally distributed, the interval is
+exact. (i.e. exact if $X_1,X_2,\ldots,X_n$ are $N(\mu,\sigma^2)$).\medskip
+\item Otherwise, the interval is approximately correct if $n$ is not too small
+(say, $n \geq 15$), the data are not strongly skewed, and there are no outliers. \medskip
+\item With n sufficiently large (say $n \geq 30$), the approximation is correct
+even if the data are clearly skewed.
+\item For small sample sizes, this motivates taking transformations to make the data look more normal.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Does this really matter?}
+
+<<echo=FALSE>>=
+set.seed(7)
+@
+
+Simulate 100 samples and calculate their corresponding normal and $t$ 95\% confidence intervals:
+\small
+<<>>=
+mu       <- 17
+sigma2   <- 2
+n        <- 10
+alpha    <- 0.05
+x_matrix <- replicate(100, rnorm(n, mu, sqrt(sigma2)))
+xbar     <- colMeans(x_matrix)
+s        <- apply(x_matrix, 2, sd)
+z_alpha  <- abs(qnorm(alpha / 2))
+t_alpha  <- abs(qt(alpha / 2, df = n - 1))
+lower_z  <- xbar - z_alpha * s / sqrt(n)
+upper_z  <- xbar + z_alpha * s / sqrt(n)
+lower_t  <- xbar - t_alpha * s / sqrt(n)
+upper_t  <- xbar + t_alpha * s / sqrt(n)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{Does this really matter?}
+\only<1> {
+Normal based intervals
+<<echo = FALSE>>=
+which_miss <- mu < lower_z | mu > upper_z
+dfdat <- data_frame(xbar = xbar, lower = lower_z, upper = upper_z, index = 1:length(xbar), miss = which_miss)
+ggplot(data = dfdat, mapping = aes(x = index, y = xbar, color = miss)) +
+  geom_point(size = 0.5) +
+  geom_segment(mapping = aes(x = index, y = lower, xend = index, yend = upper)) +
+  theme_bw() +
+  scale_color_manual(values = c("grey50", "red")) +
+  geom_hline(yintercept = mu, color = "blue", lty = 2, alpha = 1/2, lwd = 1) +
+  ylab("values") +
+  ggtitle(label = paste0(sum(which_miss), " out of ", length(which_miss), " missed mu = ", mu))
+@
+}
+
+\only<2> {
+$t$ based intervals
+<<echo = FALSE>>=
+which_miss <- mu < lower_t | mu > upper_t
+dfdat <- data_frame(xbar = xbar, lower = lower_t, upper = upper_t, index = 1:length(xbar), miss = which_miss)
+ggplot(data = dfdat, mapping = aes(x = index, y = xbar, color = miss)) +
+  geom_point(size = 0.5) +
+  geom_segment(mapping = aes(x = index, y = lower, xend = index, yend = upper)) +
+  theme_bw() +
+  scale_color_manual(values = c("grey50", "red")) +
+  geom_hline(yintercept = mu, color = "blue", lty = 2, alpha = 1/2, lwd = 1) +
+  ylab("values") +
+  ggtitle(label = paste0(sum(which_miss), " out of ", length(which_miss), " missed mu = ", mu))
+@
+}
+\end{frame}
+
+\section{$t$-tests}
+
+\begin{frame}{One $t$-tests}
+\begin{itemize}
+\item We can also use the $t$-distribution for hypothesis testing.
+\item Suppose $X_1,X_2,\ldots,X_n$ are independent $N(\mu, \sigma^2)$ (e.g.~from an SRS of a population that is normal).
+\item We want to test
+\begin{itemize}
+\item $H_0$: $\mu = \mu_0$ versus
+\item $H_A$: $\mu \neq \mu_0$.
+\end{itemize}
+\item Then we know under $H_0$ that the test statistic
+\begin{align*}
+T = \frac{\bar{X} - \mu_0}{S / \sqrt{n}},
+\end{align*}
+has a $t$-distribution with $n - 1$ d.f.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{One sample $t$-tests}
+\begin{itemize}
+\item The $p$-value for this test is the probablity that $T$ is as extreme or more exteme than our observed test statistic
+\begin{align*}
+t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}}.
+\end{align*}
+\item For the two-sided alternative hypothesis $H_A$: $\mu\neq\mu_0$, we calculate the two tail probabilities
+\begin{align*}
+2P(T_{n-1} \geq |t|).
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{$p$-values}
+<<echo = FALSE, fig.height=3.5>>=
+x <- seq(-4, 4, length = 500)
+y <- dt(x, df = 3)
+
+xlook <- 3
+xupp <- c(xlook, seq(xlook, max(x), length = 300), max(x), xlook)
+yupp <- c(0, dt(seq(xlook, max(x), length = 300), df = 3), 0, 0)
+
+xlook2 <- -3
+xlow <- c(min(x), seq(min(x), xlook2, length = 300), xlook2, min(x))
+ylow <- c(0, dt(seq(min(x), xlook2, length = 300), df = 3), 0, 0)
+
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xlow, ylow), mapping = aes(x = xlow, y = ylow), fill = "blue", alpha = 1/2) +
+  geom_polygon(data = data_frame(xupp, yupp), mapping = aes(x = xupp, y = yupp), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("T") +
+  ylab("density") +
+  ggtitle("Distribution of test statistic T if H0 true") +
+  scale_x_continuous(breaks = c(xlook2, 0, xlook), labels = c("-t", "0", "t"))
+@
+This is equal to: \texttt{2 * pt(-abs(t), df = n - 1)}.
+\end{frame}
+
+\begin{frame}[fragile]{One-sided alternative}
+For a one-sided alternative $H_A$: $\mu > \mu_0$, the $p$-value is $P(T_{n-1} \geq t)$.
+<<echo = FALSE, fig.height=3.5>>=
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xupp, yupp), mapping = aes(x = xupp, y = yupp), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("T") +
+  ylab("density") +
+  ggtitle("Distribution of test statistic T if H0 true") +
+  scale_x_continuous(breaks = c(0, xlook), labels = c("0", "t"))
+@
+This is equal to: \texttt{pt(t, df = n - 1, lower.tail = FALSE)}.
+\end{frame}
+
+\begin{frame}[fragile]{one-sided alternative}
+For a one-sided alternative $H_A$: $\mu < \mu_0$, the $p$-value is $P(T_{{n-1}} \leq t)$.
+<<echo = FALSE, fig.height=3.5>>=
+xupp2 <- c(min(x), seq(min(x), xlook, length = 300), xlook, min(x))
+yupp2 <- c(0, dt(seq(min(x), xlook, length = 300), df = 3), 0, 0)
+
+ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
+  geom_line(lwd = 1) +
+  geom_polygon(data = data_frame(xupp2, yupp2), mapping = aes(x = xupp2, y = yupp2), fill = "blue", alpha = 1/2) +
+  theme_bw() +
+  xlab("T") +
+  ylab("density") +
+  ggtitle("Distribution of test statistic T if H0 true") +
+  scale_x_continuous(breaks = c(0, xlook), labels = c(0, "t"))
+@
+This is equal to: \texttt{pt(t, df = n - 1)}.
+\end{frame}
+
+
+
+\end{document}
