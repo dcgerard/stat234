@@ -467,6 +467,127 @@ ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
 This is equal to: \texttt{pt(t, df = n - 1)}.
 \end{frame}
 
+\begin{frame}{Tumor Growth Example: setup}
+\begin{itemize}
+\item Let $X$ (in mm) denote the growth in 15 days of a tumor induced in a mouse. It is known from a previous experiment that the average tumor growth is 4mm.\medskip
+\item A sample of 20 mice that have a genetic variant hypothesized to be involved in tumor growth yielded $\bar{x} = 3.8$mm and $s = 0.3$mm.\medskip
+\item Test whether $\mu = 4$ or not, assuming growths are normally distributed.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tumor Growth Example: solution}
+\begin{enumerate}
+\item State the hypotheses:
+\begin{align*}
+H_0: \mu = 4 \text{ versus } H_A: \mu \neq 4.
+\end{align*}
+\item Calculate the $t$-statistic
+\begin{align*}
+t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{3.8 - 4.0}{0.3/\sqrt{20}} = -2.98
+\end{align*}
+\item Determine the $p$-value
+\begin{align*}
+p = 2P(T_{19} \geq 2.98) = 0.008.
+\end{align*}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Significance Level}
+\begin{itemize}
+\item We could have chosen a significance level $\alpha$ ahead of time (usually $\alpha = 0.05$) and then reject $H_0$ if our $p$-value fell below this threshold. Ideally you choose this before running the hypothesis test.
+\item E.g., we could reject $H_0$ at level $\alpha = 0.01$ and conclude that the population mean growth is not 4mm.
+\item Note: Since we reject $H_0$ if $p \leq \alpha$, the $p$-value has the interpretation of being the smallest signficance level at which we would reject $H_0$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{99\% CI}
+\begin{itemize}
+\item Remember the relationship between hypothesis testing and confidence intervals?
+\item Let's construct a 99\% CI for $\mu$:
+\begin{align*}
+&(\bar{x} - t^*s / \sqrt{n}, \bar{x} + t^*s / \sqrt{n})\\
+&= (3.8 - 2.861 \times 0.3 / \sqrt{20}, 3.8 + 2.861 \times 0.3 / \sqrt{20})\\
+&= (3.61, 3.99),
+\end{align*}
+where $t^*: P(|T_{19} > t^*) = 0.01$.
+\item Using \texttt{abs(qt(0.005, df = 19))} in R, this is \Sexpr{abs(qt(0.005, df = 19))}.
+\item Note that 4 is outside this CI. From this, we can draw the same conclusion as from the test. Namely, at significance level $\alpha = 0.01$, the mean growth is not equal to 4mm.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Relationship between CI and hypothesis tests}
+\begin{itemize}
+\item A two-sided hypothesis test with significance level $\alpha$ rejects the
+null hypothesis $H_0: \mu = \mu_0$ if and only if the value of $\mu_0$ falls outside the $100(1 - \alpha)\%$ CI for $\mu$. \bigskip
+\item Reporting a CI is generally more informative than just reporting a $p$-value or the decision made on the basis of a hypothesis test since if tells the reader about your level of uncertainty (MOE).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{One-sided alternatives}
+\begin{itemize}
+\item In the previous example, suppose we wished to test $\mu < 4$ as our alternative.
+\end{itemize}
+\begin{enumerate}
+\item State Hypotheses. $H_0: \mu = 4$ versus $H_A: \mu < 4$.
+\item Calculate the $t$-statistics. $t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}} = \frac{3.8 - 4}{0.3/\sqrt{20}} = -2.98$.
+\item Determine the $p$-value. $p = P(T_{19} \leq -2.98) = $ \texttt{pt(-2.98,~df~=~19)} = \Sexpr{pt(-2.98, df = 19)}.
+\end{enumerate}
+\begin{itemize}
+\item Since $\Sexpr{pt(-2.98, df = 19)} = p \leq \alpha = 0.1$, we reject $H_0$ at significance level $0.01$ and conclude that mean growth is less than 4mm.
+\end{itemize}
+\end{frame}
+
+\section{Bootstrap}
+
+\begin{frame}[fragile]{Violated Assumptions}
+\begin{itemize}
+\item For small sample sizes, we so far only know how to perform inference when the $X_i$'s are well approximated by a normal distribution.
+\item That is, the $t$ interval is not valid when this is violated, e.g.~when there is heavy skew.
+\end{itemize}
+<<>>=
+trump <- read.csv("../../data/trump.csv")
+tweet_length <- trump$length
+@
+\end{frame}
+
+\begin{frame}[fragile]{Histogram of Trump's Tweets}
+<<message=FALSE>>=
+library(tidyverse)
+qplot(tweet_length) + theme_bw()
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Setup}
+<<echo=FALSE>>=
+set.seed(8)
+@
+
+\begin{itemize}
+\item The mean is about \Sexpr{round(mean(tweet_length))} characters.
+\item Suppose we wanted to test that Trump's average tweet length was less than NUMBER.
+\item Then we draw a sample of 5 tweets.
+<<>>=
+samp <- sample(tweet_length, size = 10)
+@
+\item Suppose we want to test that the mean is 103.
+\item The $p$-value is
+<<>>=
+t.test(x = samp, mu = 103)
+@
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Histogram of test statistics of size 10}
+<<>>=
+obsmat <- replicate(500, sample(tweet_length, 5))
+xbar   <- colMeans(obsmat)
+shat   <- apply(obsmat, 2, sd)
+tstat  <- (xbar - 103) / (shat / sqrt(10))
+@
+
+\end{frame}
 
 
 \end{document}

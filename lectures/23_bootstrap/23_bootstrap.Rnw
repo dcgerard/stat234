@@ -1,0 +1,272 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{The Bootstrap when Normality does not work}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Bootstrap tests.
+\item Bootstrap $p$-values.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Violated Assumptions}
+\begin{itemize}
+\item For small sample sizes, we so far only know how to perform inference when the $X_i$'s are well approximated by a normal distribution.
+\item That is, the $t$ interval is not valid when this is violated, e.g.~when there is heavy skew.
+\end{itemize}
+<<message=FALSE>>=
+library(openintro)
+data("email")
+@
+
+<<echo=FALSE>>=
+emean <- mean(email$num_char)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Histogram of email length}
+<<message=FALSE>>=
+library(tidyverse)
+qplot(email$num_char) + theme_bw()
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Setup}
+<<echo=FALSE>>=
+set.seed(1)
+@
+
+\begin{itemize}
+\item The mean is about \Sexpr{emean} characters.
+\item Suppose we wanted to test that average email length was equal to \Sexpr{emean}?
+\item Suppose we draw a sample of 10 emails.
+\item What does the sampling distribution of the $t$-statistics looks like?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Histogram of test statistics of size 10}
+<<message=FALSE, warning=FALSE, fig.height=3>>=
+n <- 10
+obsmat <- replicate(500, sample(email$num_char, n))
+xbar   <- colMeans(obsmat)
+shat   <- apply(obsmat, 2, sd)
+tstat  <- (xbar - 10.71) / (shat / sqrt(n))
+qplot(tstat) + theme_bw()
+@
+\end{frame}
+
+\begin{frame}[fragile]{Does the skew matter?}
+\begin{itemize}
+\item What proportion of these $t$-statistics would have falsly rejected the $H_0$?
+<<>>=
+pvalues <- 2 * pt(q = -abs(tstat), df = n - 1)
+type1_error_rate <- mean(pvalues < 0.05)
+type1_error_rate
+@
+\item That's huge!
+\item Even though we say our test only falsely rejects 5\% of the time, it is actually falsely rejecting \Sexpr{round(100 * type1_error_rate, digits = 1)}\% of the time!
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{If we had perfect knowledge}
+\begin{itemize}
+\item If we had this sampling distribution, then we could create the critical values so that the test only falsely rejects 5\% of the time.
+<<>>=
+bounds <- quantile(x = tstat, probs = c(0.025, 0.975))
+bounds
+@
+\item That is, since the variable \texttt{tstat} contains samples of the $t$-statisitcs under the null, we find bounds such that only 5\% of these $t$-statisitcs are outside these bounds.
+\item These bounds are \Sexpr{bounds[1]} and \Sexpr{bounds[2]}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{If we had perfect knowledge}
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+is_low <- tstat < bounds[1] | tstat > bounds[2]
+dfdat <- data_frame(tstat = tstat, bound = is_low)
+ggplot(dfdat, aes(x = tstat, fill = is_low)) +
+  geom_histogram(alpha = 1/2) +
+  theme_bw() +
+  scale_fill_manual(values = c("black", "blue")) +
+  guides(fill = FALSE) +
+  geom_vline(xintercept = bounds[1], lty = 2) +
+  geom_vline(xintercept = bounds[2], lty = 2)
+@
+\end{frame}
+
+\begin{frame}{We don't have perfect knowledge}
+\begin{itemize}
+\item But we do have an estimate for the population's distribution
+\item That is, the sample's distribution!
+\item Idea: rather than sample from the population over and over again to get the sampling distribution of the $t$-statistics, sample from the sample over and over again.
+\item Since we only have $n$ cases in our sample and we want $n$ cases in our new sample, we sample from the sample \alert{with} replacement.
+\item We use the sample to model the \alert{spread} of the distribution, but center it to have the hypothesized mean.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Draw a sample}
+<<echo=FALSE>>=
+set.seed(23666)
+@
+Suppose this is our sample:
+\footnotesize
+<<>>=
+samp <- sample(email$num_char, size = 10)
+samp
+t.test(samp, mu = 10.71)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{Suppose this is our sample}
+<<warning=FALSE, message=FALSE>>=
+qplot(x = samp, bins = 15) + theme_bw()
+@
+\end{frame}
+
+\begin{frame}[fragile]{Sample from Sample}
+We now sample from the sample (centered about 10.71) to get new sample:
+<<>>=
+centered_samp <- samp - mean(samp) + 10.71
+new_sample <- sample(x = centered_samp, replace = TRUE)
+new_sample
+xbar_new  <- mean(new_sample)
+shat_new  <- sd(new_sample)
+tstat_new <- (xbar_new - 10.71) / (shat_new / sqrt(n))
+tstat_new
+@
+\end{frame}
+
+\begin{frame}{Bootstrap Distribution}
+\begin{block}{Bootstrap Distribution}
+The \alert{bootstrap distribution} of a statistic is the distribution of a statistic when taking repeated samples from the sample with replacement.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{We do this a lot}
+<<warning=FALSE, message=FALSE, fig.height=3>>=
+sampmat   <- replicate(500, sample(centered_samp, replace = TRUE))
+xbar_new  <- colMeans(sampmat)
+shat_new  <- apply(sampmat, 2, sd)
+tstat_new <- (xbar_new - 10.71) / (shat_new / sqrt(n))
+qplot(tstat_new) + theme_bw()
+@
+\end{frame}
+
+\begin{frame}[fragile]{New bootstrapped $t$-statistics}
+This \alert{bootstrap distribution} of the $t$-statistics picks up the skew that the theoretical normal does not.
+
+We can get the bounds for the $t$-test using this bootstrap distribution.
+<<>>=
+bounds_new <- quantile(tstat_new, probs = c(0.025, 0.975))
+@
+
+<<message=FALSE, warning=FALSE, fig.height=3, echo=FALSE>>=
+dfdat <- data_frame(tstat = tstat_new, is_low = tstat_new < bounds_new[1] | tstat_new > bounds_new[2])
+ggplot(dfdat, aes(x = tstat, fill = is_low)) +
+  geom_histogram(alpha = 1/2) +
+  theme_bw() +
+  scale_fill_manual(values = c("black", "blue")) +
+  guides(fill = FALSE) +
+  geom_vline(xintercept = bounds_new[1], lty = 2) +
+  geom_vline(xintercept = bounds_new[2], lty = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{For our sample}
+\begin{block}{\alert{Bootstrap $p$-value}}
+The the proportion of bootstrap samples that have a test statistic as extreme or more extreme than the observed sample.
+\end{block}
+
+\footnotesize
+<<>>=
+ttest_result   <- t.test(samp, mu = 10.71)
+observed_tstat <- ttest_result$statistic
+t_pvalue       <- ttest_result$p.value
+boot_pvalue    <- mean(tstat_new < -abs(observed_tstat) |
+                         tstat_new > abs(observed_tstat))
+t_pvalue
+boot_pvalue
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{Graphical representation of bootstrap $p$-value}
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+dfdat <- data_frame(tstat = tstat_new, is_low = tstat_new < -abs(observed_tstat) |
+                         tstat_new > abs(observed_tstat))
+ggplot(dfdat, aes(x = tstat, fill = is_low)) +
+  geom_histogram(alpha = 1/2) +
+  theme_bw() +
+  scale_fill_manual(values = c("black", "blue")) +
+  guides(fill = FALSE) +
+  geom_vline(xintercept = observed_tstat)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Does the bootstrap have the correct Type I error level?}
+<<echo=FALSE, cache = TRUE>>=
+boot.test <- function(x, mu, nboot = 500) {
+  centered_x <- x - mean(x) + mu
+  bootmat <- replicate(n = nboot, expr = sample(centered_x, replace = TRUE))
+  xbar_boot <- colMeans(bootmat)
+  shat_boot <- apply(bootmat, 2, sd)
+  tstat_boot <- (xbar_boot - mu) / (shat_boot / sqrt(length(x)))
+  obs_tstat <- (mean(x) - mu) / (sd(x) / sqrt(length(x)))
+  pvalue_boot <- mean(tstat_boot < -abs(obs_tstat) | tstat_boot > abs(obs_tstat))
+  return(pvalue_boot)
+}
+
+obs_mat <- replicate(500, sample(email$num_char, 10))
+boot_p <- apply(obs_mat, 2, boot.test, mu = 10.71)
+@
+
+When I ran the bootstrap on repeated samples, I got a Type I error rate of \Sexpr{mean(boot_p < 0.05)}.
+
+\end{frame}
+
+
+\end{document}

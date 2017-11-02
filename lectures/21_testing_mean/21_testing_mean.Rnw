@@ -57,7 +57,7 @@ opts_chunk$set(
 \item E.g. Does this gene impact height (Yes/No)
 \item E.g. Does broccoli cause cancer (Yes/No)
 \item E.g. Is Trump's phone source associated with negative words (Yes/No)?
-\item Today, we'll talk about making binary decisions in the context of estimating.
+\item Today, we'll talk about making binary decisions in the context of a question on Old Faithful's reliability.
 \end{itemize}
 \end{frame}
 
@@ -314,7 +314,7 @@ ggplot(data = data_frame(x = x, y = y), mapping = aes(x = x, y = y)) +
 \begin{itemize}
 \item Recall that $H_A: \mu \neq 60$.
 \item The definition of a $p$-value is the probability of seeing something \emph{as extreme or more extreme} (under the null) than what we saw.
-\item Since $-\bar{x}$ is as extreme as $\bar{x}$, we have to include this in our $p$-value calculation.
+\item Since $\mu_0 - (\bar{x} - \mu_0)$ is as extreme as $\bar{x}$, we have to include this in our $p$-value calculation.
 \end{itemize}
 \end{frame}
 
@@ -443,7 +443,7 @@ Formulate the null hypothesis and the alternative hypothesis
     tested.  Usually it states that the difference between the
     observed value and the hypothesized value is only due to chance
     variation.
-    For example, $\mu =69$ oz.
+    For example, $\mu =60$ minutes.
 
   \item The \textbf{alternative hypothesis} $H_a$ is the statement we
     will favor if we find evidence that the null hypothesis is false.
@@ -485,7 +485,7 @@ Find the \textbf{$p$-value} of the observed result
   \item The $p$-value is the probability of observing a test statistic
     \textit{as extreme or more extreme than actually observed},
     assuming the null hypothesis $H_0$ is true.
-  \item The smaller the p-value, the stronger the evidence
+  \item The smaller the $p$-value, the stronger the evidence
     \textit{against} the null hypothesis.
   \item if the $p$-value is as small or smaller than some number
     $\alpha$ (e.g. 0.01, 0.05), we say that the result is
@@ -523,6 +523,16 @@ says that there is substantial evidence that $H_0$ is false.
 Failure to reject $H_0$ does not imply that $H_0$ is correct. It only
 implies that we have insufficient evidence to conclude that $H_0$ is
 incorrect.
+\end{frame}
+
+\begin{frame}{Correct/Incorrect interpretation of Hypothesis tests?}
+\begin{enumerate}
+\item The $p$-value is the probability of seeing data that supports the alternative hypothesis as strong or stronger than what we saw.
+\item The $p$-value is the probability that the null hypothesis is correct. A smaller $p$-value means that the null is less probable and so we may reject it in favor of the alternative.
+\item A large $p$-value is strong evidence in favor of the null hypothesis.
+\item If we rejected $H_0$, then the null hypothesis is totally not true.
+\item If $\alpha = 0.05$, then we would expect about 1 study in 20 to incorrectly reject the null hypothesis.
+\end{enumerate}
 \end{frame}
 
 \section{Proportions}
@@ -646,6 +656,21 @@ the null hypothesis is rejected at the $\alpha$ level.
       for $\mu$, then this test will have a $p$-value smaller than
       .05, and therefore will reject $H_0$.
    \end{itemize}
+\end{frame}
+
+\section{End of class examples}
+
+\begin{frame}{What's wrong}
+\begin{enumerate}
+\item A significance test rejected the null hypothesis that the sample mean is equal to 500.
+\item A test preparation company wants to test that the average score of its students on the ACT is better than the national average score of 21.2. The company states its null hypothesis to be $H_0: \mu > 21.2$.
+\item A study summary says that the results are statistically signficant and the $p$-value is 0.98.
+\item The $z$ test statistic is equal to 0.018. Because this is less than $\alpha = 0.05$, the null hypothesis was rejected.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Example}
+Sonnets by a certain Elizabethan poet are known to contain an average $\mu = 8.9$ new words (words not found in the poet's other works). The standard deviation of the number of new words is $\sigma = 2.5$. A new manuscript with six new sonnets has come to light and scholars are debating wheter it is the poet's work. The new sonnets contain an average of $\bar{x} = 10.2$ words not used in the poet's known works. We expect poems by another authro to contain more new words. Set up a hypothesis test, calculate a $p$-value, and form a conclusion.
 \end{frame}
 
 
