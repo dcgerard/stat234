@@ -4,6 +4,7 @@
 \useoutertheme[subsection=false]{miniframes}
 \usetheme[progressbar=frametitle]{metropolis}
 \metroset{block=fill}
+\DeclareMathOperator{\var}{var}
 
 \providecommand{\code}[1]{}
 \renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
@@ -11,7 +12,8 @@
 
 
 \title{Differences of Means}
-\author{David Gerard}
+\author{David Gerard\\
+Many slides borrowed from Linda Collins and Yali Amit}
 \date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
 
 
@@ -53,8 +55,438 @@ opts_chunk$set(
 
 \section{Paired Data}
 
-\begin{frame}{Paired Data}
+\begin{frame}{Matched Paired $t$-test}
+  In a matched pairs study, there are 2 measurements taken on the same
+  subject (or on 2 similar subjects). For example,
+  \begin{itemize}
+  \item 2 rats from the same litter
+  \item before and after observations on the same subject
+  \item adjacent plots on a field
+  \end{itemize}
 
+  To conduct statistical inference on such a sample, we analyze the
+  \textit{difference} using the one-sample procedures described above.
+\end{frame}
+
+\begin{frame}[fragile]{Weight Data}
+\small
+<<message=FALSE, warning=FALSE>>=
+library(tidyverse)
+load(file="w.Rdata")
+glimpse(weight)
+t=(mean(weight$difference)-0)/(sd(weight$difference)/sqrt(20))
+p=1-pt(t,19)
+c(t,p)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{Equivalent to single variable methods}
+<<>>=
+diff_vec <- weight$weighta - weight$weightb
+@
+Now just perform inference on \texttt{diff\_vec}.
+\end{frame}
+
+\begin{frame}[fragile]{Matched Paired $t$-test}
+  To ascertain whether the diet reduces weight, we test
+  \begin{align*}
+  H_0: \mu =0 \qquad H_a: \mu > 0
+  \end{align*}
+  where $\mu$ is the mean weight difference.
+
+<<>>=
+xbar  <- mean(diff_vec)
+s     <- sd(diff_vec)
+n     <- length(diff_vec)
+tstat <- (xbar - 0) / (s / sqrt(n))
+@
+  $T$-statistic: $t=\frac{\Sexpr{round(xbar, digits = 2)} - 0 } { \Sexpr{round(s, digits = 2)} /\sqrt{\Sexpr{n}}}= \Sexpr{round(tstat, digits = 2)}$
+\end{frame}
+
+\begin{frame}[fragile]{Paired $t$-test}
+
+  \only<1> {
+<<echo=FALSE, message=FALSE>>=
+degrees_freedom <- length(diff_vec) - 1
+x <- seq(-6, 6, length = 500)
+y <- dt(x, degrees_freedom)
+
+upper <- tstat
+
+xpoly2 <- c(upper, seq(upper, max(x), length = 100), max(x), upper)
+ypoly2 <- c(0, dt(seq(upper, max(x), length = 100), degrees_freedom), 0, 0)
+
+polydat <- data_frame(xpoly2, ypoly2)
+dfdat   <- data_frame(x, y)
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  ylab("density") +
+  theme_bw() +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly2, y = ypoly2), fill = "blue", alpha = 1/2)
+@
+  }
+
+    \only<2-3> {
+    Zooming in
+<<echo=FALSE, message=FALSE>>=
+degrees_freedom <- length(diff_vec) - 1
+x <- seq(4, 6, length = 500)
+y <- dt(x, degrees_freedom)
+
+upper <- tstat
+
+xpoly2 <- c(upper, seq(upper, max(x), length = 100), max(x), upper)
+ypoly2 <- c(0, dt(seq(upper, max(x), length = 100), degrees_freedom), 0, 0)
+
+polydat <- data_frame(xpoly2, ypoly2)
+dfdat   <- data_frame(x, y)
+ggplot(data = dfdat, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  ylab("density") +
+  theme_bw() +
+  geom_polygon(data = polydat, mapping = aes(x = xpoly2, y = ypoly2), fill = "blue", alpha = 1/2)
+@
+  }
+
+  \only<3> {
+   $p$-value: $p=P( t_{19} \geq \Sexpr{tstat} ) = \Sexpr{format(pt(tstat, df = 19, lower.tail = FALSE), digits = 2)}$
+  }
+\end{frame}
+
+\section{Unpaired data (Two-sample data)}
+
+\begin{frame}[fragile]{Two sample problems}
+
+  \begin{itemize}
+  \item The goal of two-sample inference is to compare the responses
+    in two groups.
+  \item Each group is considered to be a sample from a distinct
+    population.
+  \item The responses in each group are independent of those in the
+    other group (in addition to being independent of each other).
+  \end{itemize}
+
+  For example, Suppose we have a SRS of size $n_1$ drawn from a
+  $N(\mu _1, \sigma _1)$ population and an independent SRS of size
+  $n_2$ drawn from a $N(\mu _2, \sigma _2)$ population.
+
+  The first sample might be heights of male students and the second
+  heights of female students.
+
+  We might test $H_0:\mu_1=\mu_2$ against $H_a:\mu_1\neq\mu_2$.
+\end{frame}
+
+\begin{frame}{Two sample problems}
+  How is this different from the \textit{matched pairs design}?
+  \begin{enumerate}
+  \item There is no matching of the units in two samples.
+  \item The two samples may be of different size.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Comparing Two Means when $\sigma$'s are Known}
+  Suppose we have a SRS of size $n_1$ drawn from a
+  $N(\mu _1, \sigma _1)$ population (with sample mean $\bar{x}_1$) and
+  an independent SRS of size $n_2$ drawn from a $N(\mu _2, \sigma _2)$
+  population (with sample mean $\bar{x}_2$). Suppose $\sigma _1$ and
+  $\sigma _2$ are known.
+
+  The \textbf{two-sample $z$-statistic} is
+  $$Z = \frac{(\bar{X}_1 - \bar{X}_2) - (\mu _1 - \mu
+    _2)}{\sqrt{\frac{\sigma ^2_1}{n_1} + \frac{\sigma ^2_2}{n_2}}}\sim
+  N(0,1)$$
+
+  \bigskip Why the denominator? Since the two samples are independent,
+  their averages are independent so:
+
+  $\var(\bar{X}_1 - \bar{X}_2) = \var(\bar{X}_1)+\var(\bar{X}_2) =
+  \frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$
+\end{frame}
+
+\begin{frame}{Inference when $\sigma$'s are known}
+  \begin{itemize}
+  \item A $(1-\alpha)$ CI for $\mu _1 - \mu _2$ is given by
+    \[ (\bar{x}_1 - \bar{x}_2) \pm z^{*}\sqrt{\frac{\sigma ^2_1}{n_1} +
+      \frac{\sigma _2^2}{n_2}} \] where $z^{*}:P(Z>z^*)=\alpha/2$.
+
+  \item To test the hypothesis $H_0: \mu _1 = \mu _2$, we use
+    \[ Z = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{\sigma _1^2}{n_1} +
+        \frac{\sigma ^2_2}{n_2}}}\sim N(0,1) \;\;\mbox{under}~ H_0 \]
+    The $p$-value is calculated as before
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Comparing Two Means with $\sigma$'s Unknown}
+We define $S^2_1=\frac{1}{n_1}\sum_{i=1}^{n_1}(X_{1,i}-\bar{X_1})^2,
+S^2_2=\frac{1}{n_2}\sum_{i=1}^{n_2}(X_{2,i}-\bar{X_2})^2.$
+
+\medskip
+
+  The \textbf{ Two-sample $t$-statistic} is
+  \[ T = \frac{(\bar{X}_1 - \bar{X}_2) -(\mu _1 - \mu
+    _2)}{\sqrt{\frac{S^2_1}{n_1} + \frac{S^2_2}{n_2}}}
+  \;\;\dot\sim\;\; t_\nu \] The $T$ statistic only has an {\bf approximate} $t_\nu$ distribution with
+
+$ \nu = \frac{(w_1+w_2)^2}{w_1^2/(n_1-1)+w_2^2/(n_2-1)}, \
+w_1=s_1^2/n_1, \ w_2=s_2^2/n_2.$
+
+This is called Satterthwaite's approximation.
+\end{frame}
+
+
+\begin{frame}{Inference when $\sigma$'s are unknown}
+    \begin{itemize}
+    \item A $(1-\alpha)$ CI for $\mu _1 - \mu _2$ is given by
+      \[ (\bar{x}_1 - \bar{x}_2) \pm t^{*}\sqrt{\frac{s^2_1}{n_1} +
+        \frac{s_2^2}{n_2}}, \ {\rm where} \ t^{*}:P(T_{\nu}>\alpha/2). \]
+    \item To test the hypothesis $H_0: \mu _1 = \mu _2$, we use
+      \[ T = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{S_1^2}{n_1} +
+          \frac{S^2_2}{n_2}}}\;\;\dot\sim\;\; t_{\nu} \;\;\mbox{under
+        $H_0$} \] The $p$-value is calculated as before.
+    \end{itemize}
+    Setting $\nu=\min(n_1-1,n_2-1)$ is simpler and yields a more
+    conservative approximate procedure. That is, the CIs are longer
+    than the true CI and $p$-values are larger than the true
+    $p$-values.
+\end{frame}
+
+\begin{frame}{Pooled two-sample $t$ procedures}
+  In the previous procedure, we assumed that $\sigma_1\neq\sigma_2$.
+  What if we have reason to believe $\sigma_1=\sigma_2=\sigma$ (even
+  though we don't know either value)?
+
+  We can gain information (i.e.  power) by \textit{pooling} the two
+  samples together for estimating the variance:
+
+  \[ S_p = \sqrt{\frac{(n_1 - 1)S^2_1 + (n_2 - 1)S^2_2}{n_1 + n_2 -
+      2}} \]
+
+
+  \[ T = \frac{(\bar{X}_1 - \bar{X}_2) - (\mu _1 - \mu
+    _2)}{S_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}} \sim t_{(n_1 + n_2 -
+    2)} \]
+If the two populations are normal this is the exact distribution of $T$.
+
+\end{frame}
+
+
+\begin{frame}{Inference for pooled two sample $t$ tests}
+ \begin{itemize}
+  \item A $(1-\alpha)$ CI for $\mu _1 - \mu _2$ is
+    $$(\bar{x}_1 - \bar{x}_2) \pm t^{*}s_p\sqrt{\frac{1}{n_1} +
+      \frac{1}{n_2}}$$ where $t^{*}:P(T_{n_1+n+2-2}>t^*)=\alpha/2$.
+
+  \item To test the hypothesis $H_0: \mu _1 = \mu _2$, we use
+    \[ T = \frac{\bar{X}_1 - \bar{X}_2}{S_p\sqrt{\frac{1}{n_1} +
+        \frac{1}{n_2}}} \sim t_{(n_1 + n_2 - 2)} \;\;\mbox{under
+      $H_0$} \] The $p$-value is calculated as before.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Example}
+  Weight gains (in kg) of babies from birth to age one year are
+  measured. All babies weighed approximately the same at birth.
+
+  \begin{tabular}{|c|ccccccccc|}
+    \hline
+    Group A & 5 & 7 & 8 & 9 & 6 & 7 & 10 & 8 & 6 \\
+    Group B & 9 & 10 & 8 & 6 & 8 & 7 & 9 & &\\
+    \hline
+  \end{tabular}
+
+  Assume that the samples are randomly selected from independent
+  normal populations.  Is there any difference between the true means
+  of the two groups?
+
+  i) Assume $\sigma _1 = \sigma _2 = 1.5$ is known
+
+  ii) Assume $\sigma _1$ and $\sigma _2$ are unknown and unequal.
+
+  iii) Assume $\sigma _1$ and $\sigma _2$ are unknown but equal
+
+  State the hypothesis:
+  \[ H_0: \mu_1 =\mu_2 \qquad H_a: \mu_1 \neq \mu_2 \]
+
+\end{frame}
+
+\begin{frame}{Observed Statistics}
+
+    \begin{center}
+      \begin{tabular}{cc}
+        $\bar{x}_1= 7.33$ & $\bar{x}_2= 8.14$\\
+        $s_1= 1.58$ & $s_2=1.35$\\
+        $n_1= 9$ & $n_2=7$\\
+      \end{tabular}
+    \end{center}
+
+\end{frame}
+
+
+\begin{frame}{Known variances}
+  i) Assume $\sigma _1 = \sigma _2 = 1.5$ is known. Then, the
+  two-sample $z$ statistic is
+  \begin{align*}
+    z &= \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{\sigma _1^2}{n_1}
+        + \frac{\sigma ^2_2}{n_2}}} = \frac{\bar{x}_1 -
+        \bar{x}_2}{\sigma_1 \sqrt{\frac{1}{n_1} +
+        \frac{1}{n_2}}}\\
+      &=\frac{7.33 - 8.14}{1.5\times
+        \sqrt{\frac{1}{9}+\frac{1}{7}}}=-1.07
+  \end{align*}
+  The two-sided $p$-value is
+  \[ 2 P(Z \geq |z|) = 2 P(Z \geq 1.07)=0.28 \]
+  where $Z\sim N(0,1)$.
+
+  So there is no difference between the true population mean of
+  these two group at the significance level 0.1.
+\end{frame}
+
+
+\begin{frame}{Known variances}
+  A $90\%$ confidence interval for $\mu_1 -\mu_2$ is:
+  \begin{align*}
+    (\bar{x}_1 - \bar{x}_2) &\pm z^{*}\sqrt{\frac{\sigma ^2_1}{n_1}
+                              + \frac{\sigma _2^2}{n_2}} \\
+                            &= (7.33 - 8.14) \pm 1.645 \times 1.5\times \sqrt{\frac{1}{9} +
+                              \frac{1}{7}}\\
+                            &= ( -2.05 ~,~ 0.43)
+  \end{align*}
+  As expected, the $90\%$ confidence interval covers 0. Thus, we have
+  90\% confidence that there is no difference between the true
+  population means.
+\end{frame}
+
+
+\begin{frame}{Unknown unequal variances}
+  ii) Assume $\sigma _1$ and $\sigma _2$ are unknown and unequal.
+  Then, the two-sample $t$ statistic is
+  \begin{align*}
+    t &= \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} +
+        \frac{s_2 ^2}{n_2}}} = \frac{ 7.33 - 8.14}{
+        \sqrt{\frac{1.58^2}{9}+\frac{1.35^2}{7}}}=-1.10
+  \end{align*}
+  The two-sided $p$-value is
+  \[ 2 P(T \geq |z|) = 2 P(T \geq 1.10)=0.31 \]
+  where $T\sim t_6$.
+\end{frame}
+
+
+\begin{frame}{Unknown unequal variances}
+ A $90\%$ confidence interval for $\mu_1 -\mu_2$ is given by
+    \begin{align*}
+      (\bar{x}_1 - \bar{x}_2) &\pm t^{*}\sqrt{\frac{s^2_1}{n_1} +
+        \frac{s_2^2}{n_2}}\\
+      &= (7.33 - 8.14) \pm 1.94\times
+      \sqrt{\frac{1.58^2}{9} + \frac{1.35^2}{7}}\\
+      &= ( -2.23 ~,~ 0.61)
+    \end{align*}
+    where $P( |T| < t^*) = 0.90$. That is, $P( T > t^*) = 0.05$ or
+$t^*=t_{\nu,.05}$.
+
+\end{frame}
+
+
+\begin{frame}{Unknown Equal variances}
+
+  iii) Assume $\sigma _1$ and $\sigma _2$ are unknown but equal.
+
+  The pooled two-sample estimator of $\sigma$ is
+  \begin{align*}
+    s_p &= \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}}\\
+        &= \sqrt{\frac{(9-1)\times 1.58^2 + (7-1) \times 1.35^2 }{ 9+7-2}}\\
+        &= 1.49
+  \end{align*}
+  Thus, the pooled two-sample t statistic is
+  \[ t = \frac{\bar{x}_1 - \bar{x}_2}{s_p\sqrt{\frac{1}{n_1} +
+        \frac{1}{n_2}}} = \frac{7.33 - 8.14 }{ 1.49 \sqrt{\frac{1}{9}
+        + \frac{1}{7}}} = -1.08 \]
+
+\end{frame}
+
+
+\begin{frame}{Unknown Equal variances}
+  The two-sided $p$-value is given by
+  \[ 2 P( T \geq |t|) = 2 P( T \geq 1.08) = 0.30
+    \qquad\mbox{where $T\sim t_{14}$.} \]
+
+  A $90\%$ confidence interval for $\mu_1 -\mu_2$ is
+  \begin{align*}
+    (\bar{x}_1 - \bar{x}_2) &\pm t^{*}s_p\sqrt{\frac{1}{n_1}
+                              +\frac{1}{n_2}}\\
+                            &= ( 7.33 - 8.14 ) \pm 1.76 \times 1.49 \times \sqrt{\frac{1}{9}+
+                              \frac{1}{7}}\\
+                            &= ( -2.12~, ~ 0.51)
+  \end{align*}
+  Where $P( |T| < t^*) = 0.90 $. That is, $P( T > t^*) = 0.05$.
+\end{frame}
+
+\section{How to actually do this in practice}
+
+\begin{frame}[fragile]{Software}
+\begin{itemize}
+\item It's important to understand the logic of a procedure.
+\item But you don't want to hard-code a $t$-test every time you need one --- this is a recipe for human error!
+\item Use \texttt{t.test}.
+\end{itemize}
+Set up data:
+<<>>=
+x <- c(5, 7, 8, 9, 6, 7, 10, 8, 6)
+y <- c(9, 10, 8, 6, 8, 7, 9)
+@
+\end{frame}
+
+\begin{frame}
+
+{\large Arguments}
+\begin{center}
+\begin{tabular}{l|l}
+\texttt{x} & a (non-empty) numeric vector of data values.\\
+\hline
+\texttt{y} & an optional (non-empty) numeric of data values.\\
+\hline
+\texttt{alternative}	& \begin{tabular}{@{}l@{}} a character string specifying the alternative hypothesis, \\ must be one of `two.sided'' (default), ``greater'' or \\``less''.  You can specify just the initial letter.\end{tabular}\\
+\hline
+\texttt{mu} & \begin{tabular}{@{}l@{}} a number indicating the true value of the mean \\ (or difference in means if you are performing \\ a two sample test). \end{tabular}\\
+\hline
+\texttt{paired} & a logical indicating whether you want a paired t-test.\\
+\hline
+\texttt{var.equal} & \begin{tabular}{@{}l@{}} a logical variable indicating whether to treat the two\\ variances as being equal. If TRUE then the pooled \\ variance is used to estimate the variance otherwise the \\ Welch (or Satterthwaite) approximation to the degrees \\ of freedom is used. \end{tabular}
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Assume $\sigma_1 = \sigma_2 = 1.5$}
+\begin{itemize}
+\item People never use two-sample $z$-tests in practice.
+\item So there isn't a base R function that does this.
+\item Just hard-code this for HW and never do in practice.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Assume $\sigma_1$ and $\sigma_2$ are unknown and unequal.}
+<<>>=
+t.test(x = x, y = y, alternative = "two.sided",
+       var.equal = FALSE, conf.level = 0.9)
+@
+\end{frame}
+
+\begin{frame}[fragile]{The df}
+The degrees of freedom it actually used was not exactly 14, but they used Satterthwaite's approximation:
+<<>>=
+tout <- t.test(x = x, y = y, alternative = "two.sided",
+               var.equal = FALSE, conf.level = 0.9)
+tout$parameter
+@
+\end{frame}
+
+\begin{frame}[fragile]{Assume $\sigma_1$ and $\sigma_2$ are unknown but equal}
+<<>>=
+t.test(x = x, y = y, alternative = "two.sided",
+       var.equal = TRUE, conf.level = 0.9)
+@
 \end{frame}
 
 

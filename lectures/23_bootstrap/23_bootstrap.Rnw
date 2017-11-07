@@ -47,6 +47,7 @@ opts_chunk$set(
 \begin{itemize}
 \item Bootstrap tests.
 \item Bootstrap $p$-values.
+\item Section 2 of \url{https://arxiv.org/pdf/1411.5279.pdf}
 \end{itemize}
 \end{frame}
 

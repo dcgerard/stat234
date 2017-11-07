@@ -50,13 +50,12 @@ Note: Each lecture is a topic, not a day of class.
 23. [Interval Estimates for Means](20_ci_mean.pdf)
 24. [Some Confidence Interval Examples](20_z1_ci_examples.pdf)
 25. [Hypothesis Testing for Means](21_testing_mean.pdf)
-26. Inference for Means in Small Samples
-27. Matched Pairs t-tests
-28. Two Sample t-tests
-29. Inference for Proportions
-30. Simple Linear Regression
-31. Analysis of Variance
-32. Multiple Linear Regression
+26. [Inference for Means in Small Samples](22_t_dist.pdf)
+27. [Differences of Means](24_two_sample.pdf)
+28. Inference for Proportions
+29. Simple Linear Regression
+30. Analysis of Variance
+31. Multiple Linear Regression
 
 # Stat Comics That Made Me Laugh
 - SMBC:
