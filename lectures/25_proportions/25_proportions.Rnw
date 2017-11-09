@@ -1,0 +1,604 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Inference for Proportions}
+\author{David Gerard\\
+Most slides from Yali Amit and Linda Collins}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+\setlength{\topsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\partopsep}{1pt}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item CI's and testing for proportions.
+\item CI's and testing for differences in proportions.
+\item $\chi^2$ distribution.
+\item Inference in two-way tables.
+\item Sections 6.1, 6.2, 6.3, and 6.4 in DBC.
+\end{itemize}
+\end{frame}
+
+\section{High-level Review of CI's and Testing}
+
+\begin{frame}{General Strategy}
+We've seen three cases (means ($\sigma$ known), means ($\sigma$ unknown), differences of means) of the following:
+\begin{itemize}
+\item Construct a test statistic, $T$, that has some known distribution (either N(0,1) or $t_{\nu}$).
+\item $T$ is a function of the parameter, say $\theta$, we are interested in (either the mean $\mu$ or the difference of two means $\mu_1 - \mu_2$). Denote this dependence by $T(\theta)$.
+\item Find bounds $t$ such that $Pr(T(\theta) \in [-t, t]) = 1 - \alpha$ for some predefined $\alpha$ (usually $\alpha = 0.05$).
+\item Solve for $\theta$: $Pr(\theta \in [T^{-1}(-t), T^{-1}(t)]) = 1 - \alpha$.
+\item This usually ends up being something like $\hat{\theta} \pm t \hat{SD}(\hat{\theta})$, where $\hat{\theta}$ is some estimate of $\theta$ (e.g.~$\bar{X}$) and $\hat{SD}(\hat{\theta})$ is an estimate of the standard deviation of $\hat{\theta}$ (e.g.~$s/\sqrt{n})$.
+\end{itemize}
+\end{frame}
+
+\section{Inference for Proportions}
+
+\begin{frame}{Set up}
+ Suppose we want to estimate the proportion $p$ of some
+  characteristic of a population, and we undertake the following
+  procedure:
+  \begin{enumerate}
+  \item Draw a SRS of size $n$.
+  \item Record the number $X$ of ``successes'' (those individuals
+    having the characteristic).
+  \item Estimate the unknown true population proportion $p$ with the
+    sample proportion of successes $\hat{p} = \frac{X}{n}$
+  \end{enumerate}
+
+  $p$ is the mean of the population, but in this case it determines the $SD=p(1-p)$. In the general case $\sigma$ is not determined by $\mu$.
+
+  What is the sampling distribution of $\hat{p}$?
+\end{frame}
+
+\begin{frame}{Normal Approximation and CI}
+  If $n$ is sufficiently large -- i.e. if $$np \ge 10 \mbox{ and }
+  n(1-p) \ge 10,$$ then
+  \[ \hat{p} \;\dot\sim\; N\left(p,\sqrt{\frac{p(1-p)}{n}} \right) \]
+
+  Thus, an approximate $(1-\alpha)$ CI for the population proportion
+  $p$ is given by
+  \[ \hat{p} \pm z^*\sqrt{\frac{\hat{p}(1 - \hat{p})}{n}} \]
+  where $z^*$ is chosen so that $P( Z > z^* )= \alpha/2$ for $Z\sim
+  N(0,1)$.
+\end{frame}
+
+\begin{frame}{Normal Approximation and Testing}
+What if we want to test whether $p=p_0$ for some fixed value $p_0$?
+
+  The null hypothesis is $p=p_0$, and under this hypothesis,
+  \[  Z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1 - p_0)}{n}}}
+  \;\dot\sim\; N(0,1) \]
+
+  Notice that we are using a different value for the SD of $\hat{p}$
+  than was used for the CI. Since $H_0$ specifies a true value for
+  $p$, the SD of $\hat{p}$ under $H_0$ is given by
+  $\sqrt{\frac{p_0(1-p_0)}{n}}$
+
+
+  The $p$-values for this test are:
+  \begin{itemize}
+  \item $H_a: p > p_0 \qquad P(Z \ge z)$
+  \item $H_a: p < p_0 \qquad P(Z \le z)$
+  \item $H_a: p \ne p_0 \qquad 2P(Z \ge |z|)$
+  \end{itemize}
+  for $Z\sim N(0,1)$.
+
+Some care needs to be taken when $p$ is very close to 0 or 1.
+\end{frame}
+
+
+\begin{frame}{Example}
+A random sample of 2700 California lawyers revealed only 1107 who
+  felt that the ethical standards of most lawyers are high
+  (\textit{AP, Nov. 12, 1994}).
+
+  \begin{enumerate}
+  \item Does this provide strong evidence for concluding that fewer
+    than 50\% of all California lawyers feel this way?
+  \item What is a 90\% confidence interval for the true proportion of
+    California lawyers who feel that ethical standards are high?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Using R}
+\vspace{-3mm}
+\small
+<<>>=
+hp <- 1107 / 2700
+Z <- (hp - 0.5) / sqrt(0.25 / 2700)
+Z^2
+prop.test(1107, 2700, conf.level = 0.90, correct = FALSE)
+@
+\normalsize
+\end{frame}
+
+\section{Differences of Proportions}
+
+\begin{frame}{Comparing Two Proportions}
+Suppose we have two populations $A$ and $B$ with unknown proportions
+  $p_1$ and $p_2$ respectively. A SRS of size $n_1$ from $A$ yields
+  $\hat{p}_1$, and an independent SRS of size $n_2$ from $B$ yields
+  $\hat{p}_2$. Then,
+  \[ (\hat{p}_1 - \hat{p}_2) \;\dot\sim\;
+  N\left( p_1 - p_2, \sqrt{\frac{p_1(1 - p_1)}{n_1} + \frac{p_2(1 -
+        p_2)}{n_2}}\, \right) \] when $n_1$ and $n_2$ are large.
+
+  An approximate 95\% CI for $p_1 - p_2$ is then given by
+  \[ (\hat{p}_1 - \hat{p}_2) \pm 1.96\,
+  \sqrt{\frac{\hat{p}_1(1 - \hat{p}_1)}{n_1} +
+    \frac{\hat{p}_2(1 - \hat{p}_2)}{n_2}} \]
+
+Again, the estimates of the means/proportions determines the SD's.
+\end{frame}
+
+\begin{frame}{Comparing Two Proportions}
+ To test $H_0: p_1 = p_2$, we compute the test statistic
+  \[ Z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1 - \hat{p})\left(
+        \frac{1}{n_1} + \frac{1}{n_2}\right) }} \] where $\hat{p}$ is
+  the \textit{combined} proportion of successes in both samples
+  \[ \hat{p}=\frac{X_1+X_2}{n_1+n_2}=
+  \frac{n_1\hat{p}_1+n_2\hat{p}_2}{n_1+n_2}\]
+  with $X_1$, $X_2$ denoting the number of successes in each sample.
+
+  Under $H_0$, the $Z$-statistic has approximately a standard normal
+  distribution (using the normal approximation to the binomial), and
+  $p$-values are calculated as above.
+\end{frame}
+
+\begin{frame}{Survey Questions Example}
+    The ability of question wording to affect the outcome of a survey
+    can be a serious issue. Consider the following two questions:
+    \begin{enumerate}
+    \item Would you favor or oppose a law that would require a person to
+      obtain a police permit before purchasing a gun?
+    \item Would you favor or oppose a law that would require a person to
+      obtain a police permit before purchasing a gun, or do you think
+      such a law would interfere too much with the right of citizens to
+      own guns?
+    \end{enumerate}
+
+    Let $n_i$ denote the number of people who were asked question $i$,
+    and $X_i$ denote the number of these who favor the permit law.
+
+    \begin{center}
+      \begin{tabular}{|ccc|}
+        \hline
+        Ques. & $X_i$ & $n_i$\\
+        \hline
+        1 & 463 & 615\\
+        2 & 403 & 585\\
+        \hline
+      \end{tabular}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Survey Questions Example}
+Is the true proportion of people favoring the permit law the same in
+    both groups or not?
+\small
+<<>>=
+prop.test(c(463, 403), c(615, 585))
+@
+\normalsize
+\end{frame}
+
+\section{Two-way Tables}
+
+\begin{frame}{Wine Example}
+In a study conducted in a Northern Ireland supermarket, researchers
+  counted the number of bottles of French, Italian, and other wine
+  purchased while shoppers were subject to one of three
+  ``treatments'': no music, French accordion music, and Italian string
+  music.
+
+  The following \textbf{two-way table} summarizes the data:
+
+  \begin{center}
+    \begin{tabular}{|c|rrr|c|}
+      \hline
+      & \multicolumn{3}{c|}{Music} & \\
+      Wine&None&French&Italian&Total\\
+      \hline
+      French& 30 &39& 30& 99\\
+      Italian & 11& 1& 19& 31\\
+      Other& 43 & 35& 35& 113\\\hline
+      Total& 84& 75& 84& 243\\\hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Wine Example}
+The table of counts looks like the joint distribution
+    tables we studied earlier. Indeed, from these counts, we can
+    ascertain the (empirical) joint distribution, marginal
+    distributions, and conditional distributions of wine type and
+    music type:
+
+    \begin{center}
+      \begin{tabular}{|c|rrr|c|}
+        \hline
+        & \multicolumn{3}{c|}{Music} & \\
+        Wine & None & French & Italian & Total\\
+        \hline
+        French  & 0.123 & 0.160 & 0.123 & 0.407\\
+        Italian & 0.045 & 0.004 & 0.078 & 0.128\\
+        Other   & 0.177 & 0.144 & 0.144 & 0.465\\
+        \hline
+        Total   & 0.346 & 0.309 & 0.346 & 1.000\\
+        \hline
+      \end{tabular}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}{Wine Example}
+\begin{itemize}
+\item We are interested in determining whether there is relationship
+    between the row variable (wine type) and the column variable
+    (music type).
+\item If this were the \textit{true distribution}, then the answer would
+    be clear: music and wine are not independent, so there \textit{is}
+    a relationship.
+\item However, this table is \textit{random}, and we want to know
+    whether or not music and wine are independent \textit{under the
+      true distribution}. This requires a statistical test.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Intuition of test}
+\begin{itemize}
+  \item $H_0$: the row and column variables are independent (i.e.
+    there is no relationship between the two).
+  \item $H_a$: the row and column variables are dependent.
+  \end{itemize}
+
+  Suppose $H_0$ is true, and the two variables are independent. What
+  counts would we expect to observe?
+
+  Recall that under the independence assumption,
+  $P(x,y) = P(x)P(y),$ for all $x,y$.
+
+  We estimate the marginals from the data.
+
+  $\hat{P}(x)=\frac{\text{row total for x }}{\text{total count}}$,
+  $\hat{P}(y)=\frac{\text{col total for y}}{\text{total count}}$
+\end{frame}
+
+\begin{frame}{Intuition of test}
+Thus, for each cell, we have
+  \[ \mbox{Expected Cell Count} = \mbox{total count} \cdot \hat P(x) \hat P(y) = \frac{\mbox{row total } \times
+    \mbox{ col total}}{\mbox{total count}} \]
+  Our test will be based on a measure of \textit{how far the observed
+    table is from the expected table.}
+
+  For the supermarket example, the expected counts are:
+
+  \begin{center}
+    \begin{tabular}{|c|rrr|c|}
+      \hline
+      & \multicolumn{3}{c|}{Music} & \\
+      Wine&None&French&Italian&Total\\
+      \hline
+      French  & 34.22 & 30.56 & 34.22 & 99\\
+      Italian & 10.72 &  9.57 & 10.72 & 31\\
+      Other   & 39.06 & 34.88 & 39.06 & 113\\
+      \hline
+      Total   & 84    & 75    & 84    & 243\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}{The $\chi^2$ test statistic}
+
+      \begin{center}
+        \begin{tabular}{|c|rrr||rrr|c|}
+          \hline
+          & \multicolumn{3}{c||}{Observed}
+          & \multicolumn{3}{c|}{Expected} &\\
+          \cline{2-7}
+          & \multicolumn{3}{c||}{Music} & \multicolumn{3}{c|}{Music} &\\
+          Wine & None & Fr. & It. & None & Fr. & It. & Tot.\\
+          \hline
+          French  & 30 & 39 & 30 & 34.22 & 30.56 & 34.22 &  99\\
+          Italian & 11 &  1 & 19 & 10.72 &  9.57 & 10.72 &  31\\
+          Other   & 43 & 35 & 35 & 39.06 & 34.88 & 39.06 & 113\\
+          \hline
+          Total   & 84 & 75 & 84 & 84    & 75    & 84    & 243\\
+          \hline
+        \end{tabular}
+      \end{center}
+
+  To measure how far the \textit{expected} table is from the
+  \textit{observed} table, we will use the following test statistic:
+
+  \[ X^2 = \sum_{\mbox{all cells}} \frac{\left(\mbox{Observed } - \mbox{
+        Expected}\right)^2}{\mbox{Expected}} \]
+\end{frame}
+
+\begin{frame}{The $\chi^2$ distribution}
+\begin{itemize}
+\item Under $H_0$, the $X^2$ test statistic has an approximate $\chi^2$
+  distribution with $(r-1)(c-1)$ degrees of freedom, denoted
+  $\chi^2_{(r-1)(c-1)}$.
+  \item Why $(r-1)(c-1)$?
+  \item Recall that our ``expected'' table is based on some quantities
+  estimated from the data: namely the row and column totals.
+  \item Once these totals are known, filling in any $(r-1)(c-1)$
+  undetermined table entries actually gives us the whole table. Thus,
+  there are only $(r-1)(c-1)$ freely varying quantities in the table.
+  \item What does the $\chi^2$ distribution look like?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The $\chi^2$ distribution}
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+library(tidyverse)
+library(ggthemes)
+dfvec    <- c(1, 5, 10, 20, 30)
+xseq     <- seq(0, 50, length = 500)
+dfdat    <- data_frame(x = xseq, y = dchisq(xseq, dfvec[1]))
+dfdat$df <- dfvec[1]
+for (i in 2:length(dfvec)) {
+  tempdat    <- data_frame(x = xseq, y = dchisq(xseq, dfvec[i]))
+  tempdat$df <- dfvec[i]
+  dfdat <- bind_rows(dfdat, tempdat)
+}
+dfdat$df <- as.factor(dfdat$df)
+ggplot(data = dfdat, mapping = aes(x = x, y = y, lty = df, color = df)) +
+  geom_line(size = 1) +
+  ylim(0, 0.25) +
+  theme_bw() +
+  scale_color_colorblind() +
+  ylab("density") +
+  guides(color = guide_legend(title = "Degrees of\nFreedom"),
+         lty = guide_legend(title = "Degrees of\nFreedom"))
+@
+\end{frame}
+
+\begin{frame}{More on $\chi^2$}
+  \begin{itemize}
+  \item Unlike the Normal or $t$ distributions, the $\chi^2$
+    distribution takes values in $(0,\infty)$.
+  \item As with the $t$ distribution, the exact shape of the $\chi^2$
+    distribution depends on its degrees of freedom.
+  \end{itemize}
+
+
+ If the observed and expected counts are very different, $X^2$ will
+  be large, indicating evidence against $H_0$. Thus, the $p$-value is
+  always based on the right-hand tail of the distribution.
+
+  \textit{There is no notion of a two-tailed test in this context.}
+
+  The $p$-value is therefore
+
+  \[ P(\chi ^2_{(r-1)(c-1)} \ge X^2) \]
+
+  Recall that $X^2$ has an \textit{approximate} $\chi^2_{(r-1)(c-1)}$
+  distribution. When is the approximation valid?
+\end{frame}
+
+\begin{frame}{Conditions for approximation to be valid}
+  For any two-way table larger than $2\times 2$, we require that the
+  average expected cell count is at least 5 and each expected count is
+  at least one.
+
+  For $2\times 2$ tables, we require that each expected count be at
+  least 5.
+
+\bigskip
+
+  Let's get back to our example...
+
+    Recall the observed and expected counts:
+
+
+      \begin{center}
+        \begin{tabular}{|c|rrr||rrr|c|}
+          \hline
+          & \multicolumn{3}{c||}{Observed}
+          & \multicolumn{3}{c|}{Expected} &\\
+          \cline{2-7}
+          & \multicolumn{3}{c||}{Music} & \multicolumn{3}{c|}{Music} &\\
+          Wine & None & Fr. & It. & None & Fr. & It. & Tot.\\
+          \hline
+          French  & 30 & 39 & 30 & 34.22 & 30.56 & 34.22 &  99\\
+          Italian & 11 &  1 & 19 & 10.72 &  9.57 & 10.72 &  31\\
+          Other   & 43 & 35 & 35 & 39.06 & 34.88 & 39.06 & 113\\
+          \hline
+          Total   & 84 & 75 & 84 & 84    & 75    & 84    & 243\\
+          \hline
+        \end{tabular}
+      \end{center}
+\end{frame}
+
+
+\begin{frame}{Calculating $X^2$}
+ \begin{align*}
+      X^2 &= \frac{(30-34.22)^2}{34.22} + \frac{(39 - 30.56)^2}{30.56}
+      + \frac{(30-34.22)^2}{34.22}\\
+      &\qquad + \cdots + \frac{(35 - 34.88)^2}{34.88} +
+      \frac{(35-39.06)^2}{39.06}\\
+      &= 18.28
+    \end{align*}
+
+
+  The table is $3\times 3$, so there are $(r-1)(c-1) = 2\times 2 =
+    4$ degrees of freedom.
+
+    Finally, the $p$-value is found from the $\chi^2_4$ table:
+    \[ 0.001 \leq P( \chi^2_4 \geq 18.28) \leq 0.0025 \]
+\end{frame}
+
+\begin{frame}[fragile]{In R}
+\small
+<<>>=
+# Enter the data
+wine=c(30,11,43,39,1,35,30,19,35)
+# Reshape it as a table
+dim(wine)=c(3,3)
+wine
+# Run the test
+chisq.test(wine)
+@
+\normalsize
+\end{frame}
+
+
+\begin{frame}
+  The $\chi^2$-test for the presence of a relationship between two
+  directions in a two-way table is valid for data produced by several
+  different study designs, although the exact null hypothesis varies.
+\end{frame}
+
+\begin{frame}{1. Examining independence between variables}
+
+\begin{itemize}
+\item Suppose we select an SRS of size $n$ from a population and classify
+  each individual according to 2 categorical variables. Then, a
+  $\chi^2$-test can be used to test
+\item $H_0$: The two variables are independent
+\item $H_a$: Not independent
+\item Suppose we collect an SRS of 114 college students, and categorize
+  each by major and GPA (e.g. $(0,0.5],(0.5,1],\ldots,(3.5,4]$). Then,
+  we can use a $\chi^2$ test to ascertain whether grades and major are
+  independent.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{2. Comparing several populations}
+\begin{itemize}
+\item Suppose we select \textit{independent} SRSs from each of $c$
+  populations, of sizes $n_1, n_2, \ldots , n_c$. We then classify
+  each individual according to a categorical response variable with
+  $r$ possible values (the same across populations). This yields a $r
+  \times c$ table, and a $\chi^2$-test can be used to test
+\item $H_0$: Distribution of the response variable is the same in all
+  populations
+\item $H_a$: Distributions of response variables are not all the same.
+\item Suppose we select independent SRSs of Psychology, Biology and Math
+  majors, of sizes 40, 39, 35, and classify each individual by GPA
+  range. Then, we can use a $\chi^2$ test to ascertain whether or not
+  the distribution of grades is the same in all three populations.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Back to the survey example. }
+\begin{itemize}
+\item There are two populations and
+for each there is a 2 category (Bernoulli) variable. So
+this is a $2\times 2$ table.
+\item One variable is the population label and one
+variable is the response.
+\item Saying they have the same proportions
+is the same as saying the two variables are independent.
+\item The $X^2$ test statistic for independence is exactly
+the {\bf square} of the z-statistic for equality of the proportions.
+\item The original data comes as
+two sample sizes and two counts of yes responses. It can be rewritten
+\end{itemize}
+
+\begin{minipage}{.5\textwidth}
+\center
+      \begin{tabular}{|ccc|}
+        \hline
+        Ques. & $X_i$ & $n_i$\\
+        \hline
+        1 & 463 & 615\\
+        2 & 403 & 585\\
+        \hline
+      \end{tabular}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\center
+      \begin{tabular}{|ccc|}
+        \hline
+        Ques. & Yes & No \\
+        \hline
+        1 & 463 & 152\\
+        2 & 403 & 182\\
+        \hline
+      \end{tabular}
+\end{minipage}
+\end{frame}
+
+\begin{frame}[fragile]{R-code for the $\chi$-squared test for independence}
+<<>>=
+# Enter data as two way table.
+X <- c(463, 403, 615 - 463, 585 - 403)
+dim(X) <- c(2, 2)
+chisq.test(X, correct = FALSE)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Explicit z-test for equal proportions}
+<<>>=
+n1 <- X[1, 1] + X[1, 2]
+n2 <- X[2, 1] + X[2, 2]
+p1 <- X[1, 1] / n1
+p2 <- X[2, 1] / n2
+p  <- (X[1, 1] + X[2, 1]) / (n1 + n2)
+z  <- (p1 - p2) / sqrt(p * (1 - p) * (1 / n1 + 1 / n2))
+c(z, 2 * pnorm(-z))
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{R proportion test using the $\chi^2$ statistic}
+<<>>=
+prp <- prop.test(X[, 1], c(n1, n2), correct = FALSE)
+c(prp$statistic, prp$p.value)
+z^2
+@
+Note that $\text{X-squared}=z^2$
+\end{frame}
+
+
+
+
+\end{document}

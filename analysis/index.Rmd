@@ -52,7 +52,7 @@ Note: Each lecture is a topic, not a day of class.
 25. [Hypothesis Testing for Means](21_testing_mean.pdf)
 26. [Inference for Means in Small Samples](22_t_dist.pdf)
 27. [Differences of Means](24_two_sample.pdf)
-28. Inference for Proportions
+28. [Inference for Proportions](25_proportions.pdf)
 29. Simple Linear Regression
 30. Analysis of Variance
 31. Multiple Linear Regression
