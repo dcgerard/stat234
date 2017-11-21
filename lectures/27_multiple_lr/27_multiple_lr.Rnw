@@ -1,0 +1,771 @@
+\documentclass{beamer}
+\usepackage{amsmath,algorithm,algorithmic,graphicx,amsfonts,amsthm,color,pgf,tikz,wrapfig,amsfonts,multicol,wasysym,animate, appendixnumberbeamer}
+\beamertemplatenavigationsymbolsempty
+\useoutertheme[subsection=false]{miniframes}
+\usetheme[progressbar=frametitle]{metropolis}
+\metroset{block=fill}
+
+\providecommand{\code}[1]{}
+\renewcommand{\code}[1]{{\color{blue!80!black}\texttt{#1}}}
+\def\hid#1#2{\onslide<#1>{#2}}
+
+
+\title{Multiple Linear Regression}
+\author{David Gerard}
+\date[\Sexpr{Sys.Date()}]{\Sexpr{Sys.Date()}}
+
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(format.R.blank=FALSE)
+options(width=60)
+options(continue=" ")
+options(replace.assign=TRUE)
+options(scipen=8, digits=4)
+opts_chunk$set(
+  dev="pdf",
+  fig.align='center',
+  fig.width=7,
+  fig.height=4,
+  fig.pos='H',
+  fig.show='asis',
+  out.width='0.99\\linewidth',
+  par=TRUE,
+  tidy=FALSE,
+  tidy.opts=list(width.cutoff=50),
+  prompt=FALSE,
+  comment=NA
+)
+@
+
+
+\setlength{\topsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\partopsep}{1pt}
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+\begin{itemize}
+\item Multiple linear regression (with testing/CI's).
+\item Stepwise procedures.
+\item Model checking.
+\item Sections 8.1 through 8.3 in DBC
+\end{itemize}
+\end{frame}
+
+\section{Multiple Linear Regression}
+
+\begin{frame}[fragile]{Mario Data}
+<<warning=FALSE, message=FALSE>>=
+library(openintro)
+library(tidyverse)
+data(marioKart)
+glimpse(marioKart)
+@
+\end{frame}
+
+\begin{frame}{Mario Data}
+\begin{itemize}
+\item \texttt{totalPr}: Total price, which equals the auction price plus the shipping price.
+\item \texttt{cond}: Game condition, either new or used.
+\item \texttt{stockPhoto}: Whether the auction feature photo was a stock photo or not. If the picture was used in many auctions, then it was called a stock photo.
+\item \texttt{duration}: Auction length, in days.
+\item \texttt{wheels}: Number of Wii wheels included in the auction. These are steering wheel attachments to make it seem as though you are actually driving in the game. When used with the controller, turning the wheel actually causes the character on screen to turn.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Create Indicator Variables}
+\small
+<<>>=
+marioKart$cond_new    <- (marioKart$cond == "new") * 1
+marioKart$stock_photo <- (marioKart$stockPhoto == "yes") * 1
+mario <- select(marioKart, totalPr, cond_new,
+                stock_photo, duration, wheels)
+head(mario)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}{set up}
+We have
+  \begin{itemize}
+  \item a single response variable $y$
+  \item  several predictor/explanatory variables $x_1, \ldots , x_p$
+  \end{itemize}
+
+  Data for multiple linear regression consist of the values of $y$ and
+  $x_1,\ldots,x_p$ for $n$ individuals. We write the data in the form:
+  \begin{center}
+    \begin{tabular}{|c|cccc|c|}
+      \hline
+      Individual & \multicolumn{4}{c|}{Predictors} & Response\\
+      $i$ & $x_1$& $x_2$& $\cdots$ & $x_p$& $y$\\
+      \hline
+      1 &  $x_{11}$& $x_{12}$& $\cdots$ & $x_{1p}$& $y_1$\\
+      2 &  $x_{21}$& $x_{22}$& $\cdots$ & $x_{2p}$& $y_2$\\
+      \vdots & \vdots & \vdots & $\ddots$ & \vdots & \vdots \\
+      $n$ &  $x_{n1}$& $x_{n2}$& $\cdots$ & $x_{np}$& $y_n$\\\hline
+    \end{tabular}
+  \end{center}
+
+  Following our principles of data analysis, we look first at each
+  variable separately.
+\end{frame}
+
+\begin{frame}[fragile]{EDA}
+<<echo=FALSE>>=
+ggplot(data = mario, aes(x = cond_new, y = totalPr)) +
+  theme_bw() +
+  geom_point()
+@
+\end{frame}
+
+\begin{frame}[fragile]{EDA}
+<<echo=FALSE>>=
+ggplot(data = mario, aes(x = stock_photo, y = totalPr)) +
+  theme_bw() +
+  geom_point()
+@
+\end{frame}
+
+\begin{frame}[fragile]{EDA}
+<<echo=FALSE>>=
+ggplot(data = mario, aes(x = duration, y = totalPr)) +
+  theme_bw() +
+  geom_point()
+@
+\end{frame}
+
+\begin{frame}[fragile]{EDA}
+<<echo=FALSE>>=
+ggplot(data = mario, aes(x = wheels, y = totalPr)) +
+  theme_bw() +
+  geom_point()
+@
+\end{frame}
+
+\begin{frame}[fragile]{Correlations}
+<<>>=
+round(cor(mario), digits = 2)
+@
+\end{frame}
+
+\begin{frame}{EDA results}
+\begin{itemize}
+\item It seems that marginally (i.e.~just looking at one predictor at a time), \texttt{price} is positively associated with \texttt{cond\_new} and \texttt{wheels} and perhaps negatively associated with \texttt{stock\_photo} and \texttt{duration}, though these latter two relationships are possibly non-existant (a result of noise) or just weak.
+\item The predictors are also moderately correlated with each other.
+\item There is one huge outlier and a moderate outlier.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A first fit}
+\footnotesize
+<<>>=
+lmout <- lm(totalPr ~ cond_new, data = mario)
+summary(lmout)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}[fragile]{A first fit: without outlier}
+\footnotesize
+<<>>=
+lmout <- lm(totalPr ~ cond_new, data = mario[-c(20, 65), ])
+summary(lmout)
+@
+\normalsize
+\end{frame}
+
+\begin{frame}{Uh Oh}
+\begin{itemize}
+\item If you have outliers, the first thing to do is try to explain those outliers.
+\item The second thing to do is fit the model both with and without the outliers. Hopefully you get the same results.
+\item If the results change consult a statistician: they will either (1) fit a ``robust'' procedure (e.g.~minimize the sum of absolution deviations rather than the sum of squared deviations) or (2) try to incorporate the outliers in the model.
+\item We'll just remove them for now.
+\end{itemize}
+<<>>=
+mario <- mario[-c(20, 65), ]
+@
+\end{frame}
+
+
+\begin{frame}{Interpret}
+\begin{itemize}
+\item New Mario Kart games tend to cost an average of \$10.90 more than used Mario Kart games on Ebay.
+\item The association is \alert{significant} ($p \approx 1.1\times 10^{-14}$).
+\item Don't confuse this with \emph{causation}. E.g.~new games come with more Wii wheels which could be what is actaully causing the increase in price.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correlation vs Causation}
+\begin{center}
+\includegraphics[scale = 0.7]{correlation_xkcd}
+\end{center}
+\end{frame}
+
+\begin{frame}{Goals}
+\begin{itemize}
+\item We will try to find associations between the response and each each predictor while \alert{controlling} for the other predictors.
+\item This will still \alert{not} allow us to make claims of causality.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Multiple Linear Regression}
+\begin{block}{Multiple Linear Regression}
+A \alert{multiple linear regression model} is a linear model with many predictors. In general, we write the model as
+\begin{align*}
+y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots + \beta_px_p + \epsilon,
+\end{align*}
+where $p$ is the number of predictors and $\epsilon$ is some noise term (often assumed to be distributed $N(0,\sigma^2)$).
+\end{block}
+\end{frame}
+
+\begin{frame}{Interpretation}
+\begin{itemize}
+\item Intro stat interpretation: $\beta_j$ is the change in $y$ for each unit change in $x_j$ when holding all other predictors \alert{constant}.
+\item Some statisticians think this sounds too causal, so they use more verbose language: $\beta_j$ is the difference in the average $y$'s between two populations that are the same in every respect except that they differ by $1$ in $x_j$.
+\item That is, we aren't \emph{changing} $x_j$, we're just looking at two populations that have different $x_j$'s.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Wii example}
+\begin{align*}
+y = \beta_0 + \beta_1x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \epsilon.
+\end{align*}
+\end{frame}
+
+
+\begin{frame}{Estimating the Regression Coefficients}
+The true population parameters $\beta _0, \beta _1, \ldots , \beta_p$ and $\sigma $ are estimated from the data by the least squares
+    method. That is, we minimize the \textit{residual sum of squares}
+    \begin{align*}
+      \mbox{SSE} &= \sum_{i=1}^n (e_i)^2\\
+      &= \sum_{i=1}^{n}(y_i-\hat{y})^2\\
+      &= \sum_{i=1}^{n}(y_i-b_0 - b_1 x_{i1}- \cdots -
+      b_p x_{ip})^2
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Estimating the Variance}
+   The estimator of $\sigma ^2$ is
+    \begin{align*}
+    s^2 = \frac{\mbox{SSE}}{n - p - 1} = \frac{\sum(e_i)^2}{n - p - 1}
+    \end{align*}
+    where $n - p - 1$ is the number of degrees of freedom.
+
+    Number of samples $n$ minus the number of parameters $p + 1$.
+\end{frame}
+
+\begin{frame}[fragile]{Mario Example}
+<<>>=
+lmout <- lm(totalPr ~ cond_new + stock_photo +
+              duration + wheels,
+            data = mario)
+sumout <- summary(lmout)
+round(sumout$coefficients, digits = 2)
+@
+\end{frame}
+
+\begin{frame}{Fitted model and interpretation}
+<<echo=FALSE>>=
+betahat <- round(coef(lmout), digits = 2)
+@
+
+\begin{align*}
+y_i = \Sexpr{betahat[1]} + \Sexpr{betahat[2]}x_{1i} + \Sexpr{betahat[3]}x_{2i} + \Sexpr{betahat[4]}x_{3i} + \Sexpr{betahat[5]}x_{4i} + \epsilon_i.
+\end{align*}
+\begin{itemize}
+\item If game $i$ and game $j$ differ only in that game $i$ only has one more wheel than game $j$, then we would expect individual $i$'s total price to be about \Sexpr{betahat[5]} dollars more.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Model Assumptions}
+    \begin{itemize}
+    \item The sample is a SRS from the population
+
+      This can't be checked; this needs to be taken care of when the
+      sample is drawn.
+
+    \item There is a linear relationship in the population
+
+      Checking this isn't as straightforward as with simple linear
+      regression, but we should draw a plot of \textit{residuals vs.
+        fitted values} and check for any patterns.
+
+    \item The standard deviation of the residuals is constant.
+
+      Using the same plot as above, check for non-uniformity in the
+      spread of residuals around the center line.
+
+    \item The response varies Normally about the population regression
+      line.
+
+      Check with a \textit{Normal quantile plot} of the residuals.
+
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Inference for Regression Coefficients}
+A 95\% confidence interval for $\beta _j$ is
+    \[ \hat\beta_j \pm t^{*} \mbox{SE}(\hat\beta_j) \]
+    where $t^{*}$ is the number such that 95\% of the area of the
+    $t_{n-p-1}$ distribution falls between $-t^{*}$ and $t^{*}$
+
+    To test the hypothesis
+    \[
+    H_0: \beta _j = 0 ~~~~~(\beta_i\ \  \text{arbitrary for}~i\ne j)
+    \]
+    compute the $t$-statistic
+    \[ T = \frac{\hat\beta_j}{\mbox{SE}(\hat\beta_j)} \]
+\end{frame}
+
+\begin{frame}{More on Testing}
+\begin{itemize}
+    \item the $p$-value for this test statistic is computed from the
+      $t_{n-p-1}$ distribution
+
+
+        $\rightarrow$ for $H_a: \beta _j > 0$, $p$-value is $P(t_{n-p-1}
+        > T)$
+
+        $\rightarrow$ for $H_a : \beta _j < 0$, $p$-value is $P(t_{n-p-1}
+        < T)$
+
+        $\rightarrow$ for $H_a : \beta _j \ne 0$, $p$-value is
+        $2P(t_{n-p-1} > |T|)$
+
+    \item if the regression model assumptions are true, testing $H_0 :
+      \beta _j = 0$ corresponds to testing whether or not $x_j$ is a
+      significant predictor of $y$, \textit{assuming all the other
+        predictors are already in the model}.
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{ANOVA table for Multiple Regression}
+
+The basic ideas of the regression ANOVA table are the same in simple
+  and multiple regression.
+
+  ANOVA expresses variation in the form of sums of squares. It breaks
+  the total variation into two parts: $\mbox{SSR}$ and
+  $\mbox{SSE}$:
+
+  \begin{center}
+    \begin{tabular}{rlc}
+      \hline
+      \multicolumn{1}{c}{Source} & \multicolumn{1}{c}{SS} &
+      \multicolumn{1}{c}{df}  \\
+      \hline
+      Regression (SSR)& $\sum_{i=1}^n(\hat{y}_i - \bar{y})^2$ & $p$\\
+      Residual (SSE)& $\sum_{i=1}^n(y_i - \hat{y}_i)^2$& $n-p-1$ \\
+      Total& $\sum_{i=1}^n(y_i - \bar{y})^2$ & $n-1$ \\\hline
+    \end{tabular}
+  \end{center}
+
+
+  \[ \mbox{SST} = \mbox{SSR} + \mbox{SSE} \]
+
+\end{frame}
+
+\begin{frame}{ANOVA Decomposition}
+\begin{center}
+\includegraphics{anova_example}
+\end{center}
+\end{frame}
+
+\begin{frame}{$R^2$}
+The statistic
+  \[ R^2=1 - \frac{\mbox{SSE}}{\mbox{SST}}=\frac{\mbox{SSR}}{\mbox{SST}} =
+  \frac{\sum_{i=1}^n(\hat{y}_i - \bar{y})^2}{\sum_{i=1}^n(y_i -
+    \bar{y})^2} \] is the proportion of the variation of the response
+  variable $y$ that is explained by the explanatory variables $x_1,
+  x_2, \cdots, x_p$. $R^2$ is called the \textbf{multiple correlation
+    coefficient}.
+\end{frame}
+
+\begin{frame}{Adjusted $R^2$}
+The $R^2$ increases with every additional predictor.
+This is a mathematical fact. But some predictors may not
+be particularly useful in the regression.
+
+Use Adjusted-$R^2:$
+
+$R_{adj}^2=1 - \frac{\mbox{SSE}/(n-p-1)}{\mbox{SST}/(n-1)}$
+
+Adjusted $R^2$ does not necessarily increase with more predictors.
+
+The adjusted $R^2$ compares the estimated sigmas -
+the numerator in the fraction is $s$. The denominator
+is fixed. So if $s$ is
+smaller a model is better.
+\end{frame}
+
+\section{Model Selection}
+
+\begin{frame}[fragile]{Model \alert{with} \texttt{duration}}
+<<>>=
+lmout1 <- lm(totalPr ~ cond_new + stock_photo +
+              duration + wheels,
+            data = mario)
+sumout1 <- summary(lmout1)
+sumout1$adj.r.squared
+@
+\end{frame}
+
+\begin{frame}[fragile]{Model \alert{without} \texttt{duration}}
+<<>>=
+lmout2 <- lm(totalPr ~ cond_new + stock_photo +
+             wheels,
+            data = mario)
+sumout2 <- summary(lmout2)
+sumout2$adj.r.squared
+@
+\end{frame}
+
+\begin{frame}{Bigger model isn't always the best!}
+\begin{itemize}
+\item The estimated proportion of variance explained by the second model is \alert{larger} than from the first.
+\item Intuition: \texttt{duration} has no affect on price so our model fruitlessly works too hard to estimate it's effect.
+\item So we should prefer this second (simpler) model without duration.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Backwards Elimination}
+\begin{itemize}
+\item Fit the ``full'' model (that with every predictor included).
+\item Remove the predictor that results in the greatest increase in \alert{adjusted} $R^2$.
+\item Keep removing predictors in this way until you cannot increase $R^2$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Backwards Elimination}
+<<echo = FALSE>>=
+sumout3 <- summary(lm(totalPr ~ stock_photo +
+              duration + wheels,
+            data = mario))
+sumout4 <- summary(lm(totalPr ~ cond_new +
+              duration + wheels,
+            data = mario))
+sumout5 <- summary(lm(totalPr ~ cond_new + stock_photo +
+              duration,
+            data = mario))
+@
+Iteration 1
+\begin{center}
+\begin{tabular}{lc}
+Model & adjusted $R^2$\\
+Full & \Sexpr{round(sumout1$adj.r.squared, digits = 3)}\\
+No \texttt{cond\_new} & \Sexpr{round(sumout3$adj.r.squared, digits = 3)}\\
+No \texttt{stock\_photo} & \Sexpr{round(sumout4$adj.r.squared, digits = 3)}\\
+No \texttt{duration} & \only<1>{\Sexpr{round(sumout2$adj.r.squared, digits = 3)}} \only<2>{\alert{\Sexpr{round(sumout2$adj.r.squared, digits = 3)}}}\\
+No \texttt{wheels} & \Sexpr{round(sumout5$adj.r.squared, digits = 3)}
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Backwards Elimination}
+Iteration 2
+<<echo = FALSE>>=
+sumout6 <- summary(lm(totalPr ~ stock_photo +
+             wheels,
+            data = mario))
+sumout7 <- summary(lm(totalPr ~ cond_new +
+             wheels,
+            data = mario))
+sumout8 <- summary(lm(totalPr ~ cond_new + stock_photo,
+            data = mario))
+@
+
+\begin{center}
+\begin{tabular}{lc}
+Model & adjusted $R^2$\\
+No \texttt{duration} & \Sexpr{round(sumout2$adj.r.squared, digits = 3)}\\
+No \texttt{duration} and no \texttt{cond\_new} & \Sexpr{round(sumout6$adj.r.squared, digits = 3)} \\
+No \texttt{duration} and no \texttt{stock\_photo} & \Sexpr{round(sumout7$adj.r.squared, digits = 3)}\\
+No \texttt{duration} and no \texttt{wheels} & \Sexpr{round(sumout8$adj.r.squared, digits = 3)}\\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item No increase in adjusted $R^2$, so stop with this model.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Final Model}
+<<>>=
+lmout <- lm(totalPr ~ cond_new + stock_photo + wheels,
+            data = mario)
+sumout <- summary(lmout)
+round(sumout$coefficients, digits = 2)
+@
+The final model is
+\begin{align*}
+\text{totalPr} = 36.1 + 5.2 \text{cond\_new} + 1.1\text{stock\_photo} + 7.3\text{wheels} + \text{error}.
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Other methods of backwards elmination}
+\begin{itemize}
+\item There are other statistics you can use to do backwards elimination (e.g.~based on $p$-values).
+\item R uses something called AIC.
+\end{itemize}
+<<>>=
+full_model <- lm(totalPr ~ cond_new + stock_photo +
+                   duration + wheels, data = mario)
+backout <- step(full_model, direction = "backward",
+                trace = FALSE)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Backwards Elimination Results}
+<<>>=
+backout
+@
+\end{frame}
+
+\begin{frame}[fragile]{Forward Selection}
+\begin{itemize}
+\item Start with the model including just the intercept term and keep adding predictors until you can't increase the $R^2$ (or AIC or decrease the $p$-values, etc.)
+\end{itemize}
+<<>>=
+base_model <- lm(totalPr ~ 1, data = mario)
+full_model <- lm(totalPr ~ cond_new + stock_photo +
+                   duration + wheels, data = mario)
+forout <- step(object = base_model,
+               scope = list(lower = base_model,
+                            upper= full_model),
+               direction = "forward",
+               trace = FALSE)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Forward Selection Results}
+<<>>=
+forout
+@
+\end{frame}
+
+\section{Checking fit}
+
+\begin{frame}{Normality Assumption}
+Error term is nearly normal.
+\begin{itemize}
+\item This is less important for large $n$ if all you want is to estimate/infer the $\beta_j$'s. This follows from the CLT.
+\item This assumption is super important for prediction intervals.
+\item You can check that the residuals are nearly normal.
+\item Use qq-plots.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Nearly normal}
+<<>>=
+lmout <- lm(totalPr ~ cond_new + stock_photo +
+              wheels, data = mario)
+residuals <- resid(lmout)
+qqnorm(residuals)
+qqline(residuals)
+@
+\end{frame}
+
+\begin{frame}{Other Assumptions}
+\begin{itemize}
+\item Variability of error term is nearly constant.
+\item Error terms are independent.
+\begin{itemize}
+\item The book says that the ``residuals are independent''. This is very wrong (why?).
+\end{itemize}
+\item Each variable is linearly related to the outcome.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Testing these assumptions}
+To test these assumptions, plot the residuals against:
+\begin{itemize}
+\item the predictors,
+\item the absolute value of the responses,
+\item the absolute value of the fitted responses, and
+\item the ordering of the observations.
+\end{itemize}
+If you don't see anything pattern, then the model assumptions are looking pretty good.
+\end{frame}
+
+
+\begin{frame}[fragile]{Simulated Data 1}
+Example of Non-linear relationship:
+<<echo = FALSE>>=
+set.seed(1)
+x <- rnorm(100)
+y <- 0.6 * x^2 - x + 1 + rnorm(100, sd = 0.4)
+lmout <- lm(y ~ x)
+yhat <- predict(lmout)
+rsim <- resid(lmout)
+qplot(abs(yhat), rsim) +
+  theme_bw() +
+  geom_hline(yintercept = 0, lty = 2, lwd = 1) +
+  xlab("fits") +
+  ylab("residuals")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Simulated Data 2}
+Example of Non-constant Variance:
+<<echo = FALSE>>=
+set.seed(1)
+x <- rnorm(100, sd = 0.1)
+y <- x + rnorm(100, sd = abs(x))
+lmout <- lm(y ~ x)
+rsim <- resid(lmout)
+yhat <- predict(lmout)
+qplot(abs(yhat), rsim) +
+  theme_bw() +
+  geom_hline(yintercept = 0, lty = 2, lwd = 1) +
+  xlab("fits") +
+  ylab("residuals")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs Fits
+<<>>=
+lmout     <- lm(totalPr ~ cond_new + stock_photo +
+              wheels, data = mario)
+residuals <- resid(lmout)
+fits      <- predict(lmout)
+plot(abs(fits), residuals)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs $y$.
+<<>>=
+plot(abs(mario$totalPr), residuals)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs order.
+<<>>=
+plot(residuals)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs \texttt{cond\_new}.
+<<>>=
+plot(mario$cond_new, residuals)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs \texttt{wheels}.
+<<>>=
+plot(mario$wheels, residuals)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Mario Resids}
+Resids vs \texttt{stock\_photo}.
+<<>>=
+plot(mario$stock_photo, residuals)
+@
+\end{frame}
+
+\begin{frame}{Conclusions}
+\begin{itemize}
+\item Some possible problems.
+\item Doesn't look \emph{too} bad, but could look better.
+\end{itemize}
+\end{frame}
+
+\section{Intuition behind Indicator Variables}
+
+\begin{frame}[fragile]{\texttt{totalPr} vs \texttt{cond\_new} and \texttt{wheels}}
+<<echo = FALSE>>=
+set.seed(1)
+mario$cond_new <- factor(mario$cond_new)
+bigdat <- mario
+bigdat$wheels <- jitter(mario$wheels)
+pl <- ggplot(bigdat, aes(x = wheels, y = totalPr)) +
+  geom_point() +
+  theme_bw()
+print(pl)
+@
+\end{frame}
+
+\begin{frame}[fragile]{\texttt{totalPr} vs \texttt{cond\_new} and \texttt{wheels}}
+<<echo=FALSE>>=
+pl <- ggplot(bigdat, aes(x = wheels, y = totalPr, col = cond_new)) +
+  geom_point() +
+  theme_bw()
+print(pl)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Different Intercepts}
+$\text{price} = \beta_0 + \beta_1\text{cond\_new} + \beta_2 \text{wheels} + \text{error}$.
+<<echo = FALSE>>=
+lmout <- lm(totalPr ~ wheels + cond_new, data = mario)
+newdat1 <- data_frame(wheels = c(0, 4), cond_new = factor(c(0, 0), levels = c(0, 1)))
+newdat2 <- data_frame(wheels = c(0, 4), cond_new = factor(c(1, 1), levels = c(0, 1)))
+p1 <- predict(lmout, newdata = newdat1)
+p2 <- predict(lmout, newdata = newdat2)
+smalldat <- data_frame(wheels = c(0, 4, 0, 4), totalPr = c(p1, p2), cond_new = factor(c(0, 0, 1, 1)))
+pl <- pl + geom_line(data = smalldat, lwd = 1)
+print(pl)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Color Code Residuals}
+<<echo=FALSE>>=
+lmnull     <- lm(totalPr ~ wheels, data = mario)
+resid_null <- resid(lmnull)
+resid_new  <- resid(lmout)
+fitnull    <- predict(lmnull)
+fitnew     <- predict(lmout)
+qplot(fitnull, resid_null, color = mario$cond_new) +
+  theme_bw() +
+  geom_hline(yintercept = 0, lty = 2, lwd = 1) +
+  ggtitle("Model with just wheels")
+@
+\end{frame}
+
+\begin{frame}[fragile]{Color Code Residuals}
+<<echo=FALSE>>=
+qplot(fitnew, resid_new, color = mario$cond_new) +
+  theme_bw() +
+  geom_hline(yintercept = 0, lty = 2, lwd = 1) +
+  ggtitle("Model with wheels and cond_new")
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Different Slopes and Intercepts}
+$\text{price} = \beta_0 + \beta_1\text{cond\_new} + \beta_2 \text{wheels} + \beta_3\text{cond\_new}\times\text{wheels} + \text{error}$.
+<<echo = FALSE>>=
+lmout <- lm(totalPr ~ wheels * cond_new, data = mario)
+newdat1 <- data_frame(wheels = c(0, 4), cond_new = factor(c(0, 0), levels = c(0, 1)))
+newdat2 <- data_frame(wheels = c(0, 4), cond_new = factor(c(1, 1), levels = c(0, 1)))
+p1 <- predict(lmout, newdata = newdat1)
+p2 <- predict(lmout, newdata = newdat2)
+smalldat <- data_frame(wheels = c(0, 4, 0, 4), totalPr = c(p1, p2), cond_new = factor(c(0, 0, 1, 1)))
+pl <- ggplot(bigdat, aes(x = wheels, y = totalPr, col = cond_new)) +
+  geom_point() +
+  theme_bw() +
+  geom_line(data = smalldat, lwd = 1)
+print(pl)
+@
+\end{frame}
+
+\end{document}
+
+

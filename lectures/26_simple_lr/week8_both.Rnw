@@ -1,0 +1,522 @@
+\documentclass{beamer}
+%\documentclass[handout, t]{beamer}
+
+\setbeamercolor{alerted text}{fg=gray}
+%\setbeamercolor{alerted text}{fg=black}
+
+\usepackage{amsmath}
+%\usepackage{pstricks}
+%\usepackage{graphicx}
+%\usepackage[misc]{ifsym} % for the dice symbol \Cube{}
+%\usepackage{booktabs}
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[a4paper,border shrink=3mm]
+%\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=3mm
+
+%\usepackage{setspace}
+%\ifdefined\knitrout
+%  \renewenvironment{knitrout}{\begin{spacing}{1.1}\begin{tiny}}%{\end{tiny}\end{spacing}}
+%\else
+%\fi
+
+%\usepackage{definitions}
+\newcommand{\Ybar}{\overline{Y}}
+\newcommand{\ybar}{\overline{y}}
+\newcommand{\xbar}{\overline{x}}
+\newcommand{\subhead}[1]{
+    \normalsize
+    \textbf{#1}
+}
+\newcommand{\pitilde}{{\widetilde{\pi}}}
+\newcommand{\thetahat}{{\widehat{\theta}}}
+%\newcommand{\rv}{r.v.\ }
+%\newcommand{\prob}{P}
+\def\b#1{\fboxsep=0pt\colorbox{black}{\color{white}\Cube{#1}}}
+\def\w#1{\Cube{#1}}
+\def\Sum{\sum\nolimits}
+%-------------Answers------------
+\def\Hide#1#2{\ul{~~~\onslide<#1>{\alert{#2}}~~~}}
+\def\hide#1#2{\ul{~~\onslide<#1>{\alert{#2}}~~}}
+\def\hid#1#2{\onslide<#1>{\alert{#2}}}
+%------Centered Page Number------
+%\input{Centerpgn}
+\def\chapnum{Linear Models}
+%--------------------------------
+
+%\usetheme{Copenhagen}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[english]{babel}
+\def\ul{\underline}
+\linespread{1.1}
+% or whatever
+
+%\renewcommand{\thepage}{Syllabus - \insertframenumber}
+\usepackage[latin1]{inputenc}
+\title{Day \chapnum}
+%\author{Linda Collins}
+\date
+%\subject{Talks}
+
+%\setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{footline}[centered page number]
+
+\parskip=0pt
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks, fragile]{ Introduction to Linear Models: Two Variables}
+%\textbf{A model for one random sample: two variables, one popn}
+$ \begin{array}{ccccc}
+&  & \mbox{mean depends} & &  \\
+&  & \mbox{on another} & &  \\
+\mbox{response}&  & \mbox{variable ($x$)} & & \mbox{error} \\
+\mbox{(random)} &  & \mbox{(not random)} & & \mbox{(random)} \\
+\downarrow & & \downarrow  & & \downarrow  \\
+Y & = & \mu(x) &+& \epsilon\\
+\end{array} $
+\vskip0.3cm
+
+(Each $x$ can be viewed as a populaton)
+
+We consider the $x$-values as ``fixed'' and
+model the probability distribution of $Y$ ``conditional'' on the
+observed $x$-values.
+\vskip0.3cm
+
+
+
+A simple model considers the mean to be a linear function of $x:$\\
+$\mu(x) = \mu_{Y|x}=E(Y|x) = \beta_0+\beta_1 x.$
+\vskip0.3cm
+
+This model is called the {\bf simple linear regression model}.
+\vskip0.3cm
+
+%$E(Y|x) = \beta_0 + \beta_1 x$ is the {\bf regression line}
+%for {\bf regression} of $Y$ on $x.$\\
+
+\newpage\phantom{XXXXX}
+
+The linear model is $Y = \beta_0 + \beta_1 x + \epsilon,$
+\vskip0.2cm
+and  we observe pairs $(x_i, Y_i)$. For each observation:
+
+\bigskip
+$ \begin{array}{rcl}
+Y_i & = & \beta_0 + \beta_1 x_i + \epsilon_i\;, \\
+& &  \epsilon_i
+\sim\;\mbox{independent}\; (0,\sigma^2) \qquad i=1,2,\ldots,n \\
+&\Rightarrow& Y_i - (\beta_0 + \beta_1 x_i) = \epsilon_i = \mbox{error or ``residual"} \\
+\end{array} $
+\vskip0.5cm
+$\begin{array}{rllllll}
+  E(Y_i) &=& E(\beta_0+\beta_1 x_i + \epsilon_i)
+  &=& \beta_0 + \beta_1 x_i + E(\epsilon_i) \\
+  &=& \beta_0 + \beta_1 x_i\\ \\
+  var(Y_i) &=& var(\beta_0 + \beta_1 x_i + \epsilon_i)
+  &=& var(\epsilon_i)\\
+  &=& \sigma^2
+\end{array}$
+
+\textbf{This is a considerable assumption:} constant variance for the response
+variable ($Y$) for every value of predictor variable ($x$).
+\newpage\phantom{XXXXX}
+
+
+Estimate for $\mu(x)$ by the ``least-squares'' method:
+minimize the {\bf sum of squared errors}
+with respect to the parameters included in the model specified for the mean:
+\vskip0.5cm
+%$$ \begin{array}{rcl}
+%  \mbox{SSE} \;\;=\;\; \displaystyle{\sum_{i=1}^{n}} (\;\; Y_i \; \; - &  \widehat{\mu}(x_i)&)^2 \\
+%& \uparrow & \\
+%& \widehat{\mu}(x_i) & = b_0 + b_1 x_i \\
+%\end{array} $$ \\
+$\displaystyle{\mbox{SSE} \;\;=\;\;
+\displaystyle{\sum_{i=1}^{n}} (\; Y_i \; \; -   \widehat{Y}_i\;)^2
+\qquad \mbox{where }\quad  \widehat{Y}_i=\widehat{\mu}(x_i)  = b_0 + b_1 x_i
+}$
+
+%\noindent $\widehat{Y}_i=\widehat{\mu}(x_i)$
+%is the estimate for the mean (or the prediction for $Y_i$)
+%at a given $x$-value, $x_i\; ,$
+%while $b_0$ and $b_1$ are the estimates for $\beta_0$ and $\beta_1\%; .$
+
+
+LS estimates $b_0$ for $\beta_0$ (the intercept)
+and $b_1$ for $\beta_1$ (the slope):
+
+\[ b_1  =  \frac{\sum_{i=1}^n (Y_i-\bar Y)(x_i-\bar x)}{\sum_{i=1}^n (x_i-\bar x)^2}
+\hskip2cm
+b_0 = \bar Y - b_1 \xbar\;.\]
+
+\medskip
+Simple algebra will yield another expression for $b_1 = r \frac{s_y}{s_x}$
+
+\medskip
+where $r$ is the sample correlation coefficient
+\vskip0.5cm
+$
+r = \frac{1}{n-1} \sum_{i=1}^n
+\left(\frac{y_i-\ybar}{s_y}\right)
+\left(\frac{x_i-\xbar}{s_x}\right)\; .
+$
+\vskip0.5cm
+%See Pruim Section 6.2.1
+\newpage\phantom{XXXXX}
+
+%An error (or residual) = e_i = (y_i - (b_o+b_1x_i))  = (y_i - \yhat_i)$
+
+%Residual = difference between the observed response $y_i$
+%and the estimated average response ($\yhat_i = b_0 + b_1x_i$)
+%\begin{align*}
+%& SSE = \textrm{sum of squared errors}\\
+%&= \sum_{i=1}^n e_i^2
+%= \sum_{i=1}^n [y_i-(b_0 + b_1x_i)]^2
+%\end{align*}
+%Minimizing the MSE will minimize the sum of squared
+%distances of points from the line (in the y-axis direction).
+
+%\newpage\phantom{XXXXX}
+
+Claim: \\
+Like all least squares estimates for parameters in a linear
+model, the estimates are unbiased:
+\vskip0.2cm
+$E(b_0) = \beta_0$, and $E(b_1) = \beta_1$.
+
+\medskip
+And,
+
+\medskip
+$Var(b_1)=\sigma^2 \frac{1}{\sum_{i=1}^n(x_i-\bar x)^2}$,
+
+\medskip
+$Var(b_0)=Var(\bar Y)+\bar{x}^2 Var(b_1) =
+\sigma^2 \left(\frac{1}{n}+\frac{\bar{x}^2}{\sum_{i=1}^n(x_i-\bar x)^2} \right)$
+
+
+\medskip
+In the regression model,
+errors have distribution $\epsilon_{i} \sim (0,\sigma^2).$
+\medskip
+So
+
+$b_1 \sim N\left( \beta_1,
+  \frac{\sigma^2}{\sum (x_i - \bar{x})^2} \right)$
+$b_0  \sim  N\left(\beta_0,
+ \sigma^2  \left(\frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2}
+\right) \right)$
+
+%for all\  $i=1,\ldots,n$
+
+\newpage\phantom{XXXXX}
+
+$\sigma$ is unkown: calculate an unbiased estimate of the error variance: SSE/df
+\vskip0.3cm
+
+An unbiased estimate for $\sigma^2$ has the form
+\vskip0.5cm
+
+$
+\widehat{\sigma}^2\;\;=\;\;s^2\;\;=\;\;\frac{\mbox{SSE}}{\mbox{df}}
+\;\;=\;\;\displaystyle{\frac{\mbox{SSE}}{n-2}}= \frac{\sum_{i=1}^n r_i^2}{n-2},
+$
+
+\medskip
+where each {\bf residual} $r_i = Y_i - \hat \mu(x_i) = Y_i - (b_0+b_1 x_i)$.
+
+\medskip
+The degrees of freedom
+are df = $n-2$ since $n$ is the total sample size,
+and 2 is the number of parameters estimated
+in the model component for the mean
+$(\beta_0,\beta_1).$\\
+
+\newpage\phantom{XXXXX}
+
+Compare models:
+\vskip0.3cm
+
+$Y_i = \mu + \epsilon_i$
+\vskip0.3cm
+$Y_i = \mu(x_i) + \epsilon_i = \beta_0+\beta_1 x_i + \epsilon_i$
+\vskip0.3cm
+
+Do we need the more complex model?
+
+\vskip0.3cm
+Test or confidence interval for $\beta_1$:\;
+\[H_o: \beta_1=0\quad
+t\mbox{-statistic} = \frac{b_1-0}{SE(b_1)}\]
+\[b_1 \; \pm\; t^*\; SE(b_1)
+\quad\mbox{where}\quad
+SE(b_1) = \frac{s}{\sqrt{\sum_{i=1}^n (x_i-\xbar)^2}}\]
+
+$t^*: P(T_{n-2}>t^*)=\alpha/2$.
+
+\newpage \phantom{XXX}
+\vskip -1cm
+<<echo=FALSE,warning=FALSE,message=FALSE>>=
+require(dplyr)
+@
+
+<<fig.height=3>>=
+fire.dat <- read.table(file="fire.dat")
+names(fire.dat) <- c("obs","dist","damage")
+glimpse(fire.dat)
+attach(fire.dat)
+fire.lm <- lm(damage~dist) # Estimate the model
+@
+<<fig.height=3>>=
+# Plot the data and the regression line
+plot(dist,damage,pch=16,xlab="Distance (mi.)",
+     ylab="Damage 1K$")
+abline(fire.lm)
+@
+
+\newpage
+<<fig.height=3,size="small">>=
+# Plot residuals against x - should not show dependence on x.
+# Variance should be the same for all x. Ideally residuals have
+# normal distribution.
+par(mfrow=c(1,2))
+plot(dist,fire.lm$res,xlab="Distance (mi.)",
+     ylab="Residual",pch=16)
+abline(h=0)
+res=(fire.lm$res-mean(fire.lm$res))/sd(fire.lm$res) # standardize residuals
+qqnorm(res,main="",pch=20,xlab="",ylab="") # Check qqplot
+qqline(res)
+@
+%\newpage \phantom{X}
+<<echo=TRUE,fig.height=5,size="tiny">>=
+sig=sigma(fire.lm) # Get estimate of sigma
+
+# Simulate date from the estimated model 4 times and get new estimates of
+#the slope and intercept.
+N=4
+nn=rnorm(N*15,0,sig)
+dim(nn)=c(15,N)
+
+par(mfrow=c(2,2))
+for (j in (1:4))
+{
+dist=fire.dat$dist
+damage=dist*fire.lm$coefficients[2]+fire.lm$coefficients[1]+nn[,j]
+nlm=lm(damage~dist)
+print(nlm$coefficients)
+plot(dist,damage,pch=16,xlab="Distance (mi.)",
+     ylab="Damage ($1Ks)",xlim=c(0,7),ylim=c(8,40))
+abline(nlm)
+}
+@
+
+
+
+\newpage \phantom{XX}
+ \begin{small}
+
+    The fitted line is:
+    \[ \mbox{damage} = 10.28 + 4.92\,\mbox{dist} \]
+
+    Suppose we want to predict the \textbf{mean amount of damage} for
+    fires 2 miles from the nearest fire station. In this case,
+    $x^{*}=2$ and our prediction is
+    \[ 10.28+ 4.92 \times 2  = 20.12 \]
+
+    \subhead{Inference about Prediction}
+
+    What if we want to predict the amount of damage of a burning house
+    which is 2 miles from the nearest fire station?  Still, the
+    prediction is:
+    \[10.28+ 4.92 \times 2  = 20.12 \]
+
+
+\newpage \phantom{XX}
+    The predicted values are the same, but they have different
+    standard errors. Individual burning houses which are 2 miles away
+    from the fire station don't have the same amount of damage, so the
+    prediction for individual amount of damage has larger standard
+    error than the prediction for mean amount of damage.
+\end{small}
+
+
+\newpage \phantom{X}
+
+ \subhead{CIs for the Mean Response}
+
+  For a specific value of $x$, say $x^{*}$, the assumption is that $y$
+  comes from a $N(\mu(x^*), \sigma^2)$ distribution, where
+  \[ \mu(x^*) = \beta _0 + \beta _1 x^{*} \]
+
+  Plugging in our estimates of $\beta_0$ and $\beta_1$, $\mu(x^*)$
+  is estimated by $\hat{\mu}(x^*) = b_0 + b_1 x^{*}$, and a level
+  $(1-\alpha)$ confidence interval for the mean response $\mu(x^*)$
+ is given by
+  \[ \hat{\mu}(x^*) \pm t^{*}\mbox{SE}(\hat{\mu}(x^*)) \]
+  where $t^{*}$ is the upper $\alpha/2$ critical value of the
+  $t_{n-2}$ distribution and
+  \[ \mbox{SE}(\hat{\mu }(x^*)) = s\sqrt{\frac{1}{n} + \frac{(x^{*} -
+      \bar{x})^2}{\sum (x_i - \bar{x})^2}} \]
+
+
+\newpage \phantom{X}
+
+<<fig.height=5,size="small">>=
+newdist<-seq(0,7)
+# Get predictions for new values in newdist
+prd<-predict(fire.lm,newdata=data.frame(dist=newdist),
+             interval = c("confidence"),
+             level = 0.90,type="response")
+plot(dist,damage,pch=16,xlab="Distance (mi.)",
+     ylab="Damage ($1Ks)")
+abline(fire.lm) # Regression line
+# Confidence bounds for prediction
+lines(newdist,prd[,2],col="red",lty=2)
+lines(newdist,prd[,3],col="red",lty=2)
+@
+
+
+\newpage \phantom{X}
+
+  \subhead{Prediction Interval for a Future Observation}
+
+  Suppose we want to predict a specific observation value at $x =
+  x^{*}$.
+
+  At each $x^{*}$, $y \sim N(\mu(x^*), \sigma^2)$ We want to predict
+  a $y$ drawn from this distribution.
+
+  Our best guess is the estimated mean of the distribution,
+  $$\hat{y} = \hat{\mu }(x^*) = b_0 + b_1 x^{*}$$
+
+ How accurate is this estimate?
+
+  The error here will be larger than the error for the mean response,
+  $\mbox{SE}(\hat{\mu}(x^*))$, because there is error in estimating
+  $\mu(x^*)$ as well as error in drawing a value from the normal
+  distribution $N(\mu(x^*), \sigma^2)$.
+
+  \newpage \phantom{XX}
+
+  A \textbf{level $(1-\alpha)$ prediction interval} for a future
+  observation $y$ corresponding to $x^{*}$ is given by
+  \[\hat{y} \pm t^{*} s_{\hat{y}} \]
+  where $t^{*}$ is the upper $\alpha/2$ critical value of the
+  $t_{n-2}$ distribution and
+  \[ s_{\hat{y}} = s\sqrt{1 + \frac{1}{n} + \frac{(x^{*} - \bar{x})^2}
+    {\sum (x_i - \bar{x})^2}} \]
+
+<<echo=FALSE,fig.height=5>>=
+newdist<-seq(0,7)
+# Get predictions for new values in newdist
+prd<-predict(fire.lm,newdata=data.frame(dist=newdist),
+             interval = c("prediction"),
+             level = 0.90,type="response")
+plot(dist,damage,pch=16,xlab="Distance (mi.)",
+     ylab="Damage ($1Ks)")
+abline(fire.lm) # Regression line
+# Confidence bounds for prediction
+lines(newdist,prd[,2],col="red",lty=2)
+lines(newdist,prd[,3],col="red",lty=2)
+@
+\end{frame}
+
+\begin{frame}[allowframebreaks, fragile]{Analysis of variance}
+
+
+\begin{small}
+  \textbf{Analysis of variance} is the term for statistical analyses
+  that break down the variation in data into separate pieces that
+  correspond to different sources of variation. In the regression
+  setting, the observed variation in the responses comes from two
+  sources.
+
+  \begin{itemize}
+  \item As the explanatory variable $x$ changes, it ``pulls'' the
+    response with it along the regression line. This is the
+    \textbf{variation along the line} or \textbf{regression sum of
+      squares}:
+    \[ \mbox{SSR} = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 \]
+  \item When $x$ is held fixed, $y$ still varies because not all
+    individuals who share a common $x$ have the same response $y$.
+    This is the \textbf{variation about the line} or \textbf{error (residual)
+      sum of squares}:
+    \[ \mbox{SSE} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 \]
+  \end{itemize}
+\end{small}
+
+\newpage \phantom{XX}
+
+
+ \subhead{The ANOVA Equation}
+
+  It turns out that $\mbox{SSE}$ and $\mbox{SSR}$
+  together account for \textit{all} the variation in $y$ (i.e. $S_{yy}$):
+  \[ \underbrace{\sum_{i=1}^n (y_i - \bar{y})^2}_{\mbox{SST}} =
+  \underbrace{\sum_{i=1}^n (\hat{y}_i -
+    \bar{y})^2}_{\mbox{SSR}} + \underbrace{\sum_{i=1}^n
+    (y_i - \hat{y}_i)^2}_{\mbox{SSE}} \]
+
+  The degrees of freedom break down in a similar manner:
+  \[ \underbrace{n-1}_{\mbox{SST}} =
+  \underbrace{1}_{\mbox{SSR}} +
+  \underbrace{n-2}_{\mbox{SSE}} \]
+
+  Dividing a sum of squares by its degrees of freedom gives a
+  \textbf{mean square (MS)}.
+
+  \[ \mbox{MSE} = \frac{\mbox{SSE}} {\mbox{df(Error)}}
+  = \frac{\sum_{i=1}^n (y_i -\hat{y}_i)^2}{n-2}=s^2 \]
+
+\bigskip
+
+  \[ R^2=\frac{\mbox{SSR}}{\mbox{SST}}=\frac{\sum_i (\hat y_i - \bar y)^2}{\mbox{SST}} = \frac{\hat b_1^2 S_{xx}}{\mbox{SST}} = r^2 \]
+
+The fraction of the total variation in $Y$ explained by the line
+
+\newpage \phantom{XX}
+
+ \subhead{The ANOVA $F$ Statistic}
+
+  As an alternative test of the hypothesis: $H_0: \beta_1=0$, we use
+  the $F$ statistic:
+  \begin{align*}
+    F &= \frac{\mbox{MSR}}{\mbox{MSE}}
+     = \frac{\mbox{SSR}/\mbox{dfR}}
+    {\mbox{SSE}/\mbox{dfE}}\\ &=
+    \frac{b_1^2 S_{xx}}{s^2}\\ & = \left( \frac{b_1}{s/\sqrt{S_{xx}}} \right)^2\\ &=
+     \left( \frac{b_1}{SE(\hat \beta_1)}\right)^2 \\
+     & = t^2
+  \end{align*}
+
+  Under $H_0$,
+  \[ F \sim F_{1, n-2} \]
+  where $F_{1,n-2}$ is an $F$ distribution with 1 and $n-2$ degrees of
+  freedom.
+
+\newpage \phantom{XX}
+
+<<echo=FALSE,tidy=TRUE,size="tiny">>=
+summary(fire.lm)
+@
+\begin{small}
+Residual standard error is the estimate $s$ of $\sigma$.
+
+Multiple R-squared is $\frac{\mbox{SSR}}{\mbox{SST}}$.
+
+F-statistic is the square of the t-statistic for the slope.
+\end{small}
+\end{frame}
+\end{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
+
