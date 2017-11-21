@@ -54,8 +54,8 @@ Note: Each lecture is a topic, not a day of class.
 27. [Differences of Means](24_two_sample.pdf)
 28. [Inference for Proportions](25_proportions.pdf)
 29. Simple Linear Regression
-30. Analysis of Variance
-31. Multiple Linear Regression
+30. [Multiple Linear Regression](27_multiple_lr.pdf)
+31. Review
 
 # Stat Comics That Made Me Laugh
 - SMBC:
