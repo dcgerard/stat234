@@ -74,4 +74,6 @@ Note: Each lecture is a topic, not a day of class.
     - [Usually Use Proportions, not Counts](https://www.xkcd.com/1138/)
     - [p-values](https://www.xkcd.com/1478/)
     - [Violin Plots](https://xkcd.com/1967/)
+    - [Curve Fitting](https://xkcd.com/2048/)
+    - [Selection Bias](https://xkcd.com/2357/)
 

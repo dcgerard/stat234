@@ -1,13 +1,13 @@
 ---
 title: "Intro to R"
-output:
-  pdf_document: default
-  html_document: default
+output: pdf_document
+date: "`r Sys.Date()`"
+urlcolor: "blue"
 ---
 
 ```{r echo=FALSE}
 library(knitr)
-opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.height = 2.5, fig.width = 4, fig.align = "center")
 ```
 
 ## Note on Authorship
@@ -15,7 +15,7 @@ opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 The original notes were written by Sohail Nizam and were modified by David Gerard
 
 
-##1.1 Why Use R?
+## 1.1 Why Use R?
 
 * R is free and open source 
 * and looks great on your resume!
@@ -31,13 +31,13 @@ The original notes were written by Sohail Nizam and were modified by David Gerar
 * You'll see that short lines of R code can be as easy as point and click in SPSS. 
 * You can also perform more complex data management tasks as you would in SAS.
 
-##1.2 What is RStudio?
+## 1.2 What is RStudio?
 
 * RStudio is a free interface for R.
 * RStudio makes working with R easier and more intuitive. 
 * All of the work we do will be in RStudio. 
 
-##1.3 Downloading and Installing
+## 1.3 Downloading and Installing
 
 Just go to [https://cran.rstudio.com/](https://cran.rstudio.com/) and follow the links. If you need help, you can watch some videos on YouTube:
 
@@ -49,7 +49,7 @@ To download Rstudio, go to the following link, download the appropriate installe
 - [https://www.rstudio.com/products/rstudio/download/#download](https://www.rstudio.com/products/rstudio/download/#download) 
 
 
-##1.4 Your Most Important Resource
+## 1.4 Your Most Important Resource
 
 I'll do my best to demonstrate the skills you'll need over the course of the quarter. 
 However, there is no way I can preemptively answer any question you may have about tasks in R. 
@@ -62,7 +62,7 @@ There's a good chance that someone has done what you want to do (or at least som
 Stack Exchange usually has great answers. 
  
 
-##1.5 The RStudio Interface
+## 1.5 The RStudio Interface
 
 
 * There's no need to ever actually open R if you are using RStudio.
@@ -139,7 +139,7 @@ Note: Code can be run in the Console but this is a use it and lose it mode of op
 * For the most part this will mean vectors and data frames. 
 * Use of the Environment Window will become clearer in the next section
 
-##1.6 Variable Assignment
+## 1.6 Variable Assignment
 
 * When we get into the weeds with our work in R, we start to have a lot of different values to save. 
 * We'll have vectors and data frames, important single data values, various statistics, ouput results, and more. 
@@ -183,7 +183,7 @@ x*y
 x
 ```
 
-###A note on usefulness and coding practice:
+### A note on usefulness and coding practice:
 Variable assignment becomes very useful when we have to write long pieces of code with many components that refer to different data sources. Instead of putting down a huge indesipherable piece of code, we can layer it by assigning smaller operations to variables and then referring to the variable names in the code. I'll show an example of this once we learn about some more objects in R and start working with some data.
 
 It's good practice to choose variable names that succinctly describe the value you are saving. For example, later in the quarter you'll be covering linear regression. There's a certain function that ouputs all the information you could possibly want after you run a regression. When I'm doing just one regression I save all this output under the name `my_Reg`. Or maybe I'm running three regressions: one involving Body Mass Index, one involving Systolic Blood Pressure, and one involving weight. I might call those `BMI_reg`, `SBP_reg`, and `Weight_reg` respectively. Variable names cannot have spaces, and they cannot begin with a number. It can be easy to forget what purposes your variables serve when save too many under non-descript names. 
@@ -193,7 +193,7 @@ Also, I would advise against choosing variable names which are the same as the n
 That leads me to another note on coding practice....
 
 
-##1.7 Comments
+## 1.7 Comments
 
 No matter what language you are using, it's always important to leave yourself comments so you can come back to the code later and still remember what you were trying to do. Start doing that now when the code is simple, and you'll have developed a good habit by the time you start writing more complex scripts.
 
@@ -213,7 +213,7 @@ c<- 5 #This code assigns the value 5 to the variable c.
 
 
 
-##1.8 Vectors
+## 1.8 Vectors
 
 In statistics we deal with data. To manage and analyze data in R, we need a way to store those data. 
 
@@ -227,7 +227,7 @@ In statistics we deal with data. To manage and analyze data in R, we need a way 
 * Vectors are created in R using the `c()` function. 
 * "c" stands for concatonate, which means stick together. 
 
-###A note on functions:
+### A note on functions:
 There's a general way that all functions are used in R. The name of the function is followed by parentheses. Inside the parentheses we type the input that the function takes. I'll go more into the use of functions later on. For now, just know that the function you need to create a vector is called "c" and it us used in the following way.
  
  
@@ -262,7 +262,7 @@ year_st<- year-1985 #shift
 year_st #call shifted vector
 ```
 
-##1.9 Different Data Types
+## 1.9 Different Data Types
 
 * The types of data you should concern yourself with are: numeric, character, logical, and factor.
 * Below are vectors of each type (except factor).
@@ -349,7 +349,7 @@ my_vec
 length(my_vec)
 ```
 
-##1.11 Data Frames
+## 1.11 Data Frames
 
 * Usually we have more than one column(variable) in our data set. 
 * So how can we store several vectors together? 
@@ -433,7 +433,7 @@ mtcars$am <- as.factor(mtcars$am)
 levels(mtcars$am) <- c("A", "M")
 ```
 
-##1.12 Importing Data (From File)
+## 1.12 Importing Data (From File)
 
 * You're told that data are stored in some file for you to download. 
 * How do you get those data into R?
@@ -465,7 +465,7 @@ MyData <- read.csv(file="FileName.csv", header=TRUE, sep=",")
 *The third argument tells R how the data are separated in the file. In this case we're working with a csv file so the data values are comma separated. Data may be separated by spaces or tabs.
 
 
-##1.13 Importing Data (From URL)
+## 1.13 Importing Data (From URL)
 
 * If you have a url for the csv file, simply place it as the `file` arguement in `read.csv()`. For example, to download a dataset on Donald Trump's tweets, type:
 
@@ -477,7 +477,7 @@ You can read about these data here:
 
 - \url{https://dcgerard.github.io/stat234/datasets.html#trumpcsv}
 
-##1.14 Installing Packages
+## 1.14 Installing Packages
 
 ### Another note on functions
 You haven't learned much statistics yet, so I'm not going to go into complex topics here. However, to get you started doing simple analyses and becoming more familiar with R, I will show some common functions for descriptive statistics below. Remember, every R function has a name and takes input inside a set of parentheses. Another name for a function input is an "argument" (eg. `names()` takes a data frame as an argument). As you will see, most useful functions have many potential arguments, and arguments have specific syntax just like anything else.
@@ -607,6 +607,17 @@ summary(mtcars$mpg)
 
 ##1.16 Graphical Representations
 
+We'll use the ggplot2 package in R to do graphics in this class. Install ggplot2 if you haven't already
+```{r, eval = FALSE}
+install.packages("ggplot2")
+```
+Then load it so we can use its functions
+```{r}
+library(ggplot2)
+```
+
+
+
 * There are many functions to make graphical representations of data.
 * We can add extra arguments to these functions to stylize our graph and make it presentable.
 
@@ -614,46 +625,64 @@ summary(mtcars$mpg)
 Boxplots and histograms are good for examining continuous variables.
 ```{r}
 #this function uses the 1.5*IQR rule for outliers
-boxplot(mtcars$disp)
-boxplot(disp ~ am, data=mtcars) #separate boxplots for manual and automatic
+qplot(y = mtcars$disp, 
+      geom = "boxplot")
+## separate boxplots for manual and automatic
+qplot(x = factor(mtcars$am), 
+      y = mtcars$disp, geom = "boxplot") 
 
 #histogram for disp
-hist(mtcars$disp, xlab="Displacement", ylab="Frequncy", 
-     main="Distribution of Displacement") 
+qplot(x = mtcars$disp, geom = "histogram",
+      xlab = "Displacement",
+      ylab = "Frequency",
+      main = "Distribution of Displacement",
+      bins = 30)
 
-old_parameters <- par(mfrow = c(1, 2)) # Create facets and save old parameters
-# separate histogram for manual
-hist(mtcars$disp[mtcars$am == "M"], xlab = "displacement", main = "") 
-# separate histogram for automatic
-hist(mtcars$disp[mtcars$am == "A"], xlab = "displacement", main = "") 
-par(old_parameters) # restore old settings
+## Create facets by am
+qplot(x = disp,
+      data = mtcars,
+      geom = "histogram",
+      xlab = "Displacement",
+      ylab = "Frequency",
+      main = "Distribution of Displacement",
+      bins = 10,
+      facets = factor(am) ~ .)
 ```
 
 * When creating a histogram you may wish to change the number of intervals used.
 * The default number may not be the best way to view the data. 
-* We can change the intervals by adding another argument called "breaks."
+* We can change the intervals by adding another argument called `bins`
 
 ```{r}
-hist(mtcars$disp, breaks = 10)
+qplot(x = mtcars$disp, geom = "histogram",
+      xlab = "Displacement",
+      ylab = "Frequency",
+      main = "Distribution of Displacement",
+      bins = 20)
 ```
 
 Scatterplots are good for examining the relationship between two continuous variables.
 ```{r}
-plot(mtcars$disp, mtcars$mpg, xlab="Displacement", ylab="MPG", main="Displacement vs MPG", pch = 16)
-plot(mtcars$disp, mtcars$mpg, col= mtcars$am, xlab = "Displacement", ylab = "MPG", pch = 16) # one plot, different symbols for automatic and manual
-legend("topright", levels(mtcars$am), col = 1:2, pch = 16)
-```
+qplot(mtcars$disp, 
+      mtcars$mpg, 
+      xlab="Displacement", 
+      ylab="MPG",
+      main="Displacement vs MPG")
+# one plot, different color for automatic and manual
+qplot(mtcars$disp, 
+     mtcars$mpg, 
+     col= factor(mtcars$am), 
+     xlab = "Displacement", 
+     ylab = "MPG")
 
-Noticed that I used the `legend()` function to add a legend to the top right of the plot.
+```
 
 Cars with larger displacement tend to have lower miles per gallon. Also, automatic cars tend to have lower MPG than manual cars, but this is probably mostly explained by the fact that automatic cars tend to have higher displacement.
 
-* Finally let's examine a stem and leaf plot. 
+* Finally let's examine a dot plot. 
 
 ```{r}
-stem(mtcars$disp) #create stem plot for disp
-stem(mtcars$disp, scale=2) #create stemplot for disp with split stems for fewer outcomes per bin
-stem(mtcars$disp[mtcars$am=="A"]) #create stemplot of disp for automatic only
+qplot(mtcars$disp, geom = "dotplot")
 ```
 
 
@@ -661,7 +690,7 @@ stem(mtcars$disp[mtcars$am=="A"]) #create stemplot of disp for automatic only
 * There's no need to try and memorize all of them. You wouldn't be able to anyway.
 * Should you want to know the basics of what a function does, you can start by running the help function.
 
-```{r}
+```{r, eval = FALSE}
 help(sort) # find out what the sort() function does
 # or
 ?sort
@@ -672,7 +701,7 @@ help(sort) # find out what the sort() function does
 * The window displayed is an article which tells what the function does and all of the possible arguments it can take.
 
 
-##1.17 Exporting Plots
+## 1.17 Exporting Plots
 
 You'll need to save the plots you produce and put them in your homework. This is very simple in Rstudio. I'll walk you through the steps here.
 
